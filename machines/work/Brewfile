@@ -1,0 +1,12 @@
+tap "homebrew/cask-fonts"
+
+brew "gnupg"
+brew "nvm"
+brew "pinentry-mac"
+brew "tmux"
+brew "ykman"
+
+cask "font-jetbrains-mono"
+cask "local"
+cask "maccy"
+cask "visual-studio-code"
