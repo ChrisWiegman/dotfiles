@@ -3,6 +3,12 @@
         "streetsidesoftware.code-spell-checker",
         "pflannery.vscode-versionlens",
         "zhuangtongfa.material-theme",
-        "eamodio.gitlens"
+        "eamodio.gitlens",
+        "mhutchie.git-graph",
+        "donjayamanne.githistory",
+        "wix.vscode-import-cost",
+        "richie5um2.vscode-sort-json",
+        "GitHub.vscode-pull-request-github",
+        "github.vscode-github-actions"
     ]
 }
