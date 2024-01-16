@@ -14,9 +14,6 @@ function rup() {
   szh
 }
 
-# Configure Rust
-export PATH="$HOME/.cargo/bin:$PATH"
-
 # Configure NVM
 export NVM_DIR="$HOME/.nvm"
   [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && . "/opt/homebrew/opt/nvm/nvm.sh"  # This loads nvm

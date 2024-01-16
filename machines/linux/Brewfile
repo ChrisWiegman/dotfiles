@@ -1,4 +1,3 @@
-brew "act"
 brew "composer"
 brew "go"
 brew "golangci-lint"
