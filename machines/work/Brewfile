@@ -8,5 +8,4 @@ brew "ykman"
 
 cask "font-jetbrains-mono"
 cask "local"
-cask "maccy"
 cask "visual-studio-code"
