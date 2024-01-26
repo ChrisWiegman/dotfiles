@@ -6,6 +6,7 @@ brew "pinentry-mac"
 brew "tmux"
 brew "ykman"
 
+cask "discord"
 cask "font-jetbrains-mono"
 cask "local"
 cask "visual-studio-code"
