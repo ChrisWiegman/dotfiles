@@ -1,10 +1,7 @@
 tap "homebrew/cask-fonts"
 
-brew "gnupg"
 brew "nvm"
-brew "pinentry-mac"
 brew "tmux"
-brew "ykman"
 
 cask "discord"
 cask "elgato-control-center"
