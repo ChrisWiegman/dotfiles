@@ -1,7 +1,6 @@
 tap "homebrew/cask-fonts"
 
 brew "nvm"
-brew "pinentry-mac"
 brew "tmux"
 
 cask "discord"
