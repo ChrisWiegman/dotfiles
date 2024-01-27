@@ -22,6 +22,8 @@ source $ZSH/oh-my-zsh.sh
 # Aliases and functions
 alias dsp="dka; docker system prune -a -f"
 alias gup="git fetch --all --prune; git pull; git gc"
+alias inode="nvm install --lts --latest-npm"
+alias mip="dig -4 TXT +short o-o.myaddr.l.google.com @ns1.google.com"
 alias szh="source ~/.zshrc"
 
 # Kills all running docker containers and prunes all but the images
