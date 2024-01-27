@@ -27,6 +27,11 @@ function rup() {
   szh
 }
 
+# SSH config
+export GPG_TTY="$(tty)"
+export SSH_AUTH_SOCK=$(gpgconf --list-dirs agent-ssh-socket)
+gpgconf --launch gpg-agent
+
 function cleanup() {
   snap list --all | awk '/disabled/{print $1, $3}' |
     while read snapname revision; do
