@@ -13,9 +13,6 @@ rm -f $HOME/.zshrc.pre-oh-my-zsh
 ln -s $CONFIG_DIR/.zshrc $HOME/.zshrc
 chmod 0600 $HOME/.zshrc
 
-# Remove Shared GPG configs
-rm -rf $HOME/.gnupg
-
 # Setup SSH configs
 if [ ! -d $HOME/.ssh ]; then
     mkdir -p $HOME/.ssh;

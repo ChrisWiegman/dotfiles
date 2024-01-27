@@ -7,9 +7,6 @@
 [pull]
 	rebase = false
 
-[url "git@github.com:wpengine/"]
-    insteadOf = wpe:
-
 [color]
     ui = true
 

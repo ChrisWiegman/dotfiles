@@ -1,20 +1,17 @@
 [user]
 	name = Chris Wiegman
 	email = chris@chriswiegman.com
-	signingkey = 0x1F15DF365FD6F505
+	signingkey = ~/.ssh/id_ed25519
 [commit]
 	gpgsign = true
 [pull]
 	rebase = false
-
-[url "git@github.com:chriswiegman/"]
-    insteadOf = cw:
-
-[url "git@github.com:wpengine/"]
-    insteadOf = wpe:
 
 [color]
     ui = true
 
 [init]
 	defaultBranch = main
+
+[gpg]
+	format = ssh
