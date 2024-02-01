@@ -5,7 +5,6 @@ brew "tmux"
 
 cask "discord"
 cask "elgato-control-center"
-cask "elgato-stream-deck"
 cask "font-jetbrains-mono"
 cask "local"
 cask "logitech-camera-settings"
