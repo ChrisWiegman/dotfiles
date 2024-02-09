@@ -1,9 +1,12 @@
 tap "homebrew/cask-fonts"
 
+brew "composer"
+brew "go"
 brew "nvm"
 brew "tmux"
 
 cask "discord"
+cask "docker"
 cask "elgato-control-center"
 cask "font-jetbrains-mono"
 cask "local"
