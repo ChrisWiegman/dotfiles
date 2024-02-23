@@ -5,6 +5,7 @@ brew "tmux"
 
 cask "discord"
 cask "elgato-control-center"
+cask "focusrite-control"
 cask "font-jetbrains-mono"
 cask "logitech-camera-settings"
 cask "visual-studio-code"
