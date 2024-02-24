@@ -1,6 +1,6 @@
 [user]
-	name = Chris Wiegman
-	email = chris@chriswiegman.com
+	name = Joy Wiegman
+	email = joy@joywiegman.com
 	signingkey = ~/.ssh/id_ed25519
 [commit]
 	gpgsign = true

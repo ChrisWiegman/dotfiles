@@ -10,7 +10,7 @@ die () {
 }
 
 [ "$#" -eq 1 ] || die "Please invoke script with either "mac," "linux," "work" or "joy" as argument"
-echo $1 | grep -E -q '^(mac|linux|work)$' || die "Please invoke script with either "mac," "linux," "work" or "joy" as argument"
+echo $1 | grep -E -q '^(mac|linux|work|joy)$' || die "Please invoke script with either "mac," "linux," "work" or "joy" as argument"
 
 # Setup rosetta if we're on Mac
 if [ "$(uname)" = "Darwin" ]; then
