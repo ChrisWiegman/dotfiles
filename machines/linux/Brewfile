@@ -1,6 +1,3 @@
 brew "composer"
 brew "go"
 brew "nvm"
-
-cask "aldente"
-cask "local"
