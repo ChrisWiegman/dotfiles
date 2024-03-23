@@ -161,6 +161,8 @@
     "javascript.updateImportsOnFileMove.enabled": "always",
     "phpSniffer.autoDetect": true,
     "security.workspace.trust.untrustedFiles": "open",
+    "telemetry.enableCrashReporter": false,
+    "telemetry.enableTelemetry": false,
     "telemetry.telemetryLevel": "off",
     "terminal.integrated.confirmOnExit": "never",
     "terminal.integrated.fontFamily": "Jetbrains Mono",
