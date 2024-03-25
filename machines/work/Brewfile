@@ -1,11 +1,16 @@
 tap "homebrew/cask-fonts"
+tap "chriswiegman/kana"
 
+brew "composer"
+brew "go"
+brew "kana"
 brew "nvm"
 brew "tmux"
 
 cask "aldente"
 cask "bartender"
 cask "discord"
+cask "docker"
 cask "focusrite-control"
 cask "font-jetbrains-mono"
 cask "logitech-camera-settings"
