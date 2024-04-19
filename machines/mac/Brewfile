@@ -1,5 +1,3 @@
-tap "homebrew/cask-fonts"
-
 brew "composer"
 brew "go"
 brew "nvm"
@@ -11,7 +9,6 @@ cask "bartender"
 cask "cleanmymac"
 cask "discord"
 cask "docker"
-cask "font-jetbrains-mono"
 cask "focusrite-control"
 cask "logitech-camera-settings"
 cask "maccy"

@@ -1,12 +1,9 @@
-tap "homebrew/cask-fonts"
-
 brew "tmux"
 
 cask "1password"
 cask "aldente"
 cask "alfred"
 cask "dropbox"
-cask "font-jetbrains-mono"
 cask "google-chrome"
 cask "logitech-camera-settings"
 cask "signal"
