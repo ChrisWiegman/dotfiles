@@ -13,6 +13,8 @@ source $HOME/.dotfiles/shared/configs/.zshrc
 function rup() {
   sudo snap refresh
   cleanup
+  flatpak update -y
+  flatpak uninstall --unused -y
   sudo apt-get update -y
   sudo apt-get dist-upgrade -y
   sudo apt-get autoremove -y
