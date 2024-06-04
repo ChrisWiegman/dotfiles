@@ -30,7 +30,7 @@
     "editor.guides.bracketPairs": "active",
     "editor.guides.bracketPairsHorizontal": false,
     "editor.hover.delay": 250,
-    "editor.inlayHints.fontSize": 12,
+    "editor.inlayHints.fontSize": 11,
     "editor.inlayHints.padding": true,
     "editor.largeFileOptimizations": false,
     "editor.lineHeight": 25,
@@ -180,11 +180,12 @@
     "window.openFilesInNewWindow": "default",
     "window.restoreWindows": "none",
     "window.titleBarStyle": "custom",
-    "workbench.colorTheme": "One Dark Pro Flat",
+    "workbench.colorTheme": "Everforest Dark",
     "workbench.commandPalette.history": 10,
     "workbench.enableExperiments": false,
     "workbench.settings.editor": "json",
     "workbench.settings.useSplitJSON": true,
     "workbench.startupEditor": "none",
-    "workbench.tree.indent": 20
+    "workbench.tree.indent": 20,
+    "github.copilot.editor.enableAutoCompletions": true
 }
