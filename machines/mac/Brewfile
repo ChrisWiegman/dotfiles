@@ -1,5 +1,6 @@
 brew "composer"
 brew "go"
+brew "jordanbaird-ice"
 brew "nvm"
 brew "tmux"
 

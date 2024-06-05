@@ -2,6 +2,7 @@ tap "chriswiegman/kana"
 
 brew "composer"
 brew "go"
+brew "jordanbaird-ice"
 brew "kana"
 brew "nvm"
 brew "tmux"
