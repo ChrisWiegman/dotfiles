@@ -7,7 +7,6 @@ brew "nvm"
 brew "tmux"
 
 cask "aldente"
-cask "bartender"
 cask "docker"
 cask "focusrite-control"
 cask "logitech-camera-settings"

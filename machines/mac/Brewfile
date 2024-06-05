@@ -5,7 +5,6 @@ brew "tmux"
 
 cask "1password"
 cask "aldente"
-cask "bartender"
 cask "cleanmymac"
 cask "confectionery"
 cask "discord"
