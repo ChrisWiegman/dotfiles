@@ -39,5 +39,10 @@ function cleanup() {
 # Configure GoLang
 export CGO_ENABLED=0
 
+# SSH config
+export GPG_TTY="$(tty)"
+export SSH_AUTH_SOCK=$(gpgconf --list-dirs agent-ssh-socket)
+gpgconf --launch gpg-agent
+
 # Setup Homebrew
 eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
