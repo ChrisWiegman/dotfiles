@@ -8,7 +8,7 @@ brew "tmux"
 
 cask "aldente"
 cask "docker"
-cask "focusrite-control"
+cask "focusrite-control-2"
 cask "font-jetbrains-mono"
 cask "jordanbaird-ice"
 cask "logitech-camera-settings"
