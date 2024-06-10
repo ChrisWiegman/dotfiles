@@ -1,3 +1,4 @@
+brew "cocoapods"
 brew "composer"
 brew "gnupg"
 brew "go"
