@@ -14,13 +14,13 @@
     "cSpell.userWords": [
         "Wiegman"
     ],
-    "debug.console.fontFamily": "JetBrains Mono",
+    "debug.console.fontFamily": "SF Mono, Noto Mono",
     "debug.console.fontSize": 13,
     "diffEditor.ignoreTrimWhitespace": false,
     "editor.codeActionsOnSave": {
         "source.fixAll.eslint": "explicit"
     },
-    "editor.fontFamily": "JetBrains Mono",
+    "editor.fontFamily": "SF Mono, Noto Mono",
     "editor.fontLigatures": true,
     "editor.fontSize": 13,
     "editor.fontVariations": false,
@@ -169,7 +169,7 @@
     "telemetry.enableTelemetry": false,
     "telemetry.telemetryLevel": "off",
     "terminal.integrated.confirmOnExit": "never",
-    "terminal.integrated.fontFamily": "JetBrains Mono",
+    "terminal.integrated.fontFamily": "SF Mono, Noto Mono",
     "terminal.integrated.fontSize": 13,
     "terminal.integrated.lineHeight": 1.4,
     "typescript.surveys.enabled": false,
