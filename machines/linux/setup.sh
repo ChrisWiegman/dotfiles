@@ -12,7 +12,8 @@ sudo apt-get install -y \
     gnupg-agent \
     scdaemon \
     pcscd \
-    libpam-fprintd
+    libpam-fprintd \
+    projecteur
 
 echo "Enable fingerprint sensor"
 sudo pam-auth-update
