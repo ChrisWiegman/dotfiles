@@ -8,6 +8,8 @@
         "GitHub.copilot",
         "GitHub.copilot-chat",
         "GitHub.vscode-pull-request-github",
-        "eamodio.gitlens",
+        "waderyan.gitblame",
+        "donjayamanne.githistory",
+        "ms-vscode.remote-repositories",
     ]
 }
