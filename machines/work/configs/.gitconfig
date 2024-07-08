@@ -1,7 +1,7 @@
 [user]
 	name = Chris Wiegman
-	email = chris.wiegman@wpengine.com
-	signingkey = ~/.ssh/id_ed25519
+	email = cwiegman@superfile.com
+	signingkey = 0x8B5D599EBC291F98
 [commit]
 	gpgsign = true
 [pull]
@@ -12,5 +12,3 @@
 
 [init]
 	defaultBranch = main
-[gpg]
-	format = ssh

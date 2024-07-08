@@ -13,14 +13,14 @@ rm -f $HOME/.zshrc.pre-oh-my-zsh
 ln -s $CONFIG_DIR/.zshrc $HOME/.zshrc
 chmod 0600 $HOME/.zshrc
 
-# Setup SSH configs
-if [ ! -d $HOME/.ssh ]; then
-    mkdir -p $HOME/.ssh;
+# Setup GPG configs
+if [ ! -d $HOME/.gnupg ]; then
+    mkdir -p $HOME/.gnupg;
 fi
 
-rm -f $HOME/.ssh/config
-ln -s $CONFIG_DIR/.ssh/config $HOME/.ssh/config
-chmod 0600 $HOME/.ssh/config
+rm -f $HOME/.gnupg/gpg-agent.conf
+ln -s $CONFIG_DIR/.gnupg/gpg-agent.conf $HOME/.gnupg/gpg-agent.conf
+chmod 0600 $HOME/.gnupg/gpg-agent.conf
 
 # Setup Git configs
 rm -f $HOME/.gitconfig
