@@ -7,6 +7,7 @@ brew "ykman"
 
 cask "1password"
 cask "aldente"
+cask "docker"
 cask "figma"
 cask "focusrite-control-2"
 cask "font-jetbrains-mono"
