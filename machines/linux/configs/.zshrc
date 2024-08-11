@@ -19,7 +19,7 @@ function rup() {
   flatpak update -y
   flatpak uninstall --unused -y
   sudo apt-get update -y
-  sudo apt-get dist-upgrade -y
+  sudo apt-get dist-upgrade -o APT::Get::Always-Include-Phased-Updates=true -y
   sudo apt-get autoremove -y
   brew update
   brew upgrade --quiet
