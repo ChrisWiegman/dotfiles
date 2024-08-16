@@ -1,10 +1,7 @@
 brew "awscli"
-brew "gnupg"
 brew "go"
 brew "nvm"
-brew "pinentry-mac"
 brew "tmux"
-brew "ykman"
 
 cask "1password"
 cask "adobe-acrobat-pro"
