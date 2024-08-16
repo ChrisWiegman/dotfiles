@@ -3,7 +3,7 @@
 SHAREDPATH=$1
 MACHINEPATH=$2
 
-echo "Setting up mac config files"
+echo "Setting up Joy's config files"
 
 CONFIG_DIR=$MACHINEPATH/configs
 
