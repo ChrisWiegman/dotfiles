@@ -8,8 +8,7 @@ echo "Setup additional apps"
 sudo apt-get install -y \
     tmux \
     zsh \
-    libpam-fprintd \
-    projecteur
+    libpam-fprintd
 
 echo "Enable fingerprint sensor"
 sudo pam-auth-update
