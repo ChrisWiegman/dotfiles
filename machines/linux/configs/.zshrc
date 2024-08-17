@@ -14,10 +14,6 @@ source $HOME/.dotfiles/shared/configs/zsh/nvm.zsh
 
 # Runs daily updates
 function rup() {
-  sudo snap refresh
-  cleanup
-  flatpak update -y
-  flatpak uninstall --unused -y
   sudo apt-get update -y
   sudo apt-get dist-upgrade -o APT::Get::Always-Include-Phased-Updates=true -y
   sudo apt-get autoremove -y
