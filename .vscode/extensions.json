@@ -4,12 +4,7 @@
         "pflannery.vscode-versionlens",
         "sainnhe.everforest",
         "mhutchie.git-graph",
-        "github.vscode-github-actions",
-        "GitHub.copilot",
-        "GitHub.copilot-chat",
-        "GitHub.vscode-pull-request-github",
         "waderyan.gitblame",
         "donjayamanne.githistory",
-        "ms-vscode.remote-repositories",
     ]
 }

@@ -185,5 +185,4 @@
     "workbench.settings.useSplitJSON": true,
     "workbench.startupEditor": "none",
     "workbench.tree.indent": 20,
-    "makefile.configureOnOpen": true
 }
