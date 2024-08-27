@@ -1,6 +1,5 @@
 brew "awscli"
 brew "go"
-brew "nvm"
 brew "tmux"
 
 cask "adobe-acrobat-pro"
