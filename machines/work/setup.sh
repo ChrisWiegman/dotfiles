@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/zsh
 
 SHAREDPATH=$1
 MACHINEPATH=$2

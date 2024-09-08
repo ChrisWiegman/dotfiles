@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/zsh
 
 SHAREDPATH=$1
 
