@@ -82,6 +82,11 @@
         "ui.noSemanticString": true,
         "ui.semanticTokens": true
     },
+    "intelephense.codeLens.implementations.enable": true,
+    "intelephense.codeLens.overrides.enable": true,
+    "intelephense.codeLens.parent.enable": true,
+    "intelephense.codeLens.references.enable": true,
+    "intelephense.codeLens.usages.enable": true,
     "intelephense.stubs": [
         "apache",
         "bcmath",
@@ -159,6 +164,7 @@
     ],
     "intelephense.telemetry.enabled": false,
     "javascript.updateImportsOnFileMove.enabled": "always",
+    "phpParameterHint.hintOnlyLine": false,
     "phpSniffer.autoDetect": true,
     "remoteHub.gitProtocol": "ssh",
     "remoteHub.richNavigation.enabled": true,
