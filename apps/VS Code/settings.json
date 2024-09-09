@@ -190,5 +190,5 @@
     "workbench.settings.editor": "json",
     "workbench.settings.useSplitJSON": true,
     "workbench.startupEditor": "none",
-    "workbench.tree.indent": 20,
+    "workbench.tree.indent": 20
 }
