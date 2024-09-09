@@ -21,7 +21,7 @@
         "source.fixAll.eslint": "explicit"
     },
     "editor.fontFamily": "MonoLisa",
-    "editor.fontLigatures": "'calt' on, 'liga' off, 'zero' on, 'ss02' on",
+    "editor.fontLigatures": "'calt' on, 'liga' on, 'zero' on, 'ss02' on",
     "editor.fontSize": 13,
     "editor.fontVariations": false,
     "editor.formatOnPaste": false,
