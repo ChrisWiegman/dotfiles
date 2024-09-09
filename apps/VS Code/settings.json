@@ -14,14 +14,14 @@
     "cSpell.userWords": [
         "Wiegman"
     ],
-    "debug.console.fontFamily": "Menlo",
+    "debug.console.fontFamily": "MonoLisa",
     "debug.console.fontSize": 13,
     "diffEditor.ignoreTrimWhitespace": false,
     "editor.codeActionsOnSave": {
         "source.fixAll.eslint": "explicit"
     },
-    "editor.fontFamily": "Menlo",
-    "editor.fontLigatures": true,
+    "editor.fontFamily": "MonoLisa",
+    "editor.fontLigatures": "'calt' on, 'liga' off, 'zero' on, 'ss02' on",
     "editor.fontSize": 13,
     "editor.fontVariations": false,
     "editor.formatOnPaste": false,
@@ -51,6 +51,8 @@
         "javascript",
         "javascriptreact"
     ],
+    "everforest.italicComments": true,
+    "everforest.italicKeywords": true,
     "explorer.compactFolders": false,
     "explorer.confirmDelete": false,
     "explorer.decorations.badges": false,
@@ -173,7 +175,7 @@
     "telemetry.enableTelemetry": false,
     "telemetry.telemetryLevel": "off",
     "terminal.integrated.confirmOnExit": "never",
-    "terminal.integrated.fontFamily": "Menlo",
+    "terminal.integrated.fontFamily": "MonoLisa",
     "terminal.integrated.fontSize": 13,
     "terminal.integrated.lineHeight": 1.4,
     "typescript.surveys.enabled": false,
