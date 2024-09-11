@@ -1198,6 +1198,8 @@
 	</data>
 	<key>CommandString</key>
 	<string>/opt/homebrew/bin/tmux attach-session</string>
+	<key>CursorBlink</key>
+	<true/>
 	<key>CursorColor</key>
 	<data>
 	YnBsaXN0MDDUAQIDBAUGBwpYJHZlcnNpb25ZJGFyY2hpdmVyVCR0b3BYJG9iamVjdHMS
