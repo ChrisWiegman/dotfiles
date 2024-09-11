@@ -20,11 +20,13 @@
     "editor.codeActionsOnSave": {
         "source.fixAll.eslint": "explicit"
     },
+    "editor.cursorBlinking": "smooth",
+    "editor.cursorStyle": "block",
     "editor.fontFamily": "MonoLisa",
     "editor.fontLigatures": "'calt' on, 'liga' on, 'zero' on, 'ss02' on",
     "editor.fontSize": 13,
     "editor.fontVariations": false,
-    "editor.formatOnPaste": false,
+    "editor.formatOnPaste": true,
     "editor.formatOnSave": true,
     "editor.formatOnType": true,
     "editor.guides.bracketPairs": "active",
@@ -191,6 +193,7 @@
     "workbench.colorTheme": "Everforest Dark",
     "workbench.commandPalette.history": 10,
     "workbench.enableExperiments": false,
+    "workbench.editor.highlightModifiedTabs": true,
     "workbench.settings.editor": "json",
     "workbench.settings.useSplitJSON": true,
     "workbench.startupEditor": "none",
