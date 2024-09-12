@@ -26,7 +26,7 @@
     "editor.fontLigatures": "'calt' on, 'liga' on, 'zero' on, 'ss02' on",
     "editor.fontSize": 13,
     "editor.fontVariations": false,
-    "editor.formatOnPaste": true,
+    "editor.formatOnPaste": false,
     "editor.formatOnSave": true,
     "editor.formatOnType": true,
     "editor.guides.bracketPairs": "active",
