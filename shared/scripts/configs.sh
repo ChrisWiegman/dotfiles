@@ -14,6 +14,7 @@ fi
 rm -f $HOME/.ssh/config
 ln -s $CONFIG_DIR/.ssh/config $HOME/.ssh/config
 chmod 0700 $HOME/.ssh
+chmod 0600 $HOME/.ssh/config
 
 # Setup Tmux configs
 rm -f $HOME/.tmux.conf
