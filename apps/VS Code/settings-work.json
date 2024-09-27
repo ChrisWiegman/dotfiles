@@ -115,7 +115,7 @@
     "window.openFilesInNewWindow": "default",
     "window.restoreWindows": "none",
     "window.titleBarStyle": "custom",
-    "workbench.colorTheme": "Everforest Dark",
+    "workbench.colorTheme": "One Dark Pro Flat",
     "workbench.commandPalette.history": 10,
     "workbench.enableExperiments": false,
     "workbench.editor.highlightModifiedTabs": true,
