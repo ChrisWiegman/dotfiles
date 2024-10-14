@@ -1,6 +1,6 @@
 [user]
 	name = Chris Wiegman
-	email = chris@superfile.com
+	email = cwiegman@superfile.com
 	signingkey = ~/.ssh/id_ed25519
 [commit]
 	gpgsign = true
