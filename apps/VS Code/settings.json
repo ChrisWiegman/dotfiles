@@ -189,6 +189,7 @@
     "window.newWindowDimensions": "inherit",
     "window.openFilesInNewWindow": "default",
     "window.restoreWindows": "none",
+    "window.title": "${remoteName}${separator}${activeRepositoryBranchName}${separator}$a${activeEditorShort}${separator}${rootName}${separator}${profileName",
     "window.titleBarStyle": "custom",
     "workbench.colorTheme": "Everforest Dark",
     "workbench.commandPalette.history": 10,
