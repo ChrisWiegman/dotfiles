@@ -176,6 +176,7 @@
     ],
     "intelephense.telemetry.enabled": false,
     "javascript.updateImportsOnFileMove.enabled": "always",
+    "laravel-pint.enable": true,
     "phpParameterHint.hintOnlyLine": false,
     "phpSniffer.autoDetect": true,
     "remoteHub.gitProtocol": "ssh",
@@ -204,5 +205,5 @@
     "workbench.settings.editor": "json",
     "workbench.settings.useSplitJSON": true,
     "workbench.startupEditor": "none",
-    "workbench.tree.indent": 20
+    "workbench.tree.indent": 20,
 }
