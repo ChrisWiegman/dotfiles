@@ -1,13 +1,10 @@
-brew "go"
 brew "hugo"
-brew "nvm"
 brew "tmux"
 
 cask "aldente"
 cask "cleanmymac"
 cask "cryptomator"
 cask "focusrite-control-2"
-cask "moom"
 cask "quicken"
 cask "signal"
 cask "visual-studio-code"

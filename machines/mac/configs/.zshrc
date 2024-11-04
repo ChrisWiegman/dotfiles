@@ -1,7 +1,5 @@
 # Load shared ZSH config
 source $HOME/.dotfiles/shared/configs/.zshrc
-source $HOME/.dotfiles/shared/configs/zsh/go.zsh
-source $HOME/.dotfiles/shared/configs/zsh/nvm.zsh
 
 # Runs daily updates
 function rup() {
@@ -9,7 +7,6 @@ function rup() {
   brew upgrade --quiet
   brew upgrade --cask --greedy --quiet
   brew cleanup --prune=all --quiet
-  inode
   omz update
   update_repos
   update_dotfiles
