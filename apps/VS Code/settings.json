@@ -68,7 +68,6 @@
     "git.enableSmartCommit": true,
     "git-graph.dialog.addTag.pushToRemote": true,
     "git-graph.dialog.merge.noFastForward": false,
-    "git-graph.loadMoreCommits": 300,
     "git-graph.repository.commits.fetchAvatars": true,
     "git-graph.repository.commits.loadMore": 300,
     "git-graph.repository.sign.commits": true,
