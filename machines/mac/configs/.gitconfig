@@ -2,8 +2,10 @@
 	name = Chris Wiegman
 	email = chris@chriswiegman.com
 	signingkey = ~/.ssh/id_ed25519
+
 [commit]
 	gpgsign = true
+
 [pull]
 	rebase = false
 
