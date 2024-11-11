@@ -1,4 +1,6 @@
+brew "go"
 brew "hugo"
+brew "nvm"
 brew "tmux"
 
 cask "aldente"
