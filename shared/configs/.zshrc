@@ -39,6 +39,7 @@ function update_repos() {
 # Update my dotfiles repo automagically
 function update_dotfiles() {
   cd $HOME/.dotfiles
+  echo "Updating dotfiles"
   gup
   cd "$OLDPWD"
   szh
