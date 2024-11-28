@@ -47,3 +47,6 @@ function update_dotfiles() {
 
 # Update system path
 export PATH="/usr/local/sbin:$PATH"
+
+# Source local ZSH config if it exists
+[ -f ~/.local.zsh ] && source ~/.local.zsh

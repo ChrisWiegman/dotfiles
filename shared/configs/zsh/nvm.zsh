@@ -33,6 +33,3 @@ load-nvmrc() {
 
 add-zsh-hook chpwd load-nvmrc
 load-nvmrc
-
-# Source local ZSH config if it exists
-[ -f ~/.local.zsh ] && source ~/.local.zsh
