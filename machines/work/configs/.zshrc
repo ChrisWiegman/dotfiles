@@ -10,6 +10,7 @@ function rup() {
   brew upgrade --quiet
   brew upgrade --cask --greedy --quiet
   brew cleanup --prune=all --quiet
+  softwareupdate -i -a
   inode
   omz update
   update_repos

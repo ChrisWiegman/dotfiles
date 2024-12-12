@@ -7,6 +7,7 @@ function rup() {
   brew upgrade --quiet
   brew upgrade --cask --greedy --quiet
   brew cleanup --prune=all --quiet
+  softwareupdate -i -a
   omz update
   update_dotfiles
   szh
