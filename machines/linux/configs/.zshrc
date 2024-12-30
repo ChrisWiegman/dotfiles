@@ -13,6 +13,10 @@ function cleanup() {
 
 # Runs daily updates
 function rup() {
+  sudo snap refresh
+  cleanup
+  flatpak update
+  flatpak uninstall --unused
   sudo apt-get update -y
   sudo apt-get dist-upgrade -o APT::Get::Always-Include-Phased-Updates=true -y
   sudo apt-get autoremove -y
