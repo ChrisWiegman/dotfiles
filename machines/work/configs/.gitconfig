@@ -6,6 +6,9 @@
 [commit]
 	gpgsign = true
 
+[tag]
+	gpgsign = true
+
 [pull]
 	rebase = false
 
