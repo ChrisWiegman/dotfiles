@@ -1,5 +1,8 @@
+tap "chriswiegman/kana"
+
 brew "composer"
 brew "go"
+brew "kana"
 brew "nvm"
 brew "tmux"
 
