@@ -28,8 +28,8 @@ alias szh="source ~/.zshrc"
 function update_repos() {
   for D in ~/Code/*/; do
     if [ -d "${D}" ]; then
-      cd "${D}"
       echo "Updating ${D}"
+      cd "${D}"
       gup
       cd "$OLDPWD"
     fi
@@ -38,8 +38,8 @@ function update_repos() {
 
 # Update my dotfiles repo automagically
 function update_dotfiles() {
-  cd $HOME/.dotfiles
   echo "Updating dotfiles"
+  cd $HOME/.dotfiles
   gup
   cd "$OLDPWD"
   szh
