@@ -182,8 +182,6 @@
     "remoteHub.gitProtocol": "ssh",
     "remoteHub.richNavigation.enabled": true,
     "security.workspace.trust.untrustedFiles": "open",
-    "telemetry.enableCrashReporter": false,
-    "telemetry.enableTelemetry": false,
     "telemetry.telemetryLevel": "off",
     "terminal.integrated.confirmOnExit": "never",
     "terminal.integrated.fontFamily": "MonoLisa",
