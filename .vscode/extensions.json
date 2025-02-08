@@ -3,6 +3,8 @@
         "streetsidesoftware.code-spell-checker",
         "pflannery.vscode-versionlens",
         "sainnhe.everforest",
-        "eamodio.gitlens",
+        "mhutchie.git-graph",
+        "waderyan.gitblame",
+        "donjayamanne.githistory",
     ]
 }
