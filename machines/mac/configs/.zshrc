@@ -13,6 +13,7 @@ function rup() {
   softwareupdate -i -a
   omz update
   inode
+  update_repos
   update_dotfiles
   szh
 }
