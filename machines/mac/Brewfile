@@ -1,7 +1,6 @@
 brew "composer"
-brew "go"
 brew "hugo"
-brew "nvm"
+brew "mise"
 brew "tmux"
 
 cask "aldente"

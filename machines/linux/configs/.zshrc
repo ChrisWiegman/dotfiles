@@ -23,7 +23,9 @@ function rup() {
   brew update
   brew upgrade --quiet
   brew cleanup --prune=all --quiet
-  inode
+  mise use -g node@lts
+  mise upgrade --bump go
+  npm update -g npm
   udc
   omz update
   update_repos
