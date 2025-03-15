@@ -2,7 +2,6 @@
 source $HOME/.dotfiles/shared/configs/.zshrc
 source $HOME/.dotfiles/shared/configs/zsh/docker.zsh
 source $HOME/.dotfiles/shared/configs/zsh/go.zsh
-source $HOME/.dotfiles/shared/configs/zsh/nvm.zsh
 
 function cleanup() {
   snap list --all | awk '/disabled/{print $1, $3}' |
@@ -38,3 +37,6 @@ export CGO_ENABLED=0
 
 # Setup Homebrew
 eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+
+# Setup Mise last due to path issues
+source $HOME/.dotfiles/shared/configs/zsh/mise.zsh
