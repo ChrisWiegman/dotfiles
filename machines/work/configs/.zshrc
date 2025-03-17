@@ -10,7 +10,6 @@ function rup() {
   brew upgrade --quiet
   brew upgrade --cask --greedy --quiet
   brew cleanup --prune=all --quiet
-  softwareupdate -i -a
   omz update
   mise use -g node@lts
   mise upgrade --bump go
