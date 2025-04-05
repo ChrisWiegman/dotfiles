@@ -1,0 +1,24 @@
+[user]
+	name = Chris Wiegman
+	email = cwiegman@superfile.com
+
+[gpg]
+  format = ssh
+
+[gpg "ssh"]
+  program = "/Applications/1Password.app/Contents/MacOS/op-ssh-sign"
+
+[commit]
+  	gpgsign = true
+
+[tag]
+	gpgsign = true
+
+[pull]
+	rebase = false
+
+[color]
+    ui = true
+
+[init]
+	defaultBranch = main
