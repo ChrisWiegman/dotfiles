@@ -1,0 +1,19 @@
+[user]
+	name = Joy Wiegman
+	email = joy@joywiegman.com
+	signingkey = ~/.ssh/id_ed25519
+
+[commit]
+	gpgsign = true
+
+[pull]
+	rebase = false
+
+[color]
+    ui = true
+
+[init]
+	defaultBranch = main
+
+[gpg]
+	format = ssh
