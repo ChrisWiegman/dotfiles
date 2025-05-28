@@ -1,9 +1,11 @@
 tap "ChrisWiegman/kana"
 
+brew "awscli"
 brew "composer"
 brew "go"
 brew "ChrisWiegman/kana/kana"
 brew "nvm"
+brew "python"
 brew "tmux"
 
 cask "1password"
