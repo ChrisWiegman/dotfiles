@@ -8,3 +8,10 @@ function dka() {
     docker network prune -f
     docker volume prune -f
 }
+
+# Load Docker CLI completions
+if [ -d $HOME/.docker/completions ]; then
+    export FPATH="$HOME/.docker/completions:$FPATH";
+    autoload -Uz compinit;
+    compinit;
+fi
