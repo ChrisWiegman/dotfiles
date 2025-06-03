@@ -9,7 +9,7 @@ brew "python"
 brew "tmux"
 
 cask "1password"
-cask "bruno"
+cask "apidog"
 cask "chatgpt"
 cask "docker"
 cask "jordanbaird-ice"
