@@ -20,5 +20,8 @@ function rup() {
   szh
 }
 
-##Ensure correct SSH Agent
+# Ensure correct SSH Agent
 export SSH_AUTH_SOCK=~/Library/Group\ Containers/2BUA8C4S2C.com.1password/t/agent.sock
+
+# Setup Go location to avoid Go's normal proxy.
+export GOPRIVATE="github.com/superfileinc/*"
