@@ -15,5 +15,5 @@ Note this is an evolving repo and tends to represent where my machines are on an
 ```
 git clone git://github.com/ChrisWiegman/dotfiles ~/.dotfiles
 cd ~/.dotfiles
-./setup.sh [mac|linux|work]
+./setup.sh [mac|work|joy]
 ```
