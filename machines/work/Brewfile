@@ -2,7 +2,6 @@ brew "tmux"
 
 cask "1password"
 cask "chatgpt"
-cask "miro"
 cask "moom"
 cask "notion"
 cask "visual-studio-code"
