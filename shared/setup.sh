@@ -10,3 +10,8 @@ zsh $SHAREDPATH/scripts/configs.sh $SHAREDPATH $MACHINEPATH
 
 # Run the local config if its available
 [ -s "$MACHINEPATH/setup.sh" ] && zsh $MACHINEPATH/setup.sh $MACHINEPATH
+
+# Create the code folder if we don't have it
+if [ ! -d $HOME/Code ]; then
+    mkdir -p $HOME/Code;
+fi
