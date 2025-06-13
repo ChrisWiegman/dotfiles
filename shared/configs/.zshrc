@@ -26,14 +26,16 @@ alias szh="source ~/.zshrc"
 
 # Pull all the repose in my "Code" directory
 function update_repos() {
-  for D in ~/Code/*/; do
-    if [ -d "${D}" ]; then
-      echo "Updating ${D}"
-      cd "${D}"
-      gup
-      cd "$OLDPWD"
-    fi
-  done
+  if [ "$(ls -A ~/Code)" ]; then
+    for D in ~/Code/*/; do
+      if [ -d "${D}" ]; then
+        echo "Updating ${D}"
+        cd "${D}"
+        gup
+        cd "$OLDPWD"
+      fi
+    done
+  fi
 }
 
 # Update my dotfiles repo automagically
