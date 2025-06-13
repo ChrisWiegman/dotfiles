@@ -16,7 +16,8 @@ chmod 0700 $HOME/.ssh
 chmod 0600 $HOME/.ssh/config
 
 # Setup Git configs
-rm -f $HOME/.gitconfig
-cp $CONFIG_DIR/.gitconfig $HOME/.gitconfig
-
-echo "\n\n\nDon't forget to manually add the signingkey to ~.gitconfig per 1Password's instructions"
+if [ ! -f $HOME/.gitconfig ] || [ ! $(grep -q "signingkey" "$HOME/.gitconfig") ]; then
+  rm -f $HOME/.gitconfig
+  cp $CONFIG_DIR/.gitconfig $HOME/.gitconfig
+  echo "\n\n\nDon't forget to manually add the signingkey to ~.gitconfig per 1Password's instructions"
+fi

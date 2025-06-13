@@ -40,5 +40,7 @@ chmod 0600 $HOME/.zshrc
 source $HOME/.zshrc
 
 # Setup Git configs
-rm -f $HOME/.gitconfig
-ln -s $M_CONFIG_DIR/.gitconfig $HOME/.gitconfig
+if [ ! -f $HOME/.gitconfig ] || [ ! $(grep -q "signingkey" "$HOME/.gitconfig") ]; then
+    rm -f $HOME/.gitconfig
+    ln -s $M_CONFIG_DIR/.gitconfig $HOME/.gitconfig
+fi
