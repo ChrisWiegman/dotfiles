@@ -1,7 +1,13 @@
+brew "composer"
+brew "go"
+brew "hugo"
+brew "nvm"
+brew "python"
 brew "tmux"
 
 cask "aldente"
 cask "cleanmymac"
+cask "docker"
 cask "focusrite-control-2"
 cask "quicken"
 cask "signal"
