@@ -17,4 +17,6 @@ brew analytics off
 # install brew dependencies from Brewfile
 brew bundle --file=${MACHINEPATH}/Brewfile
 
+# Cleanup all leftovers from the installation.
 rm -f ${MACHINEPATH}/Brewfile.lock.json
+brew cleanup --prune=all --quiet
