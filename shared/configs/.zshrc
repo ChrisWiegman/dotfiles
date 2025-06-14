@@ -26,7 +26,7 @@ alias szh="source ~/.zshrc"
 
 # Pull all the repose in my "Code" directory
 function update_repos() {
-  if [ "$(ls -A ~/Code)" ]; then
+  if [ "$(ls  ~/Code)" ]; then
     for D in ~/Code/*/; do
       if [ -d "${D}" ]; then
         echo "Updating ${D}"
