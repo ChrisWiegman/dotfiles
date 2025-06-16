@@ -1,7 +1,15 @@
+tap "chriswiegman/kana"
+
+brew "composer"
+brew "go"
+brew "kana"
+brew "nvm"
+brew "python"
 brew "tmux"
 
 cask "1password"
 cask "chatgpt"
+cask "docker"
 cask "moom"
 cask "notion"
 cask "visual-studio-code"
