@@ -1,5 +1,6 @@
 tap "chriswiegman/kana"
 
+brew "awscli"
 brew "composer"
 brew "go"
 brew "kana"
