@@ -6,6 +6,7 @@ brew "python"
 brew "tmux"
 
 cask "aldente"
+cask "battle-net"
 cask "cleanmymac"
 cask "docker"
 cask "focusrite-control-2"
