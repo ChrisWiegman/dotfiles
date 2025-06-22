@@ -2,6 +2,7 @@ tap "chriswiegman/kana"
 
 brew "awscli"
 brew "composer"
+brew "gh"
 brew "go"
 brew "kana"
 brew "nvm"
