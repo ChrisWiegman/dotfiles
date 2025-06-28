@@ -89,11 +89,6 @@
     "go.lintOnSave": "workspace",
     "go.lintTool": "golangci-lint",
     "go.toolsManagement.autoUpdate": true,
-    "gopls": {
-        "ui.noSemanticNumber": true,
-        "ui.noSemanticString": true,
-        "ui.semanticTokens": true
-    },
     "intelephense.codeLens.implementations.enable": true,
     "intelephense.codeLens.overrides.enable": true,
     "intelephense.codeLens.parent.enable": true,
