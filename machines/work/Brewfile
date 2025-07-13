@@ -12,7 +12,7 @@ brew "tmux"
 
 cask "1password"
 cask "chatgpt"
-cask "docker"
+cask "docker-desktop"
 cask "moom"
 cask "notion"
 cask "tableplus"
