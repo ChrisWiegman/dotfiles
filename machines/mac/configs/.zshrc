@@ -4,7 +4,6 @@ source $HOME/.dotfiles/shared/configs/zsh/docker.zsh
 source $HOME/.dotfiles/shared/configs/zsh/go.zsh
 source $HOME/.dotfiles/shared/configs/zsh/nvm.zsh
 source $HOME/.dotfiles/shared/configs/zsh/php.zsh
-source $HOME/.dotfiles/shared/configs/zsh/python.zsh
 
 # Runs daily updates
 function rup() {
