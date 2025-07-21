@@ -7,7 +7,6 @@ brew "go"
 brew "k9s"
 brew "kana"
 brew "nvm"
-brew "python"
 brew "tmux"
 
 cask "1password"
