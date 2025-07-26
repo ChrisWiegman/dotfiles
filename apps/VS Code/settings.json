@@ -34,6 +34,7 @@
     "editor.guides.bracketPairs": "active",
     "editor.guides.bracketPairsHorizontal": false,
     "editor.hover.delay": 250,
+    "editor.inlayHints.fontFamily": "MonoLisa-RegularItalic",
     "editor.inlayHints.fontSize": 11,
     "editor.inlayHints.padding": true,
     "editor.largeFileOptimizations": false,
@@ -173,7 +174,11 @@
     "intelephense.telemetry.enabled": false,
     "javascript.updateImportsOnFileMove.enabled": "always",
     "laravel-pint.enable": true,
+    "phpParameterHint.borderRadius": 3,
+    "phpParameterHint.fontSize": 11,
     "phpParameterHint.hintOnlyLine": false,
+    "phpParameterHint.horizontalPadding": 0,
+    "phpParameterHint.verticalPadding": 0,
     "phpSniffer.autoDetect": true,
     "remote.defaultExtensionsIfInstalledLocally": [
         "GitHub.vscode-pull-request-github"
@@ -195,6 +200,10 @@
     "window.restoreWindows": "none",
     "window.title": "${remoteName}${separator}${activeRepositoryBranchName}${separator}${activeEditorShort}${separator}${rootName}${separator}${profileName}",
     "window.titleBarStyle": "custom",
+    "workbench.colorCustomizations": {
+        "phpParameterHint.hintBackground": "#2d353b00",
+        "phpParameterHint.hintForeground": "#7f897da0",
+    },
     "workbench.colorTheme": "Everforest Dark",
     "workbench.commandPalette.history": 10,
     "workbench.enableExperiments": false,
