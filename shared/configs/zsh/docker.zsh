@@ -10,8 +10,11 @@ function dka() {
 }
 
 # Load Docker CLI completions
-if [ -d $HOME/.docker/completions ]; then
-    export FPATH="$HOME/.docker/completions:$FPATH";
-    autoload -Uz compinit;
-    compinit;
+if [ ! -d $HOME/.docker/completions ]; then
+    mkdir -p $HOME/.docker/completions;
+    docker completion zsh > $HOME/.docker/completions/_docker;
 fi
+
+export FPATH="$HOME/.docker/completions:$FPATH"
+autoload -Uz compinit
+compinit
