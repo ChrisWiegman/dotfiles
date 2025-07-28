@@ -1,12 +1,24 @@
 {
     "recommendations": [
+        "aaron-bond.better-comments",
         "streetsidesoftware.code-spell-checker",
-        "pflannery.vscode-versionlens",
+        "smelukov.vscode-csstree",
+        "dbaeumer.vscode-eslint",
         "sainnhe.everforest",
-        "Gxl.git-graph-3",
         "waderyan.gitblame",
+        "Gxl.git-graph-3",
         "donjayamanne.githistory",
         "github.vscode-github-actions",
-        "GitHub.vscode-pull-request-github"
+        "GitHub.vscode-pull-request-github",
+        "golang.go",
+        "johnbillion.vscode-wordpress-hooks",
+        "xdebug.php-debug",
+        "neilbrayfield.php-docblocker",
+        "bmewburn.vscode-intelephense-client",
+        "wongjn.php-sniffer",
+        "MrChetan.phpstorm-parameter-hints-in-vscode",
+        "chrmarti.regex",
+        "stylelint.vscode-stylelint",
+        "pflannery.vscode-versionlens"
     ]
 }

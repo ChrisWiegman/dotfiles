@@ -2,8 +2,7 @@
     "[go]": {
         "editor.codeActionsOnSave": {
             "source.organizeImports": "explicit"
-        },
-        "editor.formatOnSave": true
+        }
     },
     "[javascript]": {
         "editor.codeActionsOnSave": {
@@ -11,16 +10,17 @@
         }
     },
     "[php]": {
-        "editor.defaultFormatter": "wongjn.php-sniffer",
-        "editor.formatOnSave": true
+        "editor.defaultFormatter": "wongjn.php-sniffer"
     },
-    "[rust]": {
-        "editor.formatOnSave": true
+    "[css]": {
+        "editor.codeActionsOnSave": {
+            "source.fixAll.stylelint": "explicit"
+        }
     },
     "[scss]": {
         "editor.codeActionsOnSave": {
             "source.fixAll.stylelint": "explicit"
-        },
+        }
     },
     "cSpell.userWords": [
         "Wiegman"
@@ -37,6 +37,7 @@
     "editor.fontSize": 13,
     "editor.fontVariations": false,
     "editor.formatOnPaste": false,
+    "editor.formatOnSave": true,
     "editor.formatOnType": true,
     "editor.guides.bracketPairs": "active",
     "editor.guides.bracketPairsHorizontal": false,
@@ -71,8 +72,8 @@
     "explorer.openEditors.visible": 1,
     "files.autoSave": "afterDelay",
     "files.autoSaveDelay": 500,
-    "files.trimFinalNewlines": false,
-    "files.trimTrailingWhitespace": false,
+    "files.trimFinalNewlines": true,
+    "files.trimTrailingWhitespace": true,
     "git.confirmSync": false,
     "git.enableSmartCommit": true,
     "git-graph.dialog.addTag.pushToRemote": true,
@@ -196,6 +197,11 @@
     "remoteHub.gitProtocol": "ssh",
     "remoteHub.richNavigation.enabled": true,
     "security.workspace.trust.untrustedFiles": "open",
+    "stylelint.validate": [
+        "css",
+        "postcss",
+        "scss"
+    ],
     "telemetry.telemetryLevel": "off",
     "terminal.integrated.confirmOnExit": "never",
     "terminal.integrated.fontFamily": "MonoLisa",
