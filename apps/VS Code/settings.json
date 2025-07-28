@@ -5,11 +5,22 @@
         },
         "editor.formatOnSave": true
     },
+    "[javascript]": {
+        "editor.codeActionsOnSave": {
+            "source.fixAll.eslint": "explicit"
+        }
+    },
     "[php]": {
-        "editor.defaultFormatter": "wongjn.php-sniffer"
+        "editor.defaultFormatter": "wongjn.php-sniffer",
+        "editor.formatOnSave": true
     },
     "[rust]": {
         "editor.formatOnSave": true
+    },
+    "[scss]": {
+        "editor.codeActionsOnSave": {
+            "source.fixAll.stylelint": "explicit"
+        },
     },
     "cSpell.userWords": [
         "Wiegman"
@@ -19,9 +30,6 @@
     "debug.console.fontFamily": "MonoLisa",
     "debug.console.fontSize": 13,
     "diffEditor.ignoreTrimWhitespace": false,
-    "editor.codeActionsOnSave": {
-        "source.fixAll.eslint": "explicit"
-    },
     "editor.cursorBlinking": "smooth",
     "editor.cursorStyle": "block",
     "editor.fontFamily": "MonoLisa",
@@ -29,7 +37,6 @@
     "editor.fontSize": 13,
     "editor.fontVariations": false,
     "editor.formatOnPaste": false,
-    "editor.formatOnSave": true,
     "editor.formatOnType": true,
     "editor.guides.bracketPairs": "active",
     "editor.guides.bracketPairsHorizontal": false,
@@ -64,8 +71,8 @@
     "explorer.openEditors.visible": 1,
     "files.autoSave": "afterDelay",
     "files.autoSaveDelay": 500,
-    "files.trimFinalNewlines": true,
-    "files.trimTrailingWhitespace": true,
+    "files.trimFinalNewlines": false,
+    "files.trimTrailingWhitespace": false,
     "git.confirmSync": false,
     "git.enableSmartCommit": true,
     "git-graph.dialog.addTag.pushToRemote": true,
