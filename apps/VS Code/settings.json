@@ -172,6 +172,9 @@
         "wordpress"
     ],
     "intelephense.telemetry.enabled": false,
+    "javascript.inlayHints.functionLikeReturnTypes.enabled": true,
+    "javascript.inlayHints.parameterTypes.enabled": true,
+    "javascript.inlayHints.parameterNames.enabled": "all",
     "javascript.updateImportsOnFileMove.enabled": "always",
     "laravel-pint.enable": true,
     "phpParameterHint.borderRadius": 3,
