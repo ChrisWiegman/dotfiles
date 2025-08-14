@@ -1,3 +1,6 @@
+brew "composer"
+brew "go"
+brew "nvm"
 brew "tmux"
 
 cask "aldente"
@@ -6,4 +9,6 @@ cask "docker-desktop"
 cask "focusrite-control-2"
 cask "quicken"
 cask "signal"
+cask "tableplus"
 cask "visual-studio-code"
+cask "yaak"
