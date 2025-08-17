@@ -9,7 +9,7 @@ die () {
     exit 1
 }
 
-[ "$#" -eq 1 ] || die "Please invoke script with either "mac" or "joy" as argument"
-echo $1 | grep -E -q '^(mac|joy)$' || die "Please invoke script with either "mac" or "joy" as argument"
+[ "$#" -eq 1 ] || die "Please invoke script with either "mac," "work" or "joy" as argument"
+echo $1 | grep -E -q '^(mac|work|joy)$' || die "Please invoke script with either "mac," "work" or "joy" as argument"
 
 zsh $SHAREDPATH/setup.sh $SHAREDPATH $MACHINEPATH
