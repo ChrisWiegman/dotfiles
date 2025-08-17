@@ -5,6 +5,7 @@ brew "tmux"
 
 cask "aldente"
 cask "cleanmymac"
+cask "discord"
 cask "docker-desktop"
 cask "focusrite-control-2"
 cask "quicken"
