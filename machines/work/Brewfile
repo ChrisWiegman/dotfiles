@@ -1,3 +1,7 @@
+brew "go"
+brew "nvm"
 brew "tmux"
 
+cask "google-drive"
+cask "notion"
 cask "visual-studio-code"

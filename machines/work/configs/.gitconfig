@@ -1,6 +1,6 @@
 [user]
 	name = Chris Wiegman
-	email = chris@chriswiegman.com
+	email = chris.wiegman@fingerprint.com
 	signingkey = ~/.ssh/id_ed25519
 
 [commit]
