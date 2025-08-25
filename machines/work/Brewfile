@@ -3,6 +3,7 @@ brew "nvm"
 brew "tmux"
 
 cask "1password"
+casl "fellow"
 cask "focusrite-control-2"
 cask "google-drive"
 cask "notion"
