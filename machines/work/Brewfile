@@ -3,6 +3,7 @@ brew "nvm"
 brew "tmux"
 
 cask "1password"
+cask "docker-desktop"
 casl "fellow"
 cask "focusrite-control-2"
 cask "google-chrome"
