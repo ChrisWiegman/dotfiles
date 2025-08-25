@@ -2,6 +2,7 @@ brew "go"
 brew "nvm"
 brew "tmux"
 
+cask "focusrite-control-2"
 cask "google-drive"
 cask "notion"
 cask "visual-studio-code"
