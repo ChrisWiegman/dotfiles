@@ -4,7 +4,6 @@ brew "tmux"
 
 cask "1password"
 cask "docker-desktop"
-cask "fellow"
 cask "focusrite-control-2"
 cask "google-drive"
 cask "notion"
