@@ -1,3 +1,4 @@
+brew "awscli"
 brew "go"
 brew "nvm"
 brew "tmux"
