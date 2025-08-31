@@ -184,7 +184,6 @@
     "javascript.inlayHints.parameterTypes.enabled": true,
     "javascript.inlayHints.parameterNames.enabled": "all",
     "javascript.updateImportsOnFileMove.enabled": "always",
-    "laravel-pint.enable": true,
     "phpParameterHint.borderRadius": 3,
     "phpParameterHint.fontSize": 11,
     "phpParameterHint.hintOnlyLine": false,
