@@ -20,6 +20,7 @@ source $ZSH/oh-my-zsh.sh
 [ -s "/opt/homebrew/bin/brew" ] && eval "$(/opt/homebrew/bin/brew shellenv)"
 
 # Aliases and functions
+alias fdns="sudo dscacheutil -flushcache; sudo killall -HUP mDNSResponder"
 alias gup="git fetch --all --prune; git pull; git gc"
 alias mip="dig -4 TXT +short o-o.myaddr.l.google.com @ns1.google.com"
 alias szh="source ~/.zshrc"
