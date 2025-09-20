@@ -27,6 +27,7 @@
     ],
     "chat.agent.enabled": false,
     "chat.commandCenter.enabled": false,
+    "chat.disableAIFeatures": true,
     "debug.console.fontFamily": "MonoLisa",
     "debug.console.fontSize": 13,
     "diffEditor.ignoreTrimWhitespace": false,
