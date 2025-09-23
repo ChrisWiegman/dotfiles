@@ -4,6 +4,7 @@ brew "nvm"
 brew "tmux"
 
 cask "1password"
+cask "aldente"
 cask "docker-desktop"
 cask "focusrite-control-2"
 cask "moom"
