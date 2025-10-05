@@ -25,9 +25,9 @@
     "cSpell.userWords": [
         "Wiegman"
     ],
-    "chat.agent.enabled": true,
-    "chat.commandCenter.enabled": true,
-    "chat.disableAIFeatures": false,
+    "chat.agent.enabled": false,
+    "chat.commandCenter.enabled": false,
+    "chat.disableAIFeatures": true,
     "debug.console.fontFamily": "MonoLisa",
     "debug.console.fontSize": 13,
     "diffEditor.ignoreTrimWhitespace": false,
@@ -220,12 +220,13 @@
         "phpParameterHint.hintBackground": "#2d353b00",
         "phpParameterHint.hintForeground": "#7f897da0",
     },
-    "workbench.colorTheme": "Everforest Dark",
     "workbench.commandPalette.history": 10,
     "workbench.enableExperiments": false,
     "workbench.editor.highlightModifiedTabs": true,
     "workbench.settings.editor": "json",
     "workbench.settings.useSplitJSON": true,
     "workbench.startupEditor": "none",
-    "workbench.tree.indent": 20
+    "workbench.tree.indent": 20,
+    "github.copilot.nextEditSuggestions.enabled": true,
+    "workbench.colorTheme": "Everforest Dark"
 }
