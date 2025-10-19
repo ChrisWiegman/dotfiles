@@ -3,7 +3,14 @@
 SHAREDPATH=$1
 MACHINEPATH=$2
 
-zsh $SHAREDPATH/scripts/mac.sh
+if [[ $OSTYPE == darwin* ]]; then
+    zsh $SHAREDPATH/scripts/mac.sh
+fi
+
+if [[ $OSTYPE == linux* ]]; then
+    zsh $SHAREDPATH/scripts/linux.sh
+fi
+
 zsh $SHAREDPATH/scripts/homebrew.sh $MACHINEPATH
 zsh $SHAREDPATH/scripts/oh-my-z.sh
 zsh $SHAREDPATH/scripts/configs.sh $SHAREDPATH $MACHINEPATH

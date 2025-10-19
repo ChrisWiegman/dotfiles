@@ -18,6 +18,7 @@ source $ZSH/oh-my-zsh.sh
 
 # Launch Homebrew
 [ -s "/opt/homebrew/bin/brew" ] && eval "$(/opt/homebrew/bin/brew shellenv)"
+[ -s "/home/linuxbrew/.linuxbrew/bin/brew" ] && eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 
 # Aliases and functions
 alias fdns="sudo dscacheutil -flushcache; sudo killall -HUP mDNSResponder"

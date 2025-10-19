@@ -1,0 +1,4 @@
+brew "composer"
+brew "go"
+brew "nvm"
+brew "tmux"
