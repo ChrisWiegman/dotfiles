@@ -1,4 +1,4 @@
-#!/bin/zsh
+#!/bin/sh
 
 # Setup rosetta
 if /usr/bin/pgrep oahd &>/dev/null; then
