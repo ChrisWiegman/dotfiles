@@ -12,10 +12,10 @@ die () {
 FOLDER="./machines"
 
 # Get only directories in the folder, not files
-dirs=()
-while IFS= read -r -d '' dir; do
-  dirs+=("$(basename "$dir")")
-done < <(find "$FOLDER" -mindepth 1 -maxdepth 1 -type d -print0 | sort -z)
+dirs=""
+for dir in "$FOLDER"/*; do
+  [ -d "$dir" ] && dirs="$dirs $(basename "$dir")"
+done
 
 count=${#dirs[@]}
 machines=""
