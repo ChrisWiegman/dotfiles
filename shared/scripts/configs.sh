@@ -1,4 +1,4 @@
-#!/bin/zsh
+#!/bin/sh
 
 SHAREDPATH=$1
 MACHINEPATH=$2
@@ -30,17 +30,19 @@ tmux source-file ~/.tmux.conf
 # Setting up machine-specific configs
 M_CONFIG_DIR=$MACHINEPATH/configs
 
+# Setup Git configs
+if [ ! -f $HOME/.gitconfig ] || [ ! $(grep -q "signingkey" "$HOME/.gitconfig") ]; then
+    rm -f $HOME/.gitconfig
+    ln -s $M_CONFIG_DIR/.gitconfig $HOME/.gitconfig
+fi
+
 # Setup ZSH Config
 rm -f $HOME/.zshrc
 rm -f $HOME/.zshrc.pre-oh-my-zsh
 ln -s $M_CONFIG_DIR/.zshrc $HOME/.zshrc
 chmod 0600 $HOME/.zshrc
 
-# Load ZSH config
+# Load ZSH and its config
+zsh
 source $HOME/.zshrc
 
-# Setup Git configs
-if [ ! -f $HOME/.gitconfig ] || [ ! $(grep -q "signingkey" "$HOME/.gitconfig") ]; then
-    rm -f $HOME/.gitconfig
-    ln -s $M_CONFIG_DIR/.gitconfig $HOME/.gitconfig
-fi
