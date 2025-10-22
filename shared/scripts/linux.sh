@@ -1,5 +1,9 @@
 #!/bin/zsh
 
+SHAREDPATH=$1
+
+CONFIG_DIR=$SHAREDPATH/configs
+
 sudo apt-get update -y
 sudo apt-get dist-upgrade -y
 sudo apt-get autoremove --purge -y
@@ -20,14 +24,7 @@ wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > mi
 sudo install -D -o root -g root -m 644 microsoft.gpg /usr/share/keyrings/microsoft.gpg
 rm -f microsoft.gpg
 
-cat > /etc/apt/sources.list.d/vscode.sources << 'EOF'
-TTypes: deb
-URIs: https://packages.microsoft.com/repos/code
-Suites: stable
-Components: main
-Architectures: amd64,arm64,armhf
-Signed-By: /usr/share/keyrings/microsoft.gpg
-EOF
+sudo cp $CONFIG_DIR/vscode.sources /etc/apt/sources.list.d
 
 sudo apt-get update
 sudo apt-get install -y code
