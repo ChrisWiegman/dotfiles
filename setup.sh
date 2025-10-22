@@ -38,4 +38,4 @@ fi
 [ "$#" -eq 1 ] || die "Please invoke script with either $machines as argument"
 echo $1 | grep -E -q "^($(printf "%s|" "${dirs[@]}" | sed 's/|$//'))$" || die "Please invoke script with either $machines as argument"
 
-zsh $SHAREDPATH/setup.sh $SHAREDPATH $MACHINEPATH
+sh $SHAREDPATH/setup.sh $SHAREDPATH $MACHINEPATH
