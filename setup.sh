@@ -1,4 +1,4 @@
-#!/bin/zsh
+#!/bin/sh
 
 OURPWD=$PWD
 MACHINEPATH="$OURPWD/machines/$(basename "$1")"
