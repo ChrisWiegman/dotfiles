@@ -7,5 +7,7 @@ if [ ! -d $HOME/.oh-my-zsh ]; then
     sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 fi
 
+zsh
+
 # Load oh-my-zsh
 source $ZSH/oh-my-zsh.sh
