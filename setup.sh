@@ -17,25 +17,44 @@ for dir in "$FOLDER"/*; do
   [ -d "$dir" ] && dirs="$dirs $(basename "$dir")"
 done
 
-count=${#dirs[@]}
+# Convert dirs string to set positional parameters
+set -- $dirs
+count=$#
+
 machines=""
 
-if (( count == 0 )); then
+if [ "$count" -eq 0 ]; then
   echo "No directories found in $FOLDER"
-elif (( count == 1 )); then
-  machines="'${dirs[0]}'"
+elif [ "$count" -eq 1 ]; then
+  machines="'$1'"
 else
-  for (( i=1; i<=count; i++ )); do
-    if (( i == count )); then
-        machines="${machines}or '${dirs[i]}'"
+  i=1
+  while [ "$i" -le "$count" ]; do
+    eval d=\${$i}
+    if [ "$i" -eq "$count" ]; then
+      machines="${machines}or '$d'"
     else
-        machines="${machines}'${dirs[i]}', "
+      machines="${machines}'$d', "
     fi
+    i=$(expr $i + 1)
   done
   echo
 fi
 
-[ "$#" -eq 1 ] || die "Please invoke script with either $machines as argument"
-echo $1 | grep -E -q "^($(printf "%s|" "${dirs[@]}" | sed 's/|$//'))$" || die "Please invoke script with either $machines as argument"
+if [ "$#" -ne 1 ]; then
+  die "Please invoke script with either $machines as argument"
+fi
 
-sh $SHAREDPATH/setup.sh $SHAREDPATH $MACHINEPATH
+found=0
+for d in $dirs; do
+  if [ "$1" = "$d" ]; then
+    found=1
+    break
+  fi
+done
+
+if [ "$found" -ne 1 ]; then
+  die "Please invoke script with either $machines as argument"
+fi
+
+sh "$SHAREDPATH/setup.sh" "$SHAREDPATH" "$MACHINEPATH"
