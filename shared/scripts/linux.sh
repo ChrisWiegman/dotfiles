@@ -15,7 +15,8 @@ sudo apt-get install -y \
     wget \
     gpg \
     apt-transport-https \
-    flatpak
+    flatpak \
+    build-essential
 sudo apt-get clean
 
 # Install VSCode
