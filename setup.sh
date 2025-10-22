@@ -1,7 +1,8 @@
 #!/bin/sh
 
 OURPWD=$PWD
-MACHINEPATH="$OURPWD/machines/$(basename "$1")"
+ARG_MACHINE="$(basename "$1")"
+MACHINEPATH="$OURPWD/machines/$ARG_MACHINE"
 SHAREDPATH="$OURPWD/shared"
 
 die () {
@@ -17,7 +18,7 @@ for dir in "$FOLDER"/*; do
   [ -d "$dir" ] && dirs="$dirs $(basename "$dir")"
 done
 
-# Convert dirs string to set positional parameters
+# Convert dirs string to set positional parameters for counting
 set -- $dirs
 count=$#
 
@@ -41,13 +42,14 @@ else
   echo
 fi
 
-if [ "$#" -ne 1 ]; then
+# Validate original argument
+if [ -z "$ARG_MACHINE" ]; then
   die "Please invoke script with either $machines as argument"
 fi
 
 found=0
 for d in $dirs; do
-  if [ "$1" = "$d" ]; then
+  if [ "$ARG_MACHINE" = "$d" ]; then
     found=1
     break
   fi
