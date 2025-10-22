@@ -8,7 +8,7 @@ if [[ $OSTYPE == darwin* ]]; then
 fi
 
 if [[ $OSTYPE == linux* ]]; then
-    zsh $SHAREDPATH/scripts/linux.sh
+    zsh $SHAREDPATH/scripts/linux.sh $SHAREDPATH
 fi
 
 zsh $SHAREDPATH/scripts/homebrew.sh $MACHINEPATH
