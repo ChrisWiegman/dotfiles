@@ -28,13 +28,15 @@ alias szh="source ~/.zshrc"
 
 # Pull all the repose in my "Code" directory
 function update_repos() {
-  if [ "$(ls  ~/Code)" ]; then
-    for D in ~/Code/*/; do
+  local repo_dirs
+  repo_dirs=(~/Code/*/)
+  if [[ -d ~/Code && ${#repo_dirs[@]} -gt 0 ]]; then
+    for D in "${repo_dirs[@]}"; do
       if [ -d "${D}" ]; then
         echo "Updating ${D}"
-        cd "${D}"
+        pushd "${D}" > /dev/null
         gup
-        cd "$OLDPWD"
+        popd > /dev/null
       fi
     done
   fi
