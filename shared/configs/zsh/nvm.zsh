@@ -1,5 +1,5 @@
 # Aliases and functions
-alias inode="nvm install --lts --latest-npm"
+alias inode="echo \"Updating Node and npm...\"; nvm install --lts --latest-npm"
 
 # place this after nvm initialization!
 autoload -U add-zsh-hook

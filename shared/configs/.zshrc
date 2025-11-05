@@ -24,10 +24,20 @@ source $ZSH/oh-my-zsh.sh
 alias fdns="sudo dscacheutil -flushcache; sudo killall -HUP mDNSResponder"
 alias gup="git fetch --all --prune; git pull; git gc"
 alias mip="dig -4 TXT +short o-o.myaddr.l.google.com @ns1.google.com"
-alias szh="source ~/.zshrc"
+alias szh="echo \"Reloading shell...\"; source ~/.zshrc"
+alias update_ohmyzsh="echo \"Updating Oh My Zsh...\"; omz update"
+
+# Update Homebrew packages and casks
+function update_homebrew() {
+  command brew update
+  command brew upgrade --quiet
+  command brew upgrade --cask --greedy --quiet
+  command brew cleanup --prune=all --quiet
+}
 
 # Pull all the repose in my "Code" directory
 function update_repos() {
+  echo "Updating code repositories"
   local repo_dirs
   repo_dirs=(~/Code/*/)
   if [[ -d ~/Code && ${#repo_dirs[@]} -gt 0 ]]; then
@@ -40,6 +50,16 @@ function update_repos() {
       fi
     done
   fi
+}
+
+# Runs daily updates
+function rup() {
+  [[ $(typeset -f update_repos)    ]] && update_repos
+  [[ $(typeset -f update_dotfiles) ]] && update_dotfiles
+  [[ $(typeset -f update_homebrew) ]] && update_homebrew
+  [[ $(typeset -f update_ohmyzsh)  ]] && update_ohmyzsh
+  [[ $(typeset -f inode)           ]] && inode
+  [[ $(typeset -f szh)             ]] && szh
 }
 
 # Update my dotfiles repo automagically
