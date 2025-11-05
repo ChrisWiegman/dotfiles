@@ -6,6 +6,10 @@ source $HOME/.dotfiles/shared/configs/zsh/nvm.zsh
 
 # Runs daily updates
 function rup() {
+  echo "Updating repos..."
+  update_repos
+  echo "Updating dotfiles..."
+  update_dotfiles
   echo "Updating Homebrew..."
   command brew update
   command brew upgrade --quiet
@@ -15,10 +19,6 @@ function rup() {
   omz update
   echo "Updating Node..."
   inode
-  echo "Updating repos..."
-  update_repos
-  echo "Updating dotfiles..."
-  update_dotfiles
   echo "Reloading shell..."
   szh
 }

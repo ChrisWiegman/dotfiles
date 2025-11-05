@@ -3,6 +3,8 @@ source $HOME/.dotfiles/shared/configs/.zshrc
 
 # Runs daily updates
 function rup() {
+  echo "Updating dotfiles..."
+  update_dotfiles
   echo "Updating Homebrew..."
   command brew update
   command brew upgrade --quiet
@@ -10,8 +12,6 @@ function rup() {
   command brew cleanup --prune=all --quiet
   echo "Updating Oh My Zsh..."
   omz update
-  echo "Updating dotfiles..."
-  update_dotfiles
   echo "Reloading shell..."
   szh
 }
