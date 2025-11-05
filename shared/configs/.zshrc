@@ -38,6 +38,17 @@ function update_homebrew() {
 # Pull all the repose in my "Code" directory
 function update_repos() {
   echo "Updating code repositories"
+  CODE_DIR="$HOME/Code"
+  if [ ! -d "$CODE_DIR" ]; then
+    echo "$CODE_DIR does not exist. Skipping repo update."
+    exit 0
+  fi
+
+  REPOS=$(find "$CODE_DIR" -maxdepth 2 -type d -name ".git" 2>/dev/null)
+  if [ -z "$REPOS" ]; then
+    echo "No git repositories found in $CODE_DIR. Skipping repo update."
+    return
+  fi
   local repo_dirs
   repo_dirs=(~/Code/*/)
   if [[ -d ~/Code && ${#repo_dirs[@]} -gt 0 ]]; then
