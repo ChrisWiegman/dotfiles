@@ -1,7 +1,6 @@
 [user]
 	name = Chris Wiegman
 	email = chris.wiegman@fingerprint.com
-	signingkey = ~/.ssh/id_ed25519
 
 [commit]
 	gpgsign = true
@@ -19,4 +18,7 @@
 	defaultBranch = main
 
 [gpg]
-	format = ssh
+  format = ssh
+
+[gpg "ssh"]
+  program = "/Applications/1Password.app/Contents/MacOS/op-ssh-sign"
