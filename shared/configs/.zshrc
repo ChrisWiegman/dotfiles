@@ -68,8 +68,8 @@ function rup() {
   [[ $(typeset -f update_repos)    ]] && update_repos
   [[ $(typeset -f update_dotfiles) ]] && update_dotfiles
   [[ $(typeset -f update_homebrew) ]] && update_homebrew
-  [[ $(typeset -f update_ohmyzsh)  ]] && update_ohmyzsh
   [[ $(typeset -f inode)           ]] && inode
+  [[ $(typeset -f update_ohmyzsh)  ]] && update_ohmyzsh
   [[ $(typeset -f szh)             ]] && szh
 }
 
