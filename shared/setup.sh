@@ -19,10 +19,11 @@ if [ ! -d "$HOME/Code" ]; then
 fi
 
 sh "$SHAREDPATH/scripts/homebrew.sh" "$MACHINEPATH"
-sh "$SHAREDPATH/scripts/oh-my-z.sh"
 sh "$SHAREDPATH/scripts/configs.sh" "$SHAREDPATH" "$MACHINEPATH"
 
 # Run the local config if its available
 if [ -s "$MACHINEPATH/setup.sh" ]; then
-    sh "$MACHINEPATH/setup.sh" "$MACHINEPATH"
+    sh "$MACHINEPATH/setup.sh" "$SHAREDPATH" "$MACHINEPATH"
 fi
+
+sh "$SHAREDPATH/scripts/oh-my-z.sh"

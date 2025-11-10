@@ -41,8 +41,3 @@ rm -f $HOME/.zshrc
 rm -f $HOME/.zshrc.pre-oh-my-zsh
 ln -s $M_CONFIG_DIR/.zshrc $HOME/.zshrc
 chmod 0600 $HOME/.zshrc
-
-# Load ZSH and its config
-zsh
-source $HOME/.zshrc
-
