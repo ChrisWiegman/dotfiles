@@ -65,10 +65,10 @@ function update_repos() {
 
 # Runs daily updates
 function rup() {
+  [[ $(typeset -f inode)           ]] && inode
   [[ $(typeset -f update_repos)    ]] && update_repos
   [[ $(typeset -f update_dotfiles) ]] && update_dotfiles
   [[ $(typeset -f update_homebrew) ]] && update_homebrew
-  [[ $(typeset -f inode)           ]] && inode
   [[ $(typeset -f update_ohmyzsh)  ]] && update_ohmyzsh
   [[ $(typeset -f szh)             ]] && szh
 }
