@@ -11,7 +11,7 @@ ln -s $M_CONFIG_DIR/.ssh/config $HOME/.ssh/config
 chmod 0700 $HOME/.ssh
 chmod 0600 $HOME/.ssh/config
 
-# Setup Git configs
+# Setup local Git config to avoid overwrite and better handle Git login
 echo "Setting up a local GIT config file."
 if [ ! -f $HOME/.gitconfig ] || [ ! $(grep -q "signingkey" "$HOME/.gitconfig") ]; then
     rm -f $HOME/.gitconfig
