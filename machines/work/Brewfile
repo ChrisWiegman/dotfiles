@@ -5,7 +5,5 @@ brew "tmux"
 
 cask "aldente"
 cask "docker-desktop"
-cask "focusrite-control-2"
-cask "logi-options+"
 cask "visual-studio-code"
 cask "zoom"
