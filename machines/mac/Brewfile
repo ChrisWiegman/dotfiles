@@ -1,5 +1,6 @@
 brew "composer"
 brew "go"
+brew "hugo"
 brew "nvm"
 brew "tmux"
 
