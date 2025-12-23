@@ -63,6 +63,18 @@ function update_repos() {
   fi
 }
 
+# Update my dotfiles repo automagically
+function update_dotfiles() {
+  echo "Updating dotfiles"
+  cd $HOME/.dotfiles
+  gup
+  cd "$OLDPWD"
+  szh
+}
+
+# Source local ZSH config if it exists
+[ -f ~/.local.zsh ] && source ~/.local.zsh
+
 # Runs daily updates
 function rup() {
   [[ $(typeset -f inode)           ]] && inode
@@ -73,17 +85,5 @@ function rup() {
   [[ $(typeset -f szh)             ]] && szh
 }
 
-# Update my dotfiles repo automagically
-function update_dotfiles() {
-  echo "Updating dotfiles"
-  cd $HOME/.dotfiles
-  gup
-  cd "$OLDPWD"
-  szh
-}
-
 # Update system path
 export PATH="/usr/local/sbin:$PATH"
-
-# Source local ZSH config if it exists
-[ -f ~/.local.zsh ] && source ~/.local.zsh
