@@ -1,7 +1,10 @@
+tap "tw93/tap"
+
 brew "awscli"
 brew "go"
 brew "nvm"
 brew "tmux"
+brew "tw93/tap/mole"
 
 cask "aldente"
 cask "docker-desktop"
