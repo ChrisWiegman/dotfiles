@@ -28,13 +28,12 @@
     "chat.agent.enabled": false,
     "chat.commandCenter.enabled": false,
     "chat.disableAIFeatures": true,
-    "debug.console.fontFamily": "MonoLisa",
+    "debug.console.fontFamily": "SF Mono, 'Fira Code', 'JetBrains Mono', Menlo, Monaco, Consolas, 'Courier New', monospace",
     "debug.console.fontSize": 13,
     "diffEditor.ignoreTrimWhitespace": false,
     "editor.cursorBlinking": "smooth",
     "editor.cursorStyle": "block",
-    "editor.fontFamily": "MonoLisa",
-    "editor.fontLigatures": "'calt' on, 'liga' on, 'zero' on, 'ss02' on",
+    "editor.fontFamily": "SF Mono, 'Fira Code', 'JetBrains Mono', Menlo, Monaco, Consolas, 'Courier New', monospace",
     "editor.fontSize": 13,
     "editor.fontVariations": false,
     "editor.formatOnPaste": false,
@@ -43,7 +42,7 @@
     "editor.guides.bracketPairs": "active",
     "editor.guides.bracketPairsHorizontal": false,
     "editor.hover.delay": 250,
-    "editor.inlayHints.fontFamily": "MonoLisa-RegularItalic",
+    "editor.inlayHints.fontFamily": "SF Mono, 'Fira Code', 'JetBrains Mono', Menlo, Monaco, Consolas, 'Courier New', monospace",
     "editor.inlayHints.fontSize": 11,
     "editor.inlayHints.padding": true,
     "editor.largeFileOptimizations": false,
@@ -65,8 +64,6 @@
         "javascript",
         "javascriptreact"
     ],
-    "everforest.italicComments": true,
-    "everforest.italicKeywords": true,
     "explorer.compactFolders": false,
     "explorer.confirmDelete": false,
     "explorer.decorations.badges": false,
@@ -194,8 +191,6 @@
     "remote.defaultExtensionsIfInstalledLocally": [
         "GitHub.vscode-pull-request-github"
     ],
-    "remoteHub.gitProtocol": "ssh",
-    "remoteHub.richNavigation.enabled": true,
     "security.workspace.trust.untrustedFiles": "open",
     "stylelint.validate": [
         "css",
@@ -207,7 +202,6 @@
     "terminal.integrated.fontFamily": "MonoLisa",
     "terminal.integrated.fontSize": 13,
     "terminal.integrated.lineHeight": 1.4,
-    "typescript.surveys.enabled": false,
     "update.mode": "none",
     "update.showReleaseNotes": false,
     "window.closeWhenEmpty": true,
@@ -227,6 +221,5 @@
     "workbench.settings.useSplitJSON": true,
     "workbench.startupEditor": "none",
     "workbench.tree.indent": 20,
-    "github.copilot.nextEditSuggestions.enabled": true,
-    "workbench.colorTheme": "Everforest Dark"
+    "workbench.colorTheme": "Gruvbox Dark Hard"
 }
