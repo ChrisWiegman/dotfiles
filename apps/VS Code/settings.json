@@ -221,5 +221,13 @@
     "workbench.settings.useSplitJSON": true,
     "workbench.startupEditor": "none",
     "workbench.tree.indent": 20,
-    "workbench.colorTheme": "Gruvbox Dark Hard"
+    "workbench.colorTheme": "Gruvbox Dark Medium",
+    "workbench.colorCustomizations": {
+        "contrastBorder": "#00000000",
+        "contrastActiveBorder": "#00000000",
+        "focusBorder": "#00000000",
+        "panel.border": "#00000000",
+        "sideBar.border": "#00000000",
+        "editorGroup.border": "#00000000",
+    }
 }
