@@ -1,4 +1,9 @@
 {
+    "[css]": {
+        "editor.codeActionsOnSave": {
+            "source.fixAll.stylelint": "explicit"
+        }
+    },
     "[go]": {
         "editor.codeActionsOnSave": {
             "source.organizeImports": "explicit"
@@ -12,22 +17,17 @@
     "[php]": {
         "editor.defaultFormatter": "wongjn.php-sniffer"
     },
-    "[css]": {
-        "editor.codeActionsOnSave": {
-            "source.fixAll.stylelint": "explicit"
-        }
-    },
     "[scss]": {
         "editor.codeActionsOnSave": {
             "source.fixAll.stylelint": "explicit"
         }
     },
-    "cSpell.userWords": [
-        "Wiegman"
-    ],
     "chat.agent.enabled": false,
     "chat.commandCenter.enabled": false,
     "chat.disableAIFeatures": true,
+    "cSpell.userWords": [
+        "Wiegman"
+    ],
     "debug.console.fontFamily": "SF Mono, 'Fira Code', 'JetBrains Mono', Menlo, Monaco, Consolas, 'Courier New', monospace",
     "debug.console.fontSize": 13,
     "diffEditor.ignoreTrimWhitespace": false,
@@ -72,14 +72,14 @@
     "files.autoSaveDelay": 500,
     "files.trimFinalNewlines": true,
     "files.trimTrailingWhitespace": true,
-    "git.confirmSync": false,
-    "git.enableSmartCommit": true,
     "git-graph.dialog.addTag.pushToRemote": true,
     "git-graph.dialog.merge.noFastForward": false,
     "git-graph.repository.commits.fetchAvatars": true,
     "git-graph.repository.commits.loadMore": 300,
     "git-graph.repository.sign.commits": true,
     "git-graph.repository.sign.tags": true,
+    "git.confirmSync": false,
+    "git.enableSmartCommit": true,
     "gitblame.inlineMessageEnabled": true,
     "github.copilot.editor.enableAutoCompletions": true,
     "githubPullRequests.createOnPublishBranch": "ask",
@@ -179,8 +179,8 @@
     ],
     "intelephense.telemetry.enabled": false,
     "javascript.inlayHints.functionLikeReturnTypes.enabled": true,
-    "javascript.inlayHints.parameterTypes.enabled": true,
     "javascript.inlayHints.parameterNames.enabled": "all",
+    "javascript.inlayHints.parameterTypes.enabled": true,
     "javascript.updateImportsOnFileMove.enabled": "always",
     "phpParameterHint.borderRadius": 3,
     "phpParameterHint.fontSize": 11,
@@ -211,23 +211,21 @@
     "window.title": "${remoteName}${separator}${activeRepositoryBranchName}${separator}${activeEditorShort}${separator}${rootName}${separator}${profileName}",
     "window.titleBarStyle": "custom",
     "workbench.colorCustomizations": {
+        "contrastActiveBorder": "#00000000",
+        "contrastBorder": "#00000000",
+        "editorGroup.border": "#00000000",
+        "focusBorder": "#00000000",
+        "panel.border": "#00000000",
         "phpParameterHint.hintBackground": "#2d353b00",
         "phpParameterHint.hintForeground": "#7f897da0",
+        "sideBar.border": "#00000000"
     },
+    "workbench.colorTheme": "Gruvbox Dark Medium",
     "workbench.commandPalette.history": 10,
-    "workbench.enableExperiments": false,
     "workbench.editor.highlightModifiedTabs": true,
+    "workbench.enableExperiments": false,
     "workbench.settings.editor": "json",
     "workbench.settings.useSplitJSON": true,
     "workbench.startupEditor": "none",
-    "workbench.tree.indent": 20,
-    "workbench.colorTheme": "Gruvbox Dark Medium",
-    "workbench.colorCustomizations": {
-        "contrastBorder": "#00000000",
-        "contrastActiveBorder": "#00000000",
-        "focusBorder": "#00000000",
-        "panel.border": "#00000000",
-        "sideBar.border": "#00000000",
-        "editorGroup.border": "#00000000",
-    }
+    "workbench.tree.indent": 20
 }
