@@ -1,89 +1,110 @@
-# oh-my-zsh path
-export ZSH="$HOME/.oh-my-zsh"
-
-# oh-my-zsh theme
-ZSH_THEME="fwalch"
-
-# zsh autocorrection
-ENABLE_CORRECTION="true"
-
-# Hide extra homebrew hints
-HOMEBREW_NO_ENV_HINTS="false"
-
-# oh-my-zsh plugins
-plugins=(sudo)
-
-# Load oh-my-zsh
-source $ZSH/oh-my-zsh.sh
-
-# Launch Homebrew
+# ---- Homebrew first (so PATH/FPATH are set before OMZ loads) ----
 [ -s "/opt/homebrew/bin/brew" ] && eval "$(/opt/homebrew/bin/brew shellenv)"
 [ -s "/home/linuxbrew/.linuxbrew/bin/brew" ] && eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 
-# Aliases and functions
-alias fdns="sudo dscacheutil -flushcache; sudo killall -HUP mDNSResponder"
-alias gup="git fetch --all --prune; git pull; git gc"
-alias mip="dig -4 TXT +short o-o.myaddr.l.google.com @ns1.google.com"
-alias szh="echo \"Reloading shell...\"; source ~/.zshrc"
-alias update_ohmyzsh="echo \"Updating Oh My Zsh...\"; omz update"
+# Hide extra homebrew hints
+export HOMEBREW_NO_ENV_HINTS=1
 
-# Update Homebrew packages and casks
-function update_homebrew() {
+# ---- Oh My Zsh ----
+export ZSH="$HOME/.oh-my-zsh"
+ZSH_THEME="fwalch"
+ENABLE_CORRECTION="true"
+plugins=(sudo)
+
+source "$ZSH/oh-my-zsh.sh"
+
+# ---- History (good shared defaults) ----
+export HISTFILE="$HOME/.zsh_history"
+export HISTSIZE=50000
+export SAVEHIST=50000
+setopt APPEND_HISTORY
+setopt INC_APPEND_HISTORY
+setopt SHARE_HISTORY
+setopt HIST_IGNORE_DUPS
+setopt HIST_IGNORE_SPACE
+setopt HIST_REDUCE_BLANKS
+
+# ---- Completion niceties ----
+autoload -Uz compinit && compinit
+zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
+
+# ---- Editor ----
+export EDITOR="${EDITOR:-vim}"
+
+# ---- Aliases ----
+alias fdns="sudo dscacheutil -flushcache; sudo killall -HUP mDNSResponder"
+alias gup="git fetch --all --prune; git pull --ff-only; git gc"
+alias mip="dig -4 TXT +short o-o.myaddr.l.google.com @ns1.google.com"
+alias szh='echo "Reloading shell..."; source ~/.zshrc'
+
+
+update_ohmyzsh() {
+  echo "Updating Oh My Zsh..."; omz update;
+}
+
+# ---- Update Homebrew packages and casks ----
+update_homebrew() {
   command brew update
   command brew upgrade --quiet
   command brew upgrade --cask --greedy --quiet
   command brew cleanup --prune=all --quiet
 }
 
-# Pull all the repose in my "Code" directory
-function update_repos() {
+# ---- Update repos in ~/Code (depth 2, real) ----
+update_repos() {
   echo "Updating code repositories"
-  CODE_DIR="$HOME/Code"
-  if [ ! -d "$CODE_DIR" ]; then
-    echo "$CODE_DIR does not exist. Skipping repo update."
-    exit 0
-  fi
+  local CODE_DIR="$HOME/Code"
+  [[ -d "$CODE_DIR" ]] || { echo "$CODE_DIR does not exist. Skipping repo update."; return 0; }
 
-  REPOS=$(find "$CODE_DIR" -maxdepth 2 -type d -name ".git" 2>/dev/null)
-  if [ -z "$REPOS" ]; then
-    echo "No git repositories found in $CODE_DIR. Skipping repo update."
-    return
-  fi
-  local repo_dirs
-  repo_dirs=(~/Code/*/)
-  if [[ -d ~/Code && ${#repo_dirs[@]} -gt 0 ]]; then
-    for D in "${repo_dirs[@]}"; do
-      if [ -d "${D}" ]; then
-        echo "Updating ${D}"
-        pushd "${D}" > /dev/null
-        gup
-        popd > /dev/null
-      fi
-    done
-  fi
+  local gitdirs
+  gitdirs=("${(@f)$(find "$CODE_DIR" -maxdepth 2 -type d -name ".git" 2>/dev/null)}")
+  [[ ${#gitdirs[@]} -gt 0 ]] || { echo "No git repositories found in $CODE_DIR. Skipping repo update."; return 0; }
+
+  local repo
+  for repo in "${gitdirs[@]}"; do
+    local repodir="${repo:h}"
+    echo "Updating ${repodir}"
+    pushd "$repodir" > /dev/null || continue
+    gup
+    popd > /dev/null
+  done
 }
 
-# Update my dotfiles repo automagically
-function update_dotfiles() {
+# ---- Update dotfiles ----
+update_dotfiles() {
   echo "Updating dotfiles"
-  cd $HOME/.dotfiles
+  local DOT="$HOME/.dotfiles"
+  [[ -d "$DOT/.git" ]] || { echo "$DOT is not a git repo. Skipping."; return 0; }
+
+  pushd "$DOT" > /dev/null || return 0
   gup
-  cd "$OLDPWD"
+  popd > /dev/null
+
   szh
 }
 
-# Source local ZSH config if it exists
+# ---- Local overrides ----
 [ -f ~/.local.zsh ] && source ~/.local.zsh
 
-# Runs daily updates
-function rup() {
-  [[ $(typeset -f inode)           ]] && inode
+# ---- Daily runner (runs once per day) ----
+rup() {
   [[ $(typeset -f update_repos)    ]] && update_repos
   [[ $(typeset -f update_dotfiles) ]] && update_dotfiles
+
+  local stamp="${XDG_CACHE_HOME:-$HOME/}/.rup.last"
+  mkdir -p "${stamp:h}"
+
+  local today="$(date +%Y-%m-%d)"
+  if [[ -f "$stamp" ]] && [[ "$(cat "$stamp")" == "$today" ]]; then
+    return 0
+  fi
+  print -r -- "$today" >| "$stamp"
+
+  [[ $(typeset -f inode)           ]] && inode
   [[ $(typeset -f update_homebrew) ]] && update_homebrew
   [[ $(typeset -f update_ohmyzsh)  ]] && update_ohmyzsh
   [[ $(typeset -f szh)             ]] && szh
 }
 
-# Update system path
+# ---- PATH (prefer not to hardcode /usr/local on Apple Silicon, but harmless) ----
 export PATH="/usr/local/sbin:$PATH"
