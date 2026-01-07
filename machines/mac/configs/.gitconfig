@@ -1,22 +1,32 @@
 [user]
-	name = Chris Wiegman
-	email = chris@chriswiegman.com
-	signingkey = ~/.ssh/id_ed25519
+    name = Chris Wiegman
+    email = chris@chriswiegman.com
+    signingkey = ~/.ssh/id_ed25519.pub
+
+[gpg]
+    format = ssh
 
 [commit]
-	gpgsign = true
+    gpgsign = true
 
 [tag]
-	gpgsign = true
+    gpgsign = true
 
 [pull]
-	rebase = false
+    rebase = false
+    ff = only
+
+[push]
+    default = simple
 
 [color]
     ui = true
 
 [init]
-	defaultBranch = main
+    defaultBranch = main
 
-[gpg]
-	format = ssh
+[merge]
+    conflictstyle = zdiff3
+
+[diff]
+    colorMoved = zebra

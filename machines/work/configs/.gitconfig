@@ -2,23 +2,33 @@
 	name = Chris Wiegman
 	email = chris.wiegman@fingerprint.com
 
+[gpg]
+    format = ssh
+
 [commit]
-	gpgsign = true
+    gpgsign = true
 
 [tag]
-	gpgsign = true
+    gpgsign = true
 
 [pull]
-	rebase = false
+    rebase = false
+    ff = only
+
+[push]
+    default = simple
 
 [color]
     ui = true
 
 [init]
-	defaultBranch = main
+    defaultBranch = main
 
-[gpg]
-  format = ssh
+[merge]
+    conflictstyle = zdiff3
+
+[diff]
+    colorMoved = zebra
 
 [gpg "ssh"]
   program = "/Applications/1Password.app/Contents/MacOS/op-ssh-sign"
