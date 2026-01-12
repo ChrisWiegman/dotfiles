@@ -22,9 +22,9 @@
             "source.fixAll.stylelint": "explicit"
         }
     },
-    "chat.agent.enabled": false,
-    "chat.commandCenter.enabled": false,
-    "chat.disableAIFeatures": true,
+    "chat.agent.enabled": true,
+    "chat.commandCenter.enabled": true,
+    "chat.disableAIFeatures": false,
     "cSpell.userWords": [
         "Wiegman"
     ],
