@@ -94,6 +94,7 @@
     "go.lintOnSave": "workspace",
     "go.lintTool": "golangci-lint",
     "go.toolsManagement.autoUpdate": true,
+    "harper.linters.OxfordComma": false,
     "intelephense.codeLens.implementations.enable": true,
     "intelephense.codeLens.overrides.enable": true,
     "intelephense.codeLens.parent.enable": true,

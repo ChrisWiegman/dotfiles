@@ -78,6 +78,7 @@
     "go.lintOnSave": "workspace",
     "go.lintTool": "golangci-lint",
     "go.toolsManagement.autoUpdate": true,
+    "harper.linters.OxfordComma": false,
     "javascript.inlayHints.functionLikeReturnTypes.enabled": true,
     "javascript.inlayHints.parameterNames.enabled": "all",
     "javascript.inlayHints.parameterTypes.enabled": true,
