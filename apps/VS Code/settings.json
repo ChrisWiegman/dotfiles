@@ -22,12 +22,9 @@
             "source.fixAll.stylelint": "explicit"
         }
     },
-    "chat.agent.enabled": true,
-    "chat.commandCenter.enabled": true,
-    "chat.disableAIFeatures": false,
-    "cSpell.userWords": [
-        "Wiegman"
-    ],
+    "chat.agent.enabled": false,
+    "chat.commandCenter.enabled": false,
+    "chat.disableAIFeatures": true,
     "debug.console.fontFamily": "SF Mono, 'Fira Code', 'JetBrains Mono', Menlo, Monaco, Consolas, 'Courier New', monospace",
     "debug.console.fontSize": 13,
     "diffEditor.ignoreTrimWhitespace": false,
@@ -228,5 +225,5 @@
     "workbench.settings.editor": "json",
     "workbench.settings.useSplitJSON": true,
     "workbench.startupEditor": "none",
-    "workbench.tree.indent": 20
+    "workbench.tree.indent": 20,
 }
