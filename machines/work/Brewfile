@@ -5,6 +5,8 @@ brew "nvm"
 brew "tmux"
 
 cask "aldente"
+cask "claude"
+cask "claude-code"
 cask "docker-desktop"
 cask "visual-studio-code"
 cask "zoom"
