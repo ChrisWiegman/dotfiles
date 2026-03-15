@@ -219,7 +219,7 @@
         "sideBar.border": "#00000000",
         "statusBar.border": "#00000000"
     },
-    "workbench.colorTheme": "Gruvbox Dark Medium",
+    "workbench.colorTheme": "One Dark Pro Flat",
     "workbench.commandPalette.history": 10,
     "workbench.editor.highlightModifiedTabs": true,
     "workbench.enableExperiments": false,
