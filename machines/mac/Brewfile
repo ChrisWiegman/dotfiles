@@ -3,8 +3,6 @@ brew "hugo"
 brew "nvm"
 brew "tmux"
 
-cask "aldente"
-cask "bazecor"
 cask "cleanmymac"
 cask "docker-desktop"
 cask "focusrite-control-2"
