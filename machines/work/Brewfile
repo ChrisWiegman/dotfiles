@@ -4,5 +4,6 @@ brew "mole"
 brew "nvm"
 brew "tmux"
 
+cask "claude"
 cask "docker-desktop"
 cask "visual-studio-code"
