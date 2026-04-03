@@ -1,9 +1,8 @@
+brew "mole"
 brew "tmux"
 
 cask "1password"
-cask "aldente"
 cask "alfred"
-cask "cleanmymac"
 cask "dropbox"
 cask "google-chrome"
 cask "logitech-camera-settings"

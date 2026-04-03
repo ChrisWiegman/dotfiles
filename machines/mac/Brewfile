@@ -1,9 +1,9 @@
 brew "go"
 brew "hugo"
+brew "mole"
 brew "nvm"
 brew "tmux"
 
-cask "cleanmymac"
 cask "docker-desktop"
 cask "focusrite-control-2"
 cask "quicken"
