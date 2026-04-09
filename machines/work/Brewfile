@@ -1,8 +1,6 @@
-brew "awscli"
 brew "go"
 brew "mole"
 brew "nvm"
 brew "tmux"
 
-cask "docker-desktop"
 cask "visual-studio-code"
