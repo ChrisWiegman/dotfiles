@@ -1,6 +1,20 @@
 # ---- Homebrew first (so PATH/FPATH are set before OMZ loads) ----
-[ -s "/opt/homebrew/bin/brew" ] && eval "$(/opt/homebrew/bin/brew shellenv)"
-[ -s "/home/linuxbrew/.linuxbrew/bin/brew" ] && eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+# Cache shellenv output — re-generate only when the brew binary changes
+_brew_cache="${XDG_CACHE_HOME:-$HOME/.cache}/brew_shellenv.sh"
+if [ -s "/opt/homebrew/bin/brew" ]; then
+    if [[ ! -f "$_brew_cache" || "/opt/homebrew/bin/brew" -nt "$_brew_cache" ]]; then
+        mkdir -p "${_brew_cache:h}"
+        /opt/homebrew/bin/brew shellenv >| "$_brew_cache"
+    fi
+    source "$_brew_cache"
+elif [ -s "/home/linuxbrew/.linuxbrew/bin/brew" ]; then
+    if [[ ! -f "$_brew_cache" || "/home/linuxbrew/.linuxbrew/bin/brew" -nt "$_brew_cache" ]]; then
+        mkdir -p "${_brew_cache:h}"
+        /home/linuxbrew/.linuxbrew/bin/brew shellenv >| "$_brew_cache"
+    fi
+    source "$_brew_cache"
+fi
+unset _brew_cache
 
 # Hide extra homebrew hints
 export HOMEBREW_NO_ENV_HINTS=1
@@ -9,6 +23,7 @@ export HOMEBREW_NO_ENV_HINTS=1
 export ZSH="$HOME/.oh-my-zsh"
 ZSH_THEME="fwalch"
 ENABLE_CORRECTION="true"
+ZSH_DISABLE_COMPFIX=true
 plugins=(sudo)
 
 source "$ZSH/oh-my-zsh.sh"
