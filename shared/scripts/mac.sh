@@ -8,6 +8,12 @@ else
     /usr/sbin/softwareupdate --install-rosetta --agree-to-license
 fi
 
+# Ensure the default login shell matches macOS default
+if [ "$SHELL" != "/bin/zsh" ]; then
+    echo "Setting default shell to /bin/zsh..."
+    chsh -s /bin/zsh
+fi
+
 # Install command-line tools if not already installed
 if ! xcode-select -p &>/dev/null; then
     echo "Installing Xcode Command Line Tools..."

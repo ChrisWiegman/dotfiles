@@ -1,5 +1,8 @@
 #!/bin/sh
 
+set -e
+trap 'echo "setup.sh failed at line $LINENO" >&2' ERR
+
 OURPWD=$PWD
 ARG_MACHINE="$(basename "$1")"
 MACHINEPATH="$OURPWD/machines/$ARG_MACHINE"
@@ -18,7 +21,7 @@ for dir in "$FOLDER"/*; do
   [ -d "$dir" ] && dirs="$dirs $(basename "$dir")"
 done
 
-# Convert dirs string to set positional parameters for counting
+# Convert directory list to positional parameters for counting
 set -- $dirs
 count=$#
 
