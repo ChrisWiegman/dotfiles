@@ -16,5 +16,3 @@ if [ ! -d $HOME/.docker/completions ]; then
 fi
 
 export FPATH="$HOME/.docker/completions:$FPATH"
-autoload -Uz compinit
-compinit

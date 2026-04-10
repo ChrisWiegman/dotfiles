@@ -25,7 +25,12 @@ setopt HIST_IGNORE_SPACE
 setopt HIST_REDUCE_BLANKS
 
 # ---- Completion niceties ----
-autoload -Uz compinit && compinit
+autoload -Uz compinit
+if [[ -n ${HOME}/.zcompdump(#qN.mh+24) ]]; then
+    compinit
+else
+    compinit -C
+fi
 zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
 
 # ---- Editor ----
