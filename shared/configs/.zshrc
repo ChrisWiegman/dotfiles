@@ -60,13 +60,31 @@ update_repos() {
   gitdirs=("${(@f)$(find "$CODE_DIR" -maxdepth 2 -type d -name ".git" 2>/dev/null)}")
   [[ ${#gitdirs[@]} -gt 0 ]] || { echo "No git repositories found in $CODE_DIR. Skipping repo update."; return 0; }
 
-  local repo
+  local repo repodir
   for repo in "${gitdirs[@]}"; do
-    local repodir="${repo:h}"
-    echo "Updating ${repodir}"
-    pushd "$repodir" > /dev/null || continue
-    gup
-    popd > /dev/null
+    repodir="${repo:h}"
+    echo "  -> ${repodir:t}"
+
+    # Skip dirty working trees
+    if ! git -C "$repodir" diff --quiet 2>/dev/null || \
+       ! git -C "$repodir" diff --cached --quiet 2>/dev/null; then
+      echo "     skipping (uncommitted changes)"
+      continue
+    fi
+
+    # Fetch with prune — bail gracefully if offline or unreachable
+    if ! git -C "$repodir" fetch --all --prune --quiet 2>/dev/null; then
+      echo "     fetch failed (offline or unreachable)"
+      continue
+    fi
+
+    # Only pull if an upstream branch is configured
+    if ! git -C "$repodir" rev-parse --abbrev-ref --symbolic-full-name @{u} &>/dev/null; then
+      echo "     no upstream configured, skipping pull"
+      continue
+    fi
+
+    git -C "$repodir" pull --ff-only --quiet 2>/dev/null || echo "     pull failed (try manually)"
   done
 }
 

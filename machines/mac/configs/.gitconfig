@@ -30,3 +30,22 @@
 
 [diff]
     colorMoved = zebra
+
+[fetch]
+    prune = true
+    prunetags = true
+
+[rebase]
+    autosquash = true
+    autostash = true
+
+[core]
+    autocrlf = input
+    fsmonitor = true
+    untrackedcache = true
+
+[alias]
+    lg = log --oneline --graph --decorate --all
+    recent = branch --sort=-committerdate --format='%(refname:short) %(committerdate:relative)'
+    wip = !git add -A && git commit -m "WIP"
+    undo = reset --soft HEAD~1
