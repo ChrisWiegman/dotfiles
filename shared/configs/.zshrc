@@ -75,6 +75,13 @@ zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
 # ---- Editor ----
 export EDITOR="${EDITOR:-vim}"
 
+# ---- ls colors ----
+if ls --color=auto /dev/null &>/dev/null; then
+  alias ls='ls --color=auto'
+else
+  export CLICOLOR=1
+fi
+
 # ---- Aliases ----
 alias fdns="sudo dscacheutil -flushcache; sudo killall -HUP mDNSResponder"
 alias gup="git fetch --all --prune; git pull --ff-only"
