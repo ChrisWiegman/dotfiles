@@ -2,11 +2,13 @@
 alias inode="echo \"Updating Node and npm...\"; nvm install --lts --latest-npm"
 
 export NVM_DIR="$HOME/.nvm"
+_NVM_LOADED=0
 
 # Load NVM once — becomes a no-op after first call
 _nvm_load() {
     [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && source "/opt/homebrew/opt/nvm/nvm.sh"
     [ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && source "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"
+    _NVM_LOADED=1
     _nvm_load() { :; }  # Become no-op before _load_nvmrc to prevent circular calls
     _load_nvmrc         # Auto-switch to .nvmrc version for the current directory
 }
@@ -40,7 +42,7 @@ _load_nvmrc() {
         elif [[ "$nvmrc_node_version" != "$(nvm version)" ]]; then
             nvm use
         fi
-    elif type nvm &>/dev/null && [[ "$(nvm version)" != "$(nvm version default)" ]]; then
+    elif (( _NVM_LOADED )) && [[ "$(nvm version)" != "$(nvm version default)" ]]; then
         echo "Reverting to nvm default version"
         nvm use default
     fi
