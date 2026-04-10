@@ -7,7 +7,8 @@ export NVM_DIR="$HOME/.nvm"
 _nvm_load() {
     [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && source "/opt/homebrew/opt/nvm/nvm.sh"
     [ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && source "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"
-    _nvm_load() { :; }
+    _nvm_load() { :; }  # Become no-op before _load_nvmrc to prevent circular calls
+    _load_nvmrc         # Auto-switch to .nvmrc version for the current directory
 }
 
 # Stub each command to trigger lazy load on first use
@@ -46,4 +47,3 @@ _load_nvmrc() {
 }
 
 add-zsh-hook chpwd _load_nvmrc
-_load_nvmrc
