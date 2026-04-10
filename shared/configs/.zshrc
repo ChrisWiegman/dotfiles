@@ -1,4 +1,4 @@
-# ---- Homebrew first (so PATH/FPATH are set before OMZ loads) ----
+# ---- Homebrew first (so PATH/FPATH are set before completions load) ----
 # Cache shellenv output — re-generate only when the brew binary changes
 _brew_cache="${XDG_CACHE_HOME:-$HOME/.cache}/brew_shellenv.sh"
 if [ -s "/opt/homebrew/bin/brew" ]; then
@@ -19,15 +19,29 @@ unset _brew_cache
 # Hide extra homebrew hints
 export HOMEBREW_NO_ENV_HINTS=1
 
-# ---- Oh My Zsh ----
-export ZSH="$HOME/.oh-my-zsh"
-ZSH_THEME="fwalch"
-ENABLE_CORRECTION="true"
-ZSH_DISABLE_COMPFIX=true
-DISABLE_UNTRACKED_FILES_DIRTY=true  # Skip untracked-files scan in git prompt (much faster)
-plugins=(sudo)
+# ---- Prompt: bold blue path, blue parens, red branch, yellow dirty markers ----
+autoload -Uz vcs_info
+zstyle ':vcs_info:*' enable git
+zstyle ':vcs_info:*' check-for-changes true
+zstyle ':vcs_info:git:*' unstagedstr $' \u2716'
+zstyle ':vcs_info:git:*' stagedstr ' +'
+zstyle ':vcs_info:git:*' formats ' %F{blue}(%f%F{red}%b%F{blue})%f%F{yellow}%u%c%f'
+zstyle ':vcs_info:git:*' actionformats ' %F{blue}(%f%F{red}%b|%a%F{blue})%f%F{yellow}%u%c%f'
+precmd() { vcs_info }
+setopt PROMPT_SUBST
+PROMPT='%B%F{blue}%~%f%b${vcs_info_msg_0_} '
 
-source "$ZSH/oh-my-zsh.sh"
+# ---- Spell correction ----
+setopt CORRECT
+
+# ---- sudo escape (ESC ESC prepends sudo to current command) ----
+_sudo-command-line() {
+    [[ -z $BUFFER ]] && zle up-history
+    [[ $BUFFER != sudo\ * ]] && BUFFER="sudo $BUFFER"
+    zle end-of-line
+}
+zle -N _sudo-command-line
+bindkey "\e\e" _sudo-command-line
 
 # ---- History (good shared defaults) ----
 export HISTFILE="$HOME/.zsh_history"
@@ -54,14 +68,10 @@ export EDITOR="${EDITOR:-vim}"
 
 # ---- Aliases ----
 alias fdns="sudo dscacheutil -flushcache; sudo killall -HUP mDNSResponder"
-alias gup="git fetch --all --prune; git pull --ff-only; git gc"
+alias gup="git fetch --all --prune; git pull --ff-only"
 alias mip="dig -4 TXT +short o-o.myaddr.l.google.com @ns1.google.com"
 alias szh='echo "Reloading shell..."; source ~/.zshrc'
 
-
-update_ohmyzsh() {
-  echo "Updating Oh My Zsh..."; omz update;
-}
 
 # ---- Update Homebrew packages and casks ----
 update_homebrew() {
@@ -127,9 +137,6 @@ update_dotfiles() {
 
 # ---- Daily runner (runs once per day) ----
 rup() {
-  [[ $(typeset -f update_repos)    ]] && update_repos
-  [[ $(typeset -f update_dotfiles) ]] && update_dotfiles
-
   local stamp="${XDG_CACHE_HOME:-$HOME/}/.rup.last"
   mkdir -p "${stamp:h}"
 
@@ -139,11 +146,9 @@ rup() {
   fi
   print -r -- "$today" >| "$stamp"
 
+  [[ $(typeset -f update_repos)    ]] && update_repos
+  [[ $(typeset -f update_dotfiles) ]] && update_dotfiles
   [[ $(typeset -f inode)           ]] && inode
   [[ $(typeset -f update_homebrew) ]] && update_homebrew
-  [[ $(typeset -f update_ohmyzsh)  ]] && update_ohmyzsh
   [[ $(typeset -f szh)             ]] && szh
 }
-
-# ---- PATH (prefer not to hardcode /usr/local on Apple Silicon, but harmless) ----
-export PATH="/usr/local/sbin:$PATH"

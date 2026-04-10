@@ -17,10 +17,3 @@ chmod 0700 "$HOME/.ssh"
 rm -f "$HOME/.ssh/config"
 ln -s "$M_CONFIG_DIR/.ssh/config" "$HOME/.ssh/config"
 chmod 0600 "$HOME/.ssh/config"
-
-# Setup local Git config to avoid overwrite and better handle Git login
-echo "Setting up a local GIT config file."
-if [ ! -f "$HOME/.gitconfig" ] || ! grep -q "signingkey" "$HOME/.gitconfig" 2>/dev/null; then
-    rm -f "$HOME/.gitconfig"
-    cp "$M_CONFIG_DIR/.gitconfig" "$HOME/.gitconfig"
-fi

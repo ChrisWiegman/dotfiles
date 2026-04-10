@@ -19,9 +19,6 @@ fi
 
 sh "$SHAREDPATH/scripts/homebrew.sh" "$MACHINEPATH"
 
-
-sh "$SHAREDPATH/scripts/oh-my-z.sh"
-
 sh "$SHAREDPATH/scripts/configs.sh" "$SHAREDPATH" "$MACHINEPATH"
 
 # Run the local config if its available

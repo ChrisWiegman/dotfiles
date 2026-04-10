@@ -1,53 +1,10 @@
 [user]
-	name = Chris Wiegman
-	email = chris.wiegman@fingerprint.com
+    name = Chris Wiegman
+    email = chris.wiegman@fingerprint.com
+    signingkey = ~/.ssh/id_ed25519.pub
 
-[gpg]
-    format = ssh
+[include]
+    path = ~/.dotfiles/shared/configs/.gitconfig
 
-[commit]
-    gpgsign = true
-
-[tag]
-    gpgsign = true
-
-[pull]
-    rebase = false
-    ff = only
-
-[push]
-    default = simple
-
-[color]
-    ui = true
-
-[init]
-    defaultBranch = main
-
-[merge]
-    conflictstyle = zdiff3
-
-[diff]
-    colorMoved = zebra
-
-[fetch]
-    prune = true
-    prunetags = true
-
-[rebase]
-    autosquash = true
-    autostash = true
-
-[core]
-    autocrlf = input
-    fsmonitor = true
-    untrackedcache = true
-
-[alias]
-    lg = log --oneline --graph --decorate --all
-    recent = branch --sort=-committerdate --format='%(refname:short) %(committerdate:relative)'
-    wip = !git add -A && git commit -m "WIP"
-    undo = reset --soft HEAD~1
-
-[gpg "ssh"]
-    program = "/Applications/1Password.app/Contents/MacOS/op-ssh-sign"
+[include]
+    path = ~/.gitconfig.local
