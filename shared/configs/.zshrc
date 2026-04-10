@@ -19,7 +19,7 @@ unset _brew_cache
 # Hide extra homebrew hints
 export HOMEBREW_NO_ENV_HINTS=1
 
-# ---- Prompt: bold yellow path, blue parens, red branch, yellow dirty markers ----
+# ---- Prompt: bold green path, blue parens, red branch, yellow dirty markers ----
 autoload -Uz vcs_info
 zstyle ':vcs_info:*' enable git
 zstyle ':vcs_info:*' check-for-changes true
@@ -27,9 +27,18 @@ zstyle ':vcs_info:git:*' unstagedstr $' \u2716'
 zstyle ':vcs_info:git:*' stagedstr ' +'
 zstyle ':vcs_info:git:*' formats ' %F{blue}(%f%F{red}%b%F{blue})%f%F{yellow}%u%c%f'
 zstyle ':vcs_info:git:*' actionformats ' %F{blue}(%f%F{red}%b|%a%F{blue})%f%F{yellow}%u%c%f'
-precmd() { vcs_info }
+precmd() {
+  vcs_info
+  if [[ "$PWD" == "$HOME" ]]; then
+    _pdir="~"
+  elif [[ "$PWD" == "$HOME/"* ]]; then
+    _pdir="${PWD#$HOME/}"
+  else
+    _pdir="$PWD"
+  fi
+}
 setopt PROMPT_SUBST
-PROMPT='%B%F{yellow}%~%f%b${vcs_info_msg_0_} '
+PROMPT='%B%F{green}${_pdir}%f%b${vcs_info_msg_0_} '
 
 # ---- Spell correction ----
 setopt CORRECT
