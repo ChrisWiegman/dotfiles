@@ -1,7 +1,6 @@
 [user]
     name = Chris Wiegman
     email = chris.wiegman@fingerprint.com
-    signingkey = ~/.ssh/id_ed25519.pub
 
 [include]
     path = ~/.dotfiles/shared/configs/.gitconfig
