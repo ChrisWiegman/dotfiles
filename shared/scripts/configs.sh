@@ -28,7 +28,7 @@ ln -s "$CONFIG_DIR/.tmux.conf" "$HOME/.tmux.conf"
 rm -f "$HOME/.hushlogin"
 ln -s "$CONFIG_DIR/.hushlogin" "$HOME/.hushlogin"
 
-tmux source-file ~/.tmux.conf
+tmux source-file ~/.tmux.conf 2>/dev/null || true
 
 # Setting up machine-specific configs
 M_CONFIG_DIR="$MACHINEPATH/configs"
