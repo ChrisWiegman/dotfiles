@@ -153,6 +153,9 @@ update_dotfiles() {
 
 # ---- Daily runner (runs once per day) ----
 rup() {
+  [[ $(typeset -f update_repos)    ]] && update_repos
+  [[ $(typeset -f update_dotfiles) ]] && update_dotfiles
+
   local stamp="${XDG_CACHE_HOME:-$HOME/}/.rup.last"
   mkdir -p "${stamp:h}"
 
@@ -162,8 +165,6 @@ rup() {
   fi
   print -r -- "$today" >| "$stamp"
 
-  [[ $(typeset -f update_repos)    ]] && update_repos
-  [[ $(typeset -f update_dotfiles) ]] && update_dotfiles
   [[ $(typeset -f inode)           ]] && inode
   [[ $(typeset -f update_homebrew) ]] && update_homebrew
   [[ $(typeset -f szh)             ]] && szh
