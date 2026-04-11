@@ -4,18 +4,41 @@ alias inode="echo \"Updating Node and npm...\"; nvm install --lts --latest-npm"
 export NVM_DIR="$HOME/.nvm"
 _NVM_LOADED=0
 
-# Load NVM once — becomes a no-op after first call
-_nvm_load() {
+# Load NVM if it is not already available in this shell.
+_ensure_nvm_loaded() {
+    if (( _NVM_LOADED )); then
+        return
+    fi
+
     [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && source "/opt/homebrew/opt/nvm/nvm.sh"
     [ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && source "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"
     _NVM_LOADED=1
-    _nvm_load() { :; }  # Become no-op before _load_nvmrc to prevent circular calls
-    _load_nvmrc         # Auto-switch to .nvmrc version for the current directory
+
+    if ! command -v node >/dev/null 2>&1; then
+        nvm use default >/dev/null 2>&1
+    fi
 }
 
 # Stub each command to trigger lazy load on first use
 for _cmd in node npm npx nvm yarn pnpm; do
-    eval "function $_cmd() { unset -f $_cmd; _nvm_load; $_cmd \"\$@\"; }"
+    eval "function $_cmd() {
+        local cmd=$_cmd
+        unset -f $_cmd
+        if (( ! _NVM_LOADED )); then
+            [ -s \"/opt/homebrew/opt/nvm/nvm.sh\" ] && source \"/opt/homebrew/opt/nvm/nvm.sh\"
+            [ -s \"/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm\" ] && source \"/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm\"
+            _NVM_LOADED=1
+            if ! command -v node >/dev/null 2>&1; then
+                nvm use default >/dev/null 2>&1
+            fi
+        fi
+        (( \${+functions[_load_nvmrc]} )) && _load_nvmrc
+        if [[ \"\$cmd\" == \"nvm\" ]]; then
+            nvm \"\$@\"
+        else
+            command \"\$cmd\" \"\$@\"
+        fi
+    }"
 done
 unset _cmd
 
@@ -34,7 +57,7 @@ _load_nvmrc() {
     done
 
     if [[ -n "$nvmrc_path" ]]; then
-        _nvm_load
+        _ensure_nvm_loaded
         local nvmrc_node_version
         nvmrc_node_version=$(nvm version "$(cat "$nvmrc_path")")
         if [[ "$nvmrc_node_version" == "N/A" ]]; then
