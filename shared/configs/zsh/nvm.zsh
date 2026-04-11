@@ -4,6 +4,36 @@ alias inode="echo \"Updating Node and npm...\"; nvm install --lts --latest-npm"
 export NVM_DIR="$HOME/.nvm"
 _NVM_LOADED=0
 
+# Make the default Node install available to child processes like make
+# before nvm itself is lazily loaded into the shell.
+_resolve_nvm_default_version() {
+    local alias_target alias_file="$NVM_DIR/alias/default" depth=0
+
+    [[ -r "$alias_file" ]] || return 1
+    alias_target="$(<"$alias_file")"
+
+    while [[ "$alias_target" != v* ]]; do
+        alias_file="$NVM_DIR/alias/$alias_target"
+        [[ -r "$alias_file" ]] || return 1
+        alias_target="$(<"$alias_file")"
+        (( ++depth > 10 )) && return 1
+    done
+
+    [[ -x "$NVM_DIR/versions/node/$alias_target/bin/node" ]] || return 1
+    printf '%s\n' "$alias_target"
+}
+
+_prepend_default_node_path() {
+    local default_node_version default_node_bin
+    default_node_version="$(_resolve_nvm_default_version)" || return 0
+    default_node_bin="$NVM_DIR/versions/node/$default_node_version/bin"
+
+    path=("$default_node_bin" ${path:#$default_node_bin})
+    export PATH
+}
+
+_prepend_default_node_path
+
 # Load NVM if it is not already available in this shell.
 _ensure_nvm_loaded() {
     if (( _NVM_LOADED )); then
