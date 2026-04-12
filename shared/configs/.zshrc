@@ -7,12 +7,6 @@ if [ -s "/opt/homebrew/bin/brew" ]; then
         /opt/homebrew/bin/brew shellenv >| "$_brew_cache"
     fi
     source "$_brew_cache"
-elif [ -s "/home/linuxbrew/.linuxbrew/bin/brew" ]; then
-    if [[ ! -f "$_brew_cache" || "/home/linuxbrew/.linuxbrew/bin/brew" -nt "$_brew_cache" ]]; then
-        mkdir -p "${_brew_cache:h}"
-        /home/linuxbrew/.linuxbrew/bin/brew shellenv >| "$_brew_cache"
-    fi
-    source "$_brew_cache"
 fi
 unset _brew_cache
 
