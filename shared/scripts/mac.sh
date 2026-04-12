@@ -20,7 +20,7 @@ if ! xcode-select -p &>/dev/null; then
     xcode-select --install
     # Wait until the tools are installed
     until xcode-select -p &>/dev/null; do
-        sleep 5
+        sleep 3
     done
     echo "Xcode Command Line Tools installed."
 fi
