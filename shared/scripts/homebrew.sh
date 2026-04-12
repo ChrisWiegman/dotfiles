@@ -23,6 +23,9 @@ fi
 
 brew analytics off
 
+# Make sure the Mac App Store is available before we try to run the bundle file
+brew install mas
+
 # install brew dependencies from Brewfile
 brew bundle --file="${MACHINEPATH}/Brewfile"
 
