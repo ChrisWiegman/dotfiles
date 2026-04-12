@@ -1,3 +1,4 @@
+brew "mas"
 brew "mole"
 brew "tmux"
 

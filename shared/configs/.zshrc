@@ -106,6 +106,19 @@ update_homebrew() {
   command brew cleanup --prune=all --quiet
 }
 
+# ---- Update Mac App Store apps ----
+update_app_store() {
+  [[ "$OSTYPE" == darwin* ]] || return 0
+
+  if ! command -v mas >/dev/null 2>&1; then
+    echo "mas not installed. Skipping Mac App Store updates."
+    return 0
+  fi
+
+  echo "Updating Mac App Store apps"
+  command mas upgrade || echo "Mac App Store update failed (check App Store sign-in)"
+}
+
 # ---- Update repos in ~/Code (depth 2, real) ----
 update_repos() {
   echo "Updating code repositories"
@@ -175,6 +188,7 @@ rup() {
   print -r -- "$today" >| "$stamp"
 
   [[ $(typeset -f inode)           ]] && inode
+  [[ $(typeset -f update_app_store) ]] && update_app_store
   [[ $(typeset -f update_homebrew) ]] && update_homebrew
   [[ $(typeset -f szh)             ]] && szh
 }

@@ -1,4 +1,5 @@
 brew "go"
+brew "mas"
 brew "mole"
 brew "nvm"
 brew "tmux"
