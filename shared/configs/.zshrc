@@ -110,7 +110,7 @@ update_app_store() {
   fi
 
   echo "Updating Mac App Store apps"
-  command mas upgrade || echo "Mac App Store update failed (check App Store sign-in)"
+  command mas upgrade --accurate || echo "Mac App Store update failed (check App Store sign-in)"
 }
 
 # ---- Update repos in ~/Code (depth 2, real) ----
