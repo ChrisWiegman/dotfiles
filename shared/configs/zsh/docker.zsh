@@ -10,11 +10,3 @@ function dka() {
     docker network prune -f
     docker volume prune -f
 }
-
-# Load Docker CLI completions
-if [ ! -d $HOME/.docker/completions ]; then
-    mkdir -p $HOME/.docker/completions;
-    docker completion zsh > $HOME/.docker/completions/_docker;
-fi
-
-export FPATH="$HOME/.docker/completions:$FPATH"
