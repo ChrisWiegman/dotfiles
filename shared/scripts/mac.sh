@@ -1,12 +1,14 @@
 #!/bin/sh
 
-# Setup rosetta
-if /usr/bin/pgrep oahd &>/dev/null; then
-    echo "Rosetta is already installed."
-else
-    echo "Installing Rosetta..."
-    /usr/sbin/softwareupdate --install-rosetta --agree-to-license
-fi
+# Install Rosetta 2 if not already present. Call this before any app that requires it.
+install_rosetta() {
+    if /usr/bin/pgrep oahd &>/dev/null; then
+        echo "Rosetta is already installed."
+    else
+        echo "Installing Rosetta..."
+        /usr/sbin/softwareupdate --install-rosetta --agree-to-license
+    fi
+}
 
 # Ensure the default login shell matches macOS default
 if [ "$SHELL" != "/bin/zsh" ]; then
