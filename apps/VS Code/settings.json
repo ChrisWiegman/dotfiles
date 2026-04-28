@@ -190,7 +190,7 @@
     "js/ts.inlayHints.parameterNames.enabled": "all",
     "js/ts.inlayHints.parameterTypes.enabled": true,
     "js/ts.updateImportsOnFileMove.enabled": "always",
-    "oneDarkPro.bold": true,
+    "markdownWordCount.minWordCount": 200,
     "phpParameterHint.borderRadius": 3,
     "phpParameterHint.fontSize": 11,
     "phpParameterHint.hintOnlyLine": false,
