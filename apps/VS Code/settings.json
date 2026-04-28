@@ -22,6 +22,17 @@
             "source.fixAll.stylelint": "explicit"
         }
     },
+    "[typescript]": {
+        "editor.codeActionsOnSave": {
+            "source.fixAll.eslint": "explicit",
+            "source.organizeImports": "explicit"
+        }
+    },
+    "[typescriptreact]": {
+        "editor.codeActionsOnSave": {
+            "source.fixAll.eslint": "explicit"
+        }
+    },
     "chat.agent.enabled": false,
     "chat.disableAIFeatures": true,
     "claudeCode.preferredLocation": "panel",
@@ -222,6 +233,7 @@
     "workbench.colorTheme": "Kana Dark",
     "workbench.commandPalette.history": 10,
     "workbench.editor.highlightModifiedTabs": true,
+    "workbench.editor.useModal": "off",
     "workbench.enableExperiments": false,
     "workbench.settings.editor": "json",
     "workbench.settings.enableNaturalLanguageSearch": false,
