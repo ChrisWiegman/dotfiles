@@ -88,7 +88,6 @@
     "git-graph.repository.sign.tags": true,
     "git.confirmSync": false,
     "git.enableSmartCommit": true,
-    "gitblame.inlineMessageEnabled": true,
     "githubPullRequests.createOnPublishBranch": "ask",
     "githubPullRequests.pullBranch": "prompt",
     "go.inlayHints.assignVariableTypes": true,
