@@ -90,6 +90,18 @@
     "git.enableSmartCommit": true,
     "githubPullRequests.createOnPublishBranch": "ask",
     "githubPullRequests.pullBranch": "prompt",
+    "go.lintFlags": [
+        "--path-mode=abs",
+        "--fast-only"
+    ],
+    "go.formatTool": "custom",
+    "go.alternateTools": {
+        "customFormatter": "golangci-lint"
+    },
+    "go.formatFlags": [
+        "fmt",
+        "--stdin"
+    ],
     "go.inlayHints.assignVariableTypes": true,
     "go.inlayHints.compositeLiteralFields": true,
     "go.inlayHints.compositeLiteralTypes": true,
@@ -97,11 +109,8 @@
     "go.inlayHints.functionTypeParameters": true,
     "go.inlayHints.parameterNames": true,
     "go.inlayHints.rangeVariableTypes": true,
-    "go.lintFlags": [
-        "--fast"
-    ],
     "go.lintOnSave": "workspace",
-    "go.lintTool": "golangci-lint",
+    "go.lintTool": "golangci-lint-v2",
     "go.toolsManagement.autoUpdate": true,
     "harper.linters.OxfordComma": false,
     "intelephense.codeLens.implementations.enable": true,
