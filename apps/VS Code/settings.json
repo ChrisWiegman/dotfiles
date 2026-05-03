@@ -86,15 +86,12 @@
     "git-graph.repository.commits.loadMore": 300,
     "git-graph.repository.sign.commits": true,
     "git-graph.repository.sign.tags": true,
+    "git.addAICoAuthor": "off",
     "git.confirmSync": false,
     "git.enableSmartCommit": true,
     "githubPullRequests.createOnPublishBranch": "ask",
+    "githubPullRequests.experimental.chat": false,
     "githubPullRequests.pullBranch": "prompt",
-    "go.lintFlags": [
-        "--path-mode=abs",
-        "--fast-only"
-    ],
-    "go.formatTool": "custom",
     "go.alternateTools": {
         "customFormatter": "golangci-lint"
     },
@@ -102,6 +99,7 @@
         "fmt",
         "--stdin"
     ],
+    "go.formatTool": "custom",
     "go.inlayHints.assignVariableTypes": true,
     "go.inlayHints.compositeLiteralFields": true,
     "go.inlayHints.compositeLiteralTypes": true,
@@ -109,6 +107,9 @@
     "go.inlayHints.functionTypeParameters": true,
     "go.inlayHints.parameterNames": true,
     "go.inlayHints.rangeVariableTypes": true,
+    "go.lintFlags": [
+        "--path-mode=abs"
+    ],
     "go.lintOnSave": "workspace",
     "go.lintTool": "golangci-lint-v2",
     "go.toolsManagement.autoUpdate": true,
