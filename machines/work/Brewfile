@@ -4,7 +4,7 @@ brew "mole"
 brew "nvm"
 brew "tmux"
 
+cask "claude"
+cask "maccy"
+cask "moom"
 cask "visual-studio-code"
-
-mas "1Password for Safari", id: 1569813296
-mas "Wipr", id: 1662217862
