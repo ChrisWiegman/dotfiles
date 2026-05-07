@@ -5,7 +5,6 @@ brew "nvm"
 brew "tmux"
 
 cask "claude"
-cask "maccy"
 cask "moom"
 cask "visual-studio-code"
 
