@@ -3,6 +3,7 @@ brew "mas"
 brew "mole"
 brew "nvm"
 brew "tmux"
+brew "uv"
 
 cask "claude"
 cask "moom"
