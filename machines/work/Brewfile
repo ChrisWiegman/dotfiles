@@ -8,3 +8,6 @@ cask "claude"
 cask "maccy"
 cask "moom"
 cask "visual-studio-code"
+
+mas " Okta Verify", id: 490179405
+mas "On Air Mode", id: 6747852819
