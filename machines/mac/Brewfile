@@ -1,3 +1,6 @@
+tap "ChrisWiegman/backup-github"
+
+brew "backup-github"
 brew "colima"
 brew "docker"
 brew "docker-compose"
