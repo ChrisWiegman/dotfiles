@@ -12,6 +12,20 @@ if [ "$OS" = "Darwin" ]; then
     sh "$SHAREDPATH/scripts/mac.sh"
 fi
 
+# Clone the dotfiles repo to ~/.dotfiles and re-exec from there.
+# This handles the bootstrap case where the repo was downloaded as a zip
+# (before git was available) and git is now installed via Xcode CLT above.
+DOTFILES_DIR="$HOME/.dotfiles"
+DOTFILES_REPO="git@github.com:ChrisWiegman/dotfiles.git"
+if [ "$SHAREDPATH" != "$DOTFILES_DIR/shared" ]; then
+    if [ ! -d "$DOTFILES_DIR/.git" ]; then
+        echo "Cloning dotfiles to $DOTFILES_DIR..."
+        git clone "$DOTFILES_REPO" "$DOTFILES_DIR"
+    fi
+    MACHINE_NAME="$(basename "$MACHINEPATH")"
+    exec sh "$DOTFILES_DIR/setup.sh" "$MACHINE_NAME"
+fi
+
 # Create the code folder if we don't have it
 if [ ! -d "$HOME/Code" ]; then
     mkdir -p "$HOME/Code"
