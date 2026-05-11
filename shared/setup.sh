@@ -25,7 +25,8 @@ if [ "$SHAREDPATH" != "$DOTFILES_DIR/shared" ]; then
         git -C "$DOTFILES_DIR" remote set-url origin "$DOTFILES_REPO_SSH"
     fi
     MACHINE_NAME="$(basename "$MACHINEPATH")"
-    exec zsh "$DOTFILES_DIR/setup.sh" "$MACHINE_NAME"
+    cd "$DOTFILES_DIR"
+    exec sh "$DOTFILES_DIR/setup.sh" "$MACHINE_NAME"
 fi
 
 # Create the code folder if we don't have it
