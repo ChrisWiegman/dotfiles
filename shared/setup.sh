@@ -16,14 +16,16 @@ fi
 # This handles the bootstrap case where the repo was downloaded as a zip
 # (before git was available) and git is now installed via Xcode CLT above.
 DOTFILES_DIR="$HOME/.dotfiles"
-DOTFILES_REPO="git@github.com:ChrisWiegman/dotfiles.git"
+DOTFILES_REPO_SSH="git@github.com:ChrisWiegman/dotfiles.git"
+DOTFILES_REPO_HTTPS="https://github.com/ChrisWiegman/dotfiles.git"
 if [ "$SHAREDPATH" != "$DOTFILES_DIR/shared" ]; then
     if [ ! -d "$DOTFILES_DIR/.git" ]; then
         echo "Cloning dotfiles to $DOTFILES_DIR..."
-        git clone "$DOTFILES_REPO" "$DOTFILES_DIR"
+        git clone "$DOTFILES_REPO_HTTPS" "$DOTFILES_DIR"
+        git -C "$DOTFILES_DIR" remote set-url origin "$DOTFILES_REPO_SSH"
     fi
     MACHINE_NAME="$(basename "$MACHINEPATH")"
-    exec sh "$DOTFILES_DIR/setup.sh" "$MACHINE_NAME"
+    exec zsh "$DOTFILES_DIR/setup.sh" "$MACHINE_NAME"
 fi
 
 # Create the code folder if we don't have it
