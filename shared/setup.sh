@@ -17,6 +17,17 @@ if [ ! -d "$HOME/Code" ]; then
     mkdir -p "$HOME/Code"
 fi
 
+# Clone repos listed in the machine's Repos file into ~/Code
+if [ -f "$MACHINEPATH/Repos" ]; then
+    while IFS= read -r repo || [ -n "$repo" ]; do
+        [ -z "$repo" ] && continue
+        reponame="$(basename "$repo" .git)"
+        if [ ! -d "$HOME/Code/$reponame" ]; then
+            git clone "$repo" "$HOME/Code/$reponame"
+        fi
+    done < "$MACHINEPATH/Repos"
+fi
+
 sh "$SHAREDPATH/scripts/homebrew.sh" "$MACHINEPATH"
 
 sh "$SHAREDPATH/scripts/configs.sh" "$SHAREDPATH" "$MACHINEPATH"

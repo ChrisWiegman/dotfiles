@@ -1,6 +1,5 @@
 tap "ChrisWiegman/backup-github"
 
-brew "backup-github"
 brew "colima"
 brew "docker"
 brew "docker-compose"
@@ -11,6 +10,7 @@ brew "mole"
 brew "nvm"
 brew "tmux"
 
+cask "backup-github"
 cask "focusrite-control-2"
 cask "quicken"
 cask "signal"
