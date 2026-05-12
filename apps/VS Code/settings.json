@@ -33,9 +33,13 @@
             "source.fixAll.eslint": "explicit"
         }
     },
+    "changie.autoCommitOnBatchRelease": true,
     "chat.agent.enabled": false,
     "chat.disableAIFeatures": true,
     "claudeCode.preferredLocation": "panel",
+    "cSpell.ignoreWords": [
+        "Wiegman"
+    ],
     "debug.console.fontFamily": "MonoLisa, 'SF Mono', 'Fira Code', 'JetBrains Mono', Menlo, Monaco, Consolas, 'Courier New', monospace",
     "debug.console.fontSize": 13,
     "diffEditor.ignoreTrimWhitespace": false,
