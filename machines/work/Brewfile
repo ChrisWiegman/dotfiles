@@ -1,3 +1,4 @@
+brew "gh"
 brew "go"
 brew "mas"
 brew "mole"
