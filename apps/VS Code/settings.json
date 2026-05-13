@@ -222,6 +222,7 @@
         "postcss",
         "scss"
     ],
+    "telemetry.feedback.enabled": false,
     "telemetry.telemetryLevel": "off",
     "terminal.integrated.confirmOnExit": "never",
     "terminal.integrated.fontFamily": "MonoLisa",
