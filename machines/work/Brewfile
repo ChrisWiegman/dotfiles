@@ -1,11 +1,11 @@
+brew "gh"
 brew "go"
 brew "mas"
 brew "mole"
 brew "nvm"
 brew "tmux"
 
+cask "maccy"
 cask "visual-studio-code"
 
-mas "1Password for Safari", id: 1569813296
 mas "Okta Verify", id: 490179405
-mas "Wipr", id: 1662217862
