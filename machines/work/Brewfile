@@ -6,6 +6,7 @@ brew "nvm"
 brew "tmux"
 
 cask "maccy"
+cask "moom"
 cask "visual-studio-code"
 
 mas "Okta Verify", id: 490179405
