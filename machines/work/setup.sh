@@ -21,8 +21,6 @@ chmod 0600 "$HOME/.ssh/config"
 # Make sure Geekbot CLI and its dependencies are present
 echo "Setting up Geekbot CLI"
 
-szh
-
 if ! command -v npm >/dev/null 2>&1; then
     echo "Error: npm not found on PATH — install Node (or load nvm) before running" >&2
     exit 1
