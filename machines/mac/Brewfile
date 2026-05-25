@@ -11,8 +11,8 @@ brew "nvm"
 brew "tmux"
 
 cask "backup-github"
+cask "banktivity"
 cask "focusrite-control-2"
-cask "quicken"
 cask "signal"
 cask "visual-studio-code"
 
