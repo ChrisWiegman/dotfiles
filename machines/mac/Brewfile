@@ -1,8 +1,5 @@
 tap "ChrisWiegman/backup-github"
 
-brew "colima"
-brew "docker"
-brew "docker-compose"
 brew "go"
 brew "hugo"
 brew "mas"
