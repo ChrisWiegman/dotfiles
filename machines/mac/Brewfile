@@ -1,4 +1,4 @@
-tap "ChrisWiegman/backup-github"
+tap "chriswiegman/backup-github"
 
 brew "go"
 brew "hugo"
@@ -7,7 +7,7 @@ brew "mole"
 brew "nvm"
 brew "tmux"
 
-cask "backup-github"
+cask "chriswiegman/backup-github/backup-github"
 cask "focusrite-control-2"
 cask "signal"
 cask "visual-studio-code"
@@ -20,6 +20,5 @@ mas "Pages", id: 361309726
 mas "Pixelmator Pro", id: 6746662575
 mas "Tailscale", id: 1475387142
 mas "Unread", id: 1363637349
-mase "Valheim", id: 1554294918
 mas "Wipr", id: 1662217862
 mas "Xcode", id: 497799835
