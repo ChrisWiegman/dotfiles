@@ -1,6 +1,6 @@
 # ---- Homebrew first (so PATH/FPATH are set before completions load) ----
 # Cache shellenv output — re-generate only when the brew binary changes
-_brew_cache="${XDG_CACHE_HOME:-$HOME/.cache}/brew_shellenv.sh"
+_brew_cache="${HOMEBREW_CACHE:-$HOME/Library/Caches/Homebrew}/brew_shellenv.sh"
 if [ -s "/opt/homebrew/bin/brew" ]; then
     if [[ ! -f "$_brew_cache" || "/opt/homebrew/bin/brew" -nt "$_brew_cache" ]]; then
         mkdir -p "${_brew_cache:h}"
