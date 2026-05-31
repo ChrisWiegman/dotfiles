@@ -7,6 +7,7 @@ cask "alfred"
 cask "dropbox"
 cask "google-chrome"
 cask "logitech-camera-settings"
+cask "protonvpn"
 cask "signal"
 cask "sonos"
 cask "visual-studio-code"
@@ -18,5 +19,4 @@ mas "Numbers", id: 361304891
 mas "Pages", id: 361309726
 mas "Pixelmator Pro", id: 6746662575
 mas "Slack", id: 803453959
-mas "Tailscale", id: 1475387142
 mas "Wipr", id: 1662217862
