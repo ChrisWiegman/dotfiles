@@ -1,0 +1,11 @@
+[settings]
+github_attestations = false
+disable_hints = ["*"]
+
+[settings.node]
+gpg_verify = false
+
+[tools]
+go = "latest"
+node = "latest"
+npm = "latest"
