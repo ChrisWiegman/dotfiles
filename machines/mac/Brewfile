@@ -1,10 +1,9 @@
 tap "chriswiegman/backup-github"
 
-brew "go"
 brew "hugo"
 brew "mas"
+brew "mise"
 brew "mole"
-brew "nvm"
 brew "tmux"
 
 cask "chriswiegman/backup-github/backup-github"
