@@ -33,6 +33,15 @@ tmux source-file ~/.tmux.conf 2>/dev/null || true
 # Setting up machine-specific configs
 M_CONFIG_DIR="$MACHINEPATH/configs"
 
+# Setup Mise if it is configured
+if [ -f "$M_CONFIG_DIR/.config/mise/config.toml" ]; then
+    MISE_CONFIG="$HOME/.config/mise/config.toml"
+    mkdir -p "$(dirname "$MISE_CONFIG")"
+    rm -f "$MISE_CONFIG"
+    ln -s "$M_CONFIG_DIR/.config/mise/config.toml" "$MISE_CONFIG"
+    mise install
+fi
+
 # Set up Git configs
 if [ ! -f "$HOME/.gitconfig" ] || ! grep -q "signingkey" "$HOME/.gitconfig" 2>/dev/null; then
     rm -f "$HOME/.gitconfig"
