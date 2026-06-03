@@ -9,3 +9,5 @@ gpg_verify = false
 go = "latest"
 node = "latest"
 npm = "latest"
+bun = "latest"
+"npm:geekbot-cli" = "latest"
