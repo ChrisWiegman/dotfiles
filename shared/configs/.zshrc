@@ -115,6 +115,7 @@ update_app_store() {
 
 # ---- Update repos in ~/Code (depth 2, real) ----
 update_repos() {
+  setopt localoptions nomonitor nobgnice
   echo "Updating code repositories"
   local CODE_DIR="$HOME/Code"
   [[ -d "$CODE_DIR" ]] || { echo "$CODE_DIR does not exist. Skipping repo update."; return 0; }
@@ -123,31 +124,49 @@ update_repos() {
   gitdirs=("${(@f)$(find "$CODE_DIR" -maxdepth 2 -type d -name ".git" 2>/dev/null)}")
   [[ ${#gitdirs[@]} -gt 0 ]] || { echo "No git repositories found in $CODE_DIR. Skipping repo update."; return 0; }
 
-  local repo repodir
+  local repo repodir pid
+  local -i max_jobs="${UPDATE_REPOS_JOBS:-8}"
+  local -a pids=()
+  (( max_jobs > 0 )) || max_jobs=1
+
   for repo in "${gitdirs[@]}"; do
     repodir="${repo:h}"
-    echo "  -> ${repodir:t}"
 
-    # Skip dirty working trees
-    if ! git -C "$repodir" diff --quiet 2>/dev/null || \
-       ! git -C "$repodir" diff --cached --quiet 2>/dev/null; then
-      echo "     skipping (uncommitted changes)"
-      continue
+    (
+      local current_repo="$repodir"
+      local result
+
+      # Skip dirty working trees
+      if ! git -C "$current_repo" diff --quiet 2>/dev/null || \
+         ! git -C "$current_repo" diff --cached --quiet 2>/dev/null; then
+        result="skipped (uncommitted changes)"
+      # Fetch with prune — bail gracefully if offline or unreachable
+      elif ! git -C "$current_repo" fetch --all --prune --quiet 2>/dev/null; then
+        result="fetch failed (offline or unreachable)"
+      # Only pull if an upstream branch is configured
+      elif ! git -C "$current_repo" rev-parse --abbrev-ref --symbolic-full-name @{u} &>/dev/null; then
+        result="skipped (no upstream configured)"
+      elif git -C "$current_repo" pull --ff-only --quiet 2>/dev/null; then
+        result=""
+      else
+        result=": pull failed (try manually)"
+      fi
+
+      echo "  -> ${current_repo:t} $result"
+    ) &
+    pids+=($!)
+
+    # Wait after each batch to keep network and process usage bounded.
+    if (( ${#pids[@]} >= max_jobs )); then
+      for pid in "${pids[@]}"; do
+        wait "$pid"
+      done
+      pids=()
     fi
+  done
 
-    # Fetch with prune — bail gracefully if offline or unreachable
-    if ! git -C "$repodir" fetch --all --prune --quiet 2>/dev/null; then
-      echo "     fetch failed (offline or unreachable)"
-      continue
-    fi
-
-    # Only pull if an upstream branch is configured
-    if ! git -C "$repodir" rev-parse --abbrev-ref --symbolic-full-name @{u} &>/dev/null; then
-      echo "     no upstream configured, skipping pull"
-      continue
-    fi
-
-    git -C "$repodir" pull --ff-only --quiet 2>/dev/null || echo "     pull failed (try manually)"
+  for pid in "${pids[@]}"; do
+    wait "$pid"
   done
 }
 
