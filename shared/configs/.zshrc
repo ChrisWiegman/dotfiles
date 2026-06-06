@@ -125,7 +125,7 @@ update_repos() {
   [[ ${#gitdirs[@]} -gt 0 ]] || { echo "No git repositories found in $CODE_DIR. Skipping repo update."; return 0; }
 
   local repo repodir pid
-  local -i max_jobs="${UPDATE_REPOS_JOBS:-8}"
+  local -i max_jobs="${UPDATE_REPOS_JOBS:-12}"
   local -a pids=()
   (( max_jobs > 0 )) || max_jobs=1
 
