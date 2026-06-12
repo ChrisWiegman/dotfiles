@@ -95,8 +95,8 @@ alias szh='echo "Reloading shell..."; source ~/.zshrc'
 # ---- Update Homebrew packages and casks ----
 update_homebrew() {
   command brew update --quiet
-  command brew upgrade --quiet
-  command brew upgrade --cask --greedy --quiet
+  command brew upgrade -y --quiet
+  command brew upgrade -y --cask --greedy --quiet
   command brew cleanup --prune=all --quiet
 }
 
