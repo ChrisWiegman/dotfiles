@@ -1,4 +1,4 @@
-tap "chriswiegman/backup-github"
+tap "chriswiegman/backup-github", trusted: true
 
 brew "hugo"
 brew "mas"
