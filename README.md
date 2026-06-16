@@ -27,8 +27,10 @@ you only need a copy of this repo and the name of the machine you're setting up.
 
 ### Fresh machine (no git yet)
 
-On a brand-new Mac `git` isn't available, so grab the repo as a zip, extract it,
-and run the setup script from wherever it landed:
+Run setup from **Apple's Terminal app** (the macOS privacy permissions below
+attach to whichever app is running it). On a brand-new Mac `git` isn't available,
+so grab the repo as a zip, extract it, and run the setup script from wherever it
+landed:
 
 ```sh
 # Download and extract the repo (anywhere — Downloads is fine)
@@ -43,6 +45,26 @@ cd dotfiles-main
 The script will install the Xcode Command Line Tools, clone this repo to
 `~/.dotfiles`, and re-exec from there. Once it finishes you can delete the
 downloaded copy — `~/.dotfiles` is the canonical clone going forward.
+
+> **Heads up — the first run may stop on purpose.** Before doing anything, setup
+> checks that Terminal has the macOS permissions it needs (see below). If they're
+> missing it opens the right Settings panes, tells you what to enable, and stops.
+> Grant them, **quit and reopen Terminal**, and run `./setup.sh mac` again — the
+> second run goes start to finish.
+
+### macOS permissions
+
+Setup needs two privacy permissions granted to **Terminal**, because macOS won't
+let a script grant them itself:
+
+- **Full Disk Access** — detected automatically by the script.
+- **App Management** — lets Homebrew update apps already in `/Applications`. macOS
+  exposes no way to detect this, so setup walks you through it once and remembers
+  (via a marker in `~/.cache/dotfiles/`) so it won't ask again.
+
+Both are found in **System Settings > Privacy & Security**. Full Disk Access only
+takes effect after Terminal is restarted, which is why a fresh machine usually
+takes two runs.
 
 ### Existing machine (git already installed)
 
@@ -61,13 +83,14 @@ how I reset or update a machine.
 
 For the selected machine, `setup.sh`:
 
-1. Installs the Xcode Command Line Tools and sets `zsh` as the default shell.
-2. Clones this repo to `~/.dotfiles` (and re-execs from there) if it isn't already.
-3. Creates `~/Code` and clones any repos listed in the machine's `Repos` file.
-4. Installs everything in the machine's `Brewfile` via Homebrew (prompting you to sign in to the Mac App Store first if the Brewfile needs it).
-5. Symlinks the shared and machine-specific config files (ssh, tmux, git, zsh, mise, etc.).
-6. Links app configs from `apps/` (VS Code settings/keybindings) and imports the Terminal theme.
-7. Runs the machine's own `setup.sh`, if it has one, for any final machine-specific steps.
+1. Checks that Terminal has the required macOS permissions (Full Disk Access and App Management), opening the right Settings panes and stopping if any are missing.
+2. Installs the Xcode Command Line Tools and sets `zsh` as the default shell.
+3. Clones this repo to `~/.dotfiles` (and re-execs from there) if it isn't already.
+4. Creates `~/Code` and clones any repos listed in the machine's `Repos` file.
+5. Installs everything in the machine's `Brewfile` via Homebrew (prompting you to sign in to the Mac App Store first if the Brewfile needs it).
+6. Symlinks the shared and machine-specific config files (ssh, tmux, git, zsh, mise, etc.).
+7. Links app configs from `apps/` (VS Code settings/keybindings) and imports the Terminal theme.
+8. Runs the machine's own `setup.sh`, if it has one, for any final machine-specific steps.
 
 The script asks for your administrator password once up front and keeps that
 access alive for the rest of the run, so you can start it and walk away.

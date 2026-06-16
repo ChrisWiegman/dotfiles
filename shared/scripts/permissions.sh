@@ -3,21 +3,22 @@
 set -e
 trap 'echo "permissions.sh failed at line $LINENO" >&2' ERR
 
-# macOS guards Full Disk Access and App Management behind TCC. There is no
-# supported way to grant these from a script — Apple requires the user to toggle
-# them in System Settings. What we can do is detect what's missing, jump straight
-# to the right pane, and pause until the user has granted it.
+# macOS guards Full Disk Access and App Management behind TCC; a script can't grant
+# them (Apple requires the user to toggle them in System Settings). So we check up
+# front: if anything is missing we open the right pane, explain what to enable, and
+# stop. Full Disk Access only takes effect after Terminal is restarted, so it's
+# cleaner to grant the permissions, reopen Terminal, and run setup again than to
+# limp along in a session that can't see them.
 #
 # This setup is always run from Apple's Terminal app, so the permissions attach to
-# Terminal. Full Disk Access usually only takes effect after Terminal is quit and
-# reopened.
-TERM_APP="Terminal"
+# Terminal.
+#
+# Exit status: 0 = all good, continue; 1 = something was missing, stop and re-run.
 
-# Prompts read from the real terminal even when this script is piped through `sh`.
-prompt() {
-    printf '%s' "$1" > /dev/tty
-    read -r REPLY < /dev/tty || REPLY=""
-}
+MACHINE="${1:-<machine>}"
+TERM_APP="Terminal"
+MARKER_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/dotfiles"
+APPMGMT_MARKER="$MARKER_DIR/app-management-guided"
 
 # Reading the user TCC database requires Full Disk Access, so it's a reliable probe.
 has_full_disk_access() {
@@ -27,37 +28,42 @@ has_full_disk_access() {
 
 echo "Checking macOS privacy permissions"
 
-# ---- Full Disk Access ----
+missing=0
+
+# ---- Full Disk Access (detectable) ----
 if has_full_disk_access; then
-    echo "  Full Disk Access: already granted"
+    echo "  Full Disk Access: granted"
 else
-    while ! has_full_disk_access; do
-        echo
-        echo "  Full Disk Access is NOT granted to $TERM_APP."
-        echo "  Opening Settings > Privacy & Security > Full Disk Access."
-        echo "  Add and enable $TERM_APP there, then QUIT and REOPEN it."
-        open "x-apple.systempreferences:com.apple.preference.security?Privacy_AllFiles" || true
-        prompt "  Press Return to re-check, or type 's' then Return to skip: "
-        case "$REPLY" in
-            s|S)
-                echo "  Skipping Full Disk Access. Some steps may not work until it's granted."
-                break
-                ;;
-        esac
-        if ! has_full_disk_access; then
-            echo "  Still not detected — this usually means $TERM_APP needs a restart."
-            echo "  Grant it, then quit/reopen $TERM_APP and re-run setup."
-        fi
-    done
-    has_full_disk_access && echo "  Full Disk Access: granted"
+    echo
+    echo "  Full Disk Access is NOT granted to $TERM_APP."
+    echo "  -> Opening Privacy & Security > Full Disk Access."
+    echo "     Add and enable $TERM_APP."
+    open "x-apple.systempreferences:com.apple.preference.security?Privacy_AllFiles" || true
+    missing=1
 fi
 
-# ---- App Management ----
-# There's no reliable read probe for App Management, so we deep-link and confirm.
-# Homebrew casks that update apps already in /Applications need this.
-echo
-echo "  App Management lets Homebrew update apps already in /Applications."
-echo "  Opening Settings > Privacy & Security > App Management."
-echo "  Add and enable $TERM_APP if it isn't already."
-open "x-apple.systempreferences:com.apple.preference.security?Privacy_AppBundles" || true
-prompt "  Press Return once you've reviewed App Management: "
+# ---- App Management (not detectable; guide through it once and remember) ----
+if [ -f "$APPMGMT_MARKER" ]; then
+    echo "  App Management: already reviewed"
+else
+    echo
+    echo "  App Management lets Homebrew update apps already in /Applications."
+    echo "  -> Opening Privacy & Security > App Management."
+    echo "     Add and enable $TERM_APP."
+    open "x-apple.systempreferences:com.apple.preference.security?Privacy_AppBundles" || true
+    mkdir -p "$MARKER_DIR"
+    touch "$APPMGMT_MARKER"
+    missing=1
+fi
+
+if [ "$missing" -ne 0 ]; then
+    echo
+    echo "  Grant the permission(s) above, then QUIT and REOPEN $TERM_APP."
+    echo "  After that, run setup again:"
+    echo
+    echo "      ./setup.sh $MACHINE"
+    echo
+    exit 1
+fi
+
+echo "  All required permissions are in place."

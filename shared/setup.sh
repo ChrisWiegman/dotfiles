@@ -6,6 +6,15 @@ trap 'echo "setup.sh failed at line $LINENO" >&2' ERR
 SHAREDPATH="$1"
 MACHINEPATH="$2"
 
+# Check macOS privacy permissions before anything else. If something is missing,
+# permissions.sh opens the right Settings pane and explains what to enable; we then
+# stop cleanly so the user can grant it, restart Terminal, and re-run setup. (Full
+# Disk Access only registers after Terminal is restarted, so a second run is
+# expected on a fresh machine — the up-front check saves a half-finished setup.)
+if ! sh "$SHAREDPATH/scripts/permissions.sh" "$(basename "$MACHINEPATH")"; then
+    exit 0
+fi
+
 # Request administrator access once and keep the sudo timestamp warm for the rest
 # of the run so steps that need it (Rosetta, etc.) don't pause for a password.
 # This survives the re-exec below because `exec` preserves the process PID, and
@@ -55,8 +64,6 @@ if [ -f "$MACHINEPATH/Repos" ]; then
         fi
     done < "$MACHINEPATH/Repos"
 fi
-
-sh "$SHAREDPATH/scripts/permissions.sh"
 
 sh "$SHAREDPATH/scripts/homebrew.sh" "$MACHINEPATH"
 
