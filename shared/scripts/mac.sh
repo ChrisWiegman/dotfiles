@@ -24,5 +24,6 @@ if ! xcode-select -p &>/dev/null; then
     until xcode-select -p &>/dev/null; do
         sleep 3
     done
+    sudo xcodebuild -license accept
     echo "Xcode Command Line Tools installed."
 fi

@@ -6,11 +6,7 @@ trap 'echo "setup.sh failed at line $LINENO" >&2' ERR
 SHAREDPATH="$1"
 MACHINEPATH="$2"
 
-OS="$(uname)"
-
-if [ "$OS" = "Darwin" ]; then
-    sh "$SHAREDPATH/scripts/mac.sh"
-fi
+sh "$SHAREDPATH/scripts/mac.sh"
 
 # Clone the dotfiles repo to ~/.dotfiles and re-exec from there.
 # This handles the bootstrap case where the repo was downloaded as a zip
