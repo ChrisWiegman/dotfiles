@@ -22,9 +22,21 @@ fi
 
 brew analytics off
 
-# Make sure the Mac App Store is available before we try to run the bundle file
-if ! command -v brew > /dev/null 2>&1; then
-    brew install mas
+# If the Brewfile installs Mac App Store apps, make sure `mas` is present and the
+# user is signed in to the App Store. A failed `mas` line aborts the whole bundle
+# under `set -e`, so verify sign-in up front rather than failing midway.
+if grep -q '^[[:space:]]*mas ' "${MACHINEPATH}/Brewfile"; then
+    if ! command -v mas > /dev/null 2>&1; then
+        brew install mas
+    fi
+
+    while ! mas account > /dev/null 2>&1; do
+        echo "You're not signed in to the Mac App Store."
+        echo "Opening the App Store — please sign in, then press Return to continue."
+        open -a "App Store" || true
+        # shellcheck disable=SC2162
+        read _ < /dev/tty
+    done
 fi
 
 # install brew dependencies from Brewfile

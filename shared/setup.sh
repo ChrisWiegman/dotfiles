@@ -6,6 +6,21 @@ trap 'echo "setup.sh failed at line $LINENO" >&2' ERR
 SHAREDPATH="$1"
 MACHINEPATH="$2"
 
+# Request administrator access once and keep the sudo timestamp warm for the rest
+# of the run so steps that need it (Rosetta, etc.) don't pause for a password.
+# This survives the re-exec below because `exec` preserves the process PID, and
+# the keep-alive loop exits once that PID is gone. The env marker keeps us from
+# starting a second loop on the re-exec.
+if [ -z "$DOTFILES_SUDO_KEEPALIVE" ]; then
+    export DOTFILES_SUDO_KEEPALIVE=1
+    echo "Requesting administrator access for setup..."
+    if ! sudo -v; then
+        echo "Administrator access is required to run setup." >&2
+        exit 1
+    fi
+    ( while true; do sudo -n true; sleep 60; kill -0 "$$" 2>/dev/null || exit; done ) &
+fi
+
 sh "$SHAREDPATH/scripts/mac.sh"
 
 # Clone the dotfiles repo to ~/.dotfiles and re-exec from there.
@@ -45,7 +60,15 @@ sh "$SHAREDPATH/scripts/homebrew.sh" "$MACHINEPATH"
 
 sh "$SHAREDPATH/scripts/configs.sh" "$SHAREDPATH" "$MACHINEPATH"
 
+sh "$SHAREDPATH/scripts/apps.sh" "$(dirname "$SHAREDPATH")"
+
 # Run the local config if its available
 if [ -s "$MACHINEPATH/setup.sh" ]; then
     sh "$MACHINEPATH/setup.sh" "$SHAREDPATH" "$MACHINEPATH"
 fi
+
+echo
+echo "✅ Setup complete for '$(basename "$MACHINEPATH")'."
+echo "   • Homebrew packages, casks, and App Store apps installed"
+echo "   • Shell, git, ssh, tmux, mise, and app configs linked"
+echo "   Open a new terminal (or run 'szh') to pick up the new shell config."

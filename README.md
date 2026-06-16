@@ -64,6 +64,10 @@ For the selected machine, `setup.sh`:
 1. Installs the Xcode Command Line Tools and sets `zsh` as the default shell.
 2. Clones this repo to `~/.dotfiles` (and re-execs from there) if it isn't already.
 3. Creates `~/Code` and clones any repos listed in the machine's `Repos` file.
-4. Installs everything in the machine's `Brewfile` via Homebrew.
+4. Installs everything in the machine's `Brewfile` via Homebrew (prompting you to sign in to the Mac App Store first if the Brewfile needs it).
 5. Symlinks the shared and machine-specific config files (ssh, tmux, git, zsh, mise, etc.).
-6. Runs the machine's own `setup.sh`, if it has one, for any final machine-specific steps.
+6. Links app configs from `apps/` (VS Code settings/keybindings) and imports the Terminal theme.
+7. Runs the machine's own `setup.sh`, if it has one, for any final machine-specific steps.
+
+The script asks for your administrator password once up front and keeps that
+access alive for the rest of the run, so you can start it and walk away.

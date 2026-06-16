@@ -1,15 +1,5 @@
 #!/bin/sh
 
-# Install Rosetta 2 if not already present. Call this before any app that requires it.
-install_rosetta() {
-    if /usr/bin/pgrep oahd &>/dev/null; then
-        echo "Rosetta is already installed."
-    else
-        echo "Installing Rosetta..."
-        /usr/sbin/softwareupdate --install-rosetta --agree-to-license
-    fi
-}
-
 # Ensure the default login shell matches macOS default
 if [ "$SHELL" != "/bin/zsh" ]; then
     echo "Setting default shell to /bin/zsh..."
@@ -24,6 +14,5 @@ if ! xcode-select -p &>/dev/null; then
     until xcode-select -p &>/dev/null; do
         sleep 3
     done
-    sudo xcodebuild -license accept
     echo "Xcode Command Line Tools installed."
 fi
