@@ -56,6 +56,8 @@ if [ -f "$MACHINEPATH/Repos" ]; then
     done < "$MACHINEPATH/Repos"
 fi
 
+sh "$SHAREDPATH/scripts/permissions.sh"
+
 sh "$SHAREDPATH/scripts/homebrew.sh" "$MACHINEPATH"
 
 sh "$SHAREDPATH/scripts/configs.sh" "$SHAREDPATH" "$MACHINEPATH"
