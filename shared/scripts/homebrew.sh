@@ -29,14 +29,6 @@ if grep -q '^[[:space:]]*mas ' "${MACHINEPATH}/Brewfile"; then
     if ! command -v mas > /dev/null 2>&1; then
         brew install mas
     fi
-
-    while ! mas account > /dev/null 2>&1; do
-        echo "You're not signed in to the Mac App Store."
-        echo "Opening the App Store — please sign in, then press Return to continue."
-        open -a "App Store" || true
-        # shellcheck disable=SC2162
-        read _ < /dev/tty
-    done
 fi
 
 # install brew dependencies from Brewfile
