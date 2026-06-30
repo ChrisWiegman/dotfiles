@@ -200,6 +200,7 @@ rup() {
   fi
   print -r -- "$today" >| "$stamp"
 
+  [[ $(typeset -f r_mise)           ]] && r_mise
   [[ $(typeset -f u_mise)           ]] && u_mise
   [[ $(typeset -f inode)           ]] && inode
   [[ $(typeset -f update_app_store) ]] && update_app_store
