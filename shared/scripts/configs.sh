@@ -18,8 +18,7 @@ if [ ! -d "$HOME/.ssh" ]; then
 fi
 chmod 0700 "$HOME/.ssh"
 
-link_config "$CONFIG_DIR/.ssh/config" "$HOME/.ssh/config"
-chmod 0600 "$HOME/.ssh/config"
+link_config "$CONFIG_DIR/.ssh/config" "$HOME/.ssh/config" 0400
 
 # Set up Tmux configs
 link_config "$CONFIG_DIR/.tmux.conf" "$HOME/.tmux.conf"
@@ -44,5 +43,4 @@ if [ ! -f "$HOME/.gitconfig" ] || ! grep -q "signingkey" "$HOME/.gitconfig" 2>/d
 fi
 
 # Set up shell config
-link_config "$M_CONFIG_DIR/.zshrc" "$HOME/.zshrc"
-chmod 0600 "$HOME/.zshrc"
+link_config "$M_CONFIG_DIR/.zshrc" "$HOME/.zshrc" 0600

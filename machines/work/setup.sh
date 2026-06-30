@@ -16,5 +16,4 @@ if [ ! -d "$HOME/.ssh" ]; then
 fi
 chmod 0700 "$HOME/.ssh"
 
-link_config "$M_CONFIG_DIR/.ssh/config" "$HOME/.ssh/config"
-chmod 0600 "$HOME/.ssh/config"
+link_config "$M_CONFIG_DIR/.ssh/config" "$HOME/.ssh/config" 0400

@@ -3,9 +3,12 @@
 
 # Symlink a repo file into place, replacing whatever is there. Backs up a real
 # (non-symlink) file once so nothing is lost the first time we take ownership.
+# $3 = optional permissions for the linked file (chmod follows the symlink to
+# the repo source); defaults to 0644 when omitted.
 link_config() {
     src="$1"
     dest="$2"
+    perms="${3:-0644}"
 
     [ -e "$src" ] || { echo "  skip (missing in repo): $src"; return 0; }
 
@@ -18,4 +21,5 @@ link_config() {
 
     rm -f "$dest"
     ln -s "$src" "$dest"
+    chmod "$perms" "$dest"
 }
