@@ -8,6 +8,8 @@ MACHINEPATH="$2"
 
 echo "Setting up shared config files"
 
+. "$SHAREDPATH/scripts/lib.sh"
+
 CONFIG_DIR="$SHAREDPATH/configs"
 
 # Set up SSH config
@@ -16,17 +18,14 @@ if [ ! -d "$HOME/.ssh" ]; then
 fi
 chmod 0700 "$HOME/.ssh"
 
-rm -f "$HOME/.ssh/config"
-ln -s "$CONFIG_DIR/.ssh/config" "$HOME/.ssh/config"
+link_config "$CONFIG_DIR/.ssh/config" "$HOME/.ssh/config"
 chmod 0600 "$HOME/.ssh/config"
 
 # Set up Tmux configs
-rm -f "$HOME/.tmux.conf"
-ln -s "$CONFIG_DIR/.tmux.conf" "$HOME/.tmux.conf"
+link_config "$CONFIG_DIR/.tmux.conf" "$HOME/.tmux.conf"
 
 # Hush the login message
-rm -f "$HOME/.hushlogin"
-ln -s "$CONFIG_DIR/.hushlogin" "$HOME/.hushlogin"
+link_config "$CONFIG_DIR/.hushlogin" "$HOME/.hushlogin"
 
 tmux source-file ~/.tmux.conf 2>/dev/null || true
 
@@ -35,20 +34,15 @@ M_CONFIG_DIR="$MACHINEPATH/configs"
 
 # Setup Mise if it is configured
 if [ -f "$M_CONFIG_DIR/.config/mise/config.toml" ]; then
-    MISE_CONFIG="$HOME/.config/mise/config.toml"
-    mkdir -p "$(dirname "$MISE_CONFIG")"
-    rm -f "$MISE_CONFIG"
-    ln -s "$M_CONFIG_DIR/.config/mise/config.toml" "$MISE_CONFIG"
+    link_config "$M_CONFIG_DIR/.config/mise/config.toml" "$HOME/.config/mise/config.toml"
     mise install
 fi
 
 # Set up Git configs
 if [ ! -f "$HOME/.gitconfig" ] || ! grep -q "signingkey" "$HOME/.gitconfig" 2>/dev/null; then
-    rm -f "$HOME/.gitconfig"
-    ln -s "$M_CONFIG_DIR/.gitconfig" "$HOME/.gitconfig"
+    link_config "$M_CONFIG_DIR/.gitconfig" "$HOME/.gitconfig"
 fi
 
 # Set up shell config
-rm -f "$HOME/.zshrc"
-ln -s "$M_CONFIG_DIR/.zshrc" "$HOME/.zshrc"
+link_config "$M_CONFIG_DIR/.zshrc" "$HOME/.zshrc"
 chmod 0600 "$HOME/.zshrc"

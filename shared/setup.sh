@@ -69,9 +69,9 @@ sh "$SHAREDPATH/scripts/homebrew.sh" "$MACHINEPATH"
 
 sh "$SHAREDPATH/scripts/configs.sh" "$SHAREDPATH" "$MACHINEPATH"
 
-sh "$SHAREDPATH/scripts/apps.sh" "$(dirname "$SHAREDPATH")"
-
 # Run the local config if its available
+# (App configs like VS Code and Terminal.app are opt-in per machine — call
+# scripts/vscode.sh / scripts/terminal.sh from a machine's setup.sh.)
 if [ -s "$MACHINEPATH/setup.sh" ]; then
     sh "$MACHINEPATH/setup.sh" "$SHAREDPATH" "$MACHINEPATH"
 fi
