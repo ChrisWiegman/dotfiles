@@ -4,7 +4,6 @@ brew "mise"
 brew "mole"
 brew "tmux"
 
-cask "maccy"
 cask "moom"
 cask "visual-studio-code"
 
