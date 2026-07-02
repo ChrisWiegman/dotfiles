@@ -4,7 +4,18 @@ brew "mise"
 brew "mole"
 brew "tmux"
 
-cask "moom"
 cask "visual-studio-code"
 
+mas "1Password for Safari", id: 1569813296
 mas "Okta Verify", id: 490179405
+mas "Wipr", id: 1662217862
+
+vscode "anthropic.claude-code"
+vscode "chriswiegman.kana-vscode-theme"
+vscode "donjayamanne.githistory"
+vscode "github.vscode-github-actions"
+vscode "github.vscode-pull-request-github"
+vscode "golang.go"
+vscode "mhutchie.git-graph"
+vscode "streetsidesoftware.code-spell-checker"
+vscode "tamasfe.even-better-toml"
