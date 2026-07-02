@@ -17,3 +17,6 @@ fi
 chmod 0700 "$HOME/.ssh"
 
 link_config "$M_CONFIG_DIR/.ssh/config" "$HOME/.ssh/config" 0400
+
+sh "$SHAREDPATH/scripts/vscode.sh" "$(dirname "$SHAREDPATH")"
+sh "$SHAREDPATH/scripts/terminal.sh" "$(dirname "$SHAREDPATH")"
