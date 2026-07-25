@@ -8,6 +8,7 @@ brew "tmux"
 
 cask "chriswiegman/backup-github/backup-github"
 cask "focusrite-control-2"
+cask "font-sf-mono"
 cask "protonvpn"
 cask "signal"
 cask "visual-studio-code"

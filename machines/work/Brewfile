@@ -4,6 +4,7 @@ brew "mise"
 brew "mole"
 brew "tmux"
 
+cask "font-sf-mono"
 cask "visual-studio-code"
 
 mas "1Password for Safari", id: 1569813296
