@@ -1,6 +1,7 @@
 tap "chriswiegman/backup-github", trusted: true
 
 brew "hugo"
+brew "lychee"
 brew "mas"
 brew "mise"
 brew "mole"
