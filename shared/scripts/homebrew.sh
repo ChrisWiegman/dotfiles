@@ -34,6 +34,15 @@ fi
 # install brew dependencies from Brewfile
 brew bundle --file="${MACHINEPATH}/Brewfile"
 
+# If the Brewfile installed the full Xcode app (via `mas`), its license must be
+# accepted before any xcrun-based tool (e.g. `mise install`, run right after this
+# script) will work. Accept it non-interactively now rather than let those steps
+# fail on the license prompt.
+if [ -d "/Applications/Xcode.app" ] && ! sudo xcodebuild -license status > /dev/null 2>&1; then
+    echo "Accepting Xcode license..."
+    sudo xcodebuild -license accept
+fi
+
 # Cleanup all leftovers from the installation.
 rm -f "${MACHINEPATH}/Brewfile.lock.json"
 brew cleanup --prune=all --quiet
