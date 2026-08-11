@@ -1,9 +1,15 @@
 [settings]
 github_attestations = false
 disable_hints = ["*"]
+minimum_release_age_excludes = ["npm:*"]
 
 [settings.node]
 gpg_verify = false
+
+# Use real npm rather than mise's built-in installer so that postinstall
+# scripts run and platform-native optional dependencies are downloaded.
+[settings.npm]
+shell_out = true
 
 [tools]
 go = "latest"
@@ -11,4 +17,4 @@ node = "latest"
 npm = "latest"
 bun = "latest"
 "npm:geekbot-cli" = "latest"
-"npm:@anthropic-ai/claude-code" = "latest"
+"npm:@anthropic-ai/claude-code" = { version = "latest", allow_builds = true }
