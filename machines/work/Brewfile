@@ -4,7 +4,6 @@ brew "mise"
 brew "mole"
 brew "tmux"
 
-cask "claude-code"
 cask "font-sf-mono"
 cask "visual-studio-code"
 
