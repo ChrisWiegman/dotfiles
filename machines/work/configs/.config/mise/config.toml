@@ -1,13 +1,16 @@
 [settings]
 github_attestations = false
 disable_hints = ["*"]
-minimum_release_age_excludes = ["npm:*"]
 
 [settings.node]
 gpg_verify = false
 
-# Use real npm rather than mise's built-in installer so that postinstall
-# scripts run and platform-native optional dependencies are downloaded.
+# Use real npm rather than mise's built-in installer so platform-native
+# optional dependencies are resolved for this machine. This does NOT run
+# package lifecycle scripts -- mise still passes --ignore-scripts, so
+# geekbot-cli's postinstall (a bun-missing warning and a skill-registration
+# hint) is skipped with a WARN. Set `allow_builds = true` on a tool that
+# genuinely needs its install scripts.
 [settings.npm]
 shell_out = true
 

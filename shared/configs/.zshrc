@@ -1,3 +1,9 @@
+# ---- Locale (must come first) ----
+# Without a UTF-8 charset the prompt's `$'✖'` below dies with "character
+# not in range", which aborts the rest of this file -- no aliases, no update
+# functions, no rup. Terminal.app sets LANG; a bare `ssh` often does not.
+export LANG="${LANG:-en_US.UTF-8}"
+
 # ---- Homebrew first (so PATH/FPATH are set before completions load) ----
 # Cache shellenv output — re-generate only when the brew binary changes
 _brew_cache="${HOMEBREW_CACHE:-$HOME/Library/Caches/Homebrew}/brew_shellenv.sh"

@@ -67,6 +67,14 @@ fi
 
 sh "$SHAREDPATH/scripts/homebrew.sh" "$MACHINEPATH"
 
+# homebrew.sh runs `brew shellenv` in its own shell, so that PATH never reaches
+# us. Repeat it here on a fresh machine, where /opt/homebrew/bin isn't on PATH
+# yet, so the steps below can find brew-installed tools (configs.sh runs
+# `mise install` and would abort setup with "mise: command not found").
+if [ -s "/opt/homebrew/bin/brew" ]; then
+    eval "$(/opt/homebrew/bin/brew shellenv)"
+fi
+
 sh "$SHAREDPATH/scripts/configs.sh" "$SHAREDPATH" "$MACHINEPATH"
 
 # Run the local config if its available

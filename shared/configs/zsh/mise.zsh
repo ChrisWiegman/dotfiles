@@ -1,9 +1,14 @@
-# ~/.zprofile
-eval "$(mise activate zsh --shims)"
+# Sourced from ~/.zshrc. Shims mode keeps the mise tools available to
+# non-interactive shells (editors, cron) as well as this one.
+if command -v mise >/dev/null 2>&1; then
+  eval "$(mise activate zsh --shims)"
+fi
 
 # Update all mise-managed tools (go, node, npm, etc.) to the latest
 # versions allowed by the mise config, then remove the old installs.
 function u_mise() {
+  command -v mise >/dev/null 2>&1 || return 0
+
   mise upgrade
   mise prune --yes
 }
@@ -27,6 +32,11 @@ function r_mise() {
   # Re-link the config if the symlink is missing or pointing elsewhere.
   if [[ ! -L "$dest" || "$(readlink "$dest")" != "$src" ]]; then
     mkdir -p "${dest:h}"
+    # Never discard a real file: back it up once, the way link_config does.
+    if [[ -e "$dest" && ! -L "$dest" ]]; then
+      mv "$dest" "$dest.pre-dotfiles"
+      echo "Backed up existing mise config -> ${dest:t}.pre-dotfiles"
+    fi
     rm -f "$dest"
     ln -s "$src" "$dest"
     echo "Re-linked mise config"
