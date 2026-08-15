@@ -11,10 +11,10 @@ cask "chriswiegman/backup-github/backup-github"
 cask "focusrite-control-2"
 cask "font-sf-mono"
 cask "protonvpn"
+cask "quicken"
 cask "signal"
 cask "visual-studio-code"
 
-mas "Banktivity", id: 1480779512
 mas "Ivory", id: 6444602274
 mas "Keynote", id: 361285480
 mas "Numbers", id: 361304891
