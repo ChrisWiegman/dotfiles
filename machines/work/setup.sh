@@ -18,5 +18,16 @@ chmod 0700 "$HOME/.ssh"
 
 link_config "$M_CONFIG_DIR/.ssh/config" "$HOME/.ssh/config" 0400
 
+# Prefer HTTPS (via the gh CLI credential helper) over SSH for GitHub git
+# operations. Commit/tag signing is unaffected either way, since it's handled
+# separately by 1Password's ssh-agent signing (gpg.format=ssh in
+# shared/configs/.gitconfig), not by the git remote transport.
+# Guarded on being logged in already, since a fresh machine hasn't run
+# `gh auth login` yet at this point in setup.
+if command -v gh >/dev/null 2>&1 && gh auth status -h github.com >/dev/null 2>&1; then
+    gh config set -h github.com git_protocol https
+    gh auth setup-git
+fi
+
 sh "$SHAREDPATH/scripts/vscode.sh" "$(dirname "$SHAREDPATH")"
 sh "$SHAREDPATH/scripts/terminal.sh" "$(dirname "$SHAREDPATH")"
