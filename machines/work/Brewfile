@@ -2,7 +2,6 @@ brew "gh"
 brew "mas"
 brew "mise"
 brew "mole"
-brew "tmux"
 
 cask "claude-code"
 cask "font-sf-mono"
