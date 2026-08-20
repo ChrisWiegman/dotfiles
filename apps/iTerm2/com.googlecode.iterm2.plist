@@ -26,16 +26,6 @@
 	<string>https://api.openai.com/v1/responses</string>
 	<key>AlwaysOpenWindowAtStartup</key>
 	<true/>
-	<key>AppleAntiAliasingThreshold</key>
-	<integer>1</integer>
-	<key>ApplePressAndHoldEnabled</key>
-	<false/>
-	<key>AppleScrollAnimationEnabled</key>
-	<integer>0</integer>
-	<key>AppleSmoothFixedFontsSizeThreshold</key>
-	<integer>1</integer>
-	<key>AppleWindowTabbingMode</key>
-	<string>manual</string>
 	<key>Default Bookmark Guid</key>
 	<string>021DB88A-96BF-4093-B7CF-281E20977694</string>
 	<key>EnableDivisionView</key>
@@ -1884,6 +1874,8 @@
 				<key>Red Component</key>
 				<real>0.74613857269287109</real>
 			</dict>
+			<key>Blink Allowed</key>
+			<true/>
 			<key>Blinking Cursor</key>
 			<true/>
 			<key>Blur</key>
@@ -2064,6 +2056,8 @@
 				<key>Red Component</key>
 				<real>1</real>
 			</dict>
+			<key>Cursor Type</key>
+			<integer>1</integer>
 			<key>Custom Command</key>
 			<string>No</string>
 			<key>Custom Directory</key>
@@ -2098,13 +2092,13 @@
 				<key>Alpha Component</key>
 				<real>1</real>
 				<key>Blue Component</key>
-				<real>0.86198854446411133</real>
+				<real>0.61339938640594482</real>
 				<key>Color Space</key>
-				<string>sRGB</string>
+				<string>P3</string>
 				<key>Green Component</key>
-				<real>0.86199951171875</real>
+				<real>0.74817758798599243</real>
 				<key>Red Component</key>
-				<real>0.86197912693023682</real>
+				<real>0.81691592931747437</real>
 			</dict>
 			<key>Foreground Color (Light)</key>
 			<dict>
@@ -2212,7 +2206,7 @@
 			<key>Non-ASCII Anti Aliased</key>
 			<true/>
 			<key>Normal Font</key>
-			<string>SFMono-Medium 13</string>
+			<string>SFMono-Regular 13</string>
 			<key>Option Key Sends</key>
 			<integer>0</integer>
 			<key>Prompt Before Closing 2</key>
@@ -2323,6 +2317,8 @@
 			<integer>6</integer>
 			<key>Transparency</key>
 			<real>0.10327953296703296</real>
+			<key>Unicode Version</key>
+			<integer>9</integer>
 			<key>Unlimited Scrollback</key>
 			<false/>
 			<key>Use Bold Font</key>
