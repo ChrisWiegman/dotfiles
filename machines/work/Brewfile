@@ -6,6 +6,7 @@ brew "tmux"
 
 cask "claude-code"
 cask "font-sf-mono"
+cask "iterm2"
 cask "moom"
 cask "raycast"
 cask "visual-studio-code"
