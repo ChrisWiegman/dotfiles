@@ -2,6 +2,7 @@ brew "gh"
 brew "mas"
 brew "mise"
 brew "mole"
+brew "pam-reattach"
 brew "tmux"
 
 cask "claude-code"
