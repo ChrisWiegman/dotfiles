@@ -30,3 +30,4 @@ if command -v gh >/dev/null 2>&1 && gh auth status -h github.com >/dev/null 2>&1
 fi
 
 sh "$SHAREDPATH/scripts/vscode.sh" "$(dirname "$SHAREDPATH")"
+sh "$SHAREDPATH/scripts/terminal.sh" "$(dirname "$SHAREDPATH")"
