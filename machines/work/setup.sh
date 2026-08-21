@@ -30,6 +30,3 @@ if command -v gh >/dev/null 2>&1 && gh auth status -h github.com >/dev/null 2>&1
 fi
 
 sh "$SHAREDPATH/scripts/vscode.sh" "$(dirname "$SHAREDPATH")"
-
-## Remove extra configs
-rm ~/.tmux.conf
