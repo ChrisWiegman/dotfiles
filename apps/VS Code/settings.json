@@ -49,7 +49,7 @@
     "editor.cursorBlinking": "smooth",
     "editor.cursorStyle": "block",
     "editor.fontFamily": "MonoLisaCode, 'SF Mono', Menlo, Monaco, monospace",
-    "editor.fontLigatures": "'calt' on, 'liga' on, 'ss02' on, 'ss01' on",
+    "editor.fontLigatures": "'calt' on, 'liga' on, 'ss01' on",
     "editor.fontSize": 13,
     "editor.formatOnPaste": false,
     "editor.formatOnSave": true,
