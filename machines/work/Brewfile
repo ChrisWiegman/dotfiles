@@ -7,6 +7,7 @@ brew "tmux"
 
 cask "claude-code"
 cask "font-sf-mono"
+cask "google-gemini"
 cask "visual-studio-code"
 
 mas "Okta Verify", id: 490179405
