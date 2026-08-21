@@ -502,7 +502,7 @@
 	<key>ShowCommandKeyInTitle</key>
 	<false/>
 	<key>ShowDimensionsInTitle</key>
-	<true/>
+	<false/>
 	<key>ShowRepresentedURLInTabTitle</key>
 	<false/>
 	<key>ShowRepresentedURLInTitle</key>
