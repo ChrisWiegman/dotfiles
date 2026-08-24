@@ -6,7 +6,8 @@ brew "pam-reattach"
 brew "tmux"
 
 cask "claude-code"
-cask "google-gemini"
 cask "visual-studio-code"
 
+mas "1Password for Safari", id: 1569813296
 mas "Okta Verify", id: 490179405
+mas "Wipr", id: 1662217862
