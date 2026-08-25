@@ -52,6 +52,13 @@ _sudo-command-line() {
 zle -N _sudo-command-line
 bindkey "\e\e" _sudo-command-line
 
+# ---- sudo Touch ID focus (tmux detaches the auth prompt from Terminal, so
+# Touch ID won't arm until Terminal is frontmost -- activate it first) ----
+sudo() {
+    osascript -e 'tell application "Terminal" to activate' >/dev/null 2>&1
+    command sudo "$@"
+}
+
 # ---- History (good shared defaults) ----
 export HISTFILE="$HOME/.zsh_history"
 export HISTSIZE=50000
