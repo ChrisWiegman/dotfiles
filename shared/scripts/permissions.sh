@@ -20,9 +20,13 @@ TERM_APP="Terminal"
 MARKER_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/dotfiles"
 APPMGMT_MARKER="$MARKER_DIR/app-management-guided"
 
-# Reading the user TCC database requires Full Disk Access, so it's a reliable probe.
+# Reading the TCC database requires Full Disk Access, so it's a reliable probe. Use
+# the system-level database (always present, created at OS install) rather than the
+# per-user one, which macOS only creates lazily after a per-app TCC decision has
+# happened for that user -- on a fresh account it doesn't exist yet, which made this
+# check always fail with "No such file" instead of "Operation not permitted".
 has_full_disk_access() {
-    dd if="$HOME/Library/Application Support/com.apple.TCC/TCC.db" \
+    dd if="/Library/Application Support/com.apple.TCC/TCC.db" \
         bs=1 count=1 of=/dev/null 2>/dev/null
 }
 
