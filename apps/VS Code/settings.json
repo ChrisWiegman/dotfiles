@@ -39,6 +39,7 @@
     "changie.autoCommitOnBatchRelease": true,
     "chat.agent.enabled": false,
     "chat.disableAIFeatures": true,
+    "claudeCode.hideOnboarding": true,
     "claudeCode.preferredLocation": "panel",
     "cSpell.ignoreWords": [
         "Wiegman"
@@ -68,10 +69,6 @@
     ],
     "editor.semanticHighlighting.enabled": true,
     "editor.smoothScrolling": true,
-    "emmet.includeLanguages": {
-        "javascript": "javascriptreact",
-        "typescript": "html"
-    },
     "editor.tokenColorCustomizations": {
         "textMateRules": [
             {
@@ -81,6 +78,10 @@
                 }
             }
         ]
+    },
+    "emmet.includeLanguages": {
+        "javascript": "javascriptreact",
+        "typescript": "html"
     },
     "emmet.triggerExpansionOnTab": true,
     "eslint.validate": [
