@@ -46,8 +46,28 @@ else
     missing=1
 fi
 
-# ---- App Management (not detectable; guide through it once and remember) ----
-if [ -f "$APPMGMT_MARKER" ]; then
+# App Management has no query API, but it blocks writes into other apps' bundles. So
+# open (without changing) a user-owned app's Info.plist for append: success means the
+# permission is granted. Prints nothing and returns 2 if there's no app to probe.
+app_management_status() {
+    for plist in /Applications/*.app/Contents/Info.plist; do
+        [ -f "$plist" ] && [ -O "$plist" ] || continue
+        if ( : >> "$plist" ) 2>/dev/null; then
+            return 0
+        fi
+        return 1
+    done
+    return 2
+}
+
+# ---- App Management (probe when possible; otherwise guide once and remember) ----
+app_management_status && appmgmt=0 || appmgmt=$?
+
+if [ "$appmgmt" -eq 0 ]; then
+    echo "  App Management: granted"
+    mkdir -p "$MARKER_DIR"
+    touch "$APPMGMT_MARKER"
+elif [ "$appmgmt" -eq 2 ] && [ -f "$APPMGMT_MARKER" ]; then
     echo "  App Management: already reviewed"
 else
     echo
