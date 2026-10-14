@@ -147,7 +147,8 @@ update_repos() {
 
     (
       local current_repo="$repodir"
-      local result
+      local result before after
+      local -i changed
 
       # Skip dirty working trees
       if ! git -C "$current_repo" diff --quiet 2>/dev/null || \
@@ -155,17 +156,26 @@ update_repos() {
         result="skipped (uncommitted changes)"
       # Fetch with prune — bail gracefully if offline or unreachable
       elif ! git -C "$current_repo" fetch --all --prune --quiet 2>/dev/null; then
-        result="fetch failed (offline or unreachable)"
+        result="%F{red}error updating repo%f"
       # Only pull if an upstream branch is configured
       elif ! git -C "$current_repo" rev-parse --abbrev-ref --symbolic-full-name @{u} &>/dev/null; then
         result="skipped (no upstream configured)"
-      elif git -C "$current_repo" pull --ff-only --quiet 2>/dev/null; then
-        result=""
       else
-        result=": pull failed (try manually)"
+        before="$(git -C "$current_repo" rev-parse HEAD 2>/dev/null)"
+        if git -C "$current_repo" pull --ff-only --quiet 2>/dev/null; then
+          after="$(git -C "$current_repo" rev-parse HEAD 2>/dev/null)"
+          if [[ "$before" == "$after" ]]; then
+            result="%F{yellow}No changes detected%f"
+          else
+            changed=$(git -C "$current_repo" diff --name-only "$before" "$after" 2>/dev/null | wc -l)
+            result="%F{green}[${changed}] files updated%f"
+          fi
+        else
+          result="%F{red}Error updating repo%f"
+        fi
       fi
 
-      echo "  -> ${current_repo:t} $result"
+      print -P -- "  -> ${current_repo:t} -- $result"
     ) &
     pids+=($!)
 
