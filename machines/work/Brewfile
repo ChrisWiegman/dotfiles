@@ -7,7 +7,6 @@ brew "tmux"
 
 cask "claude-code"
 cask "moom"
-cask "maccy"
 cask "visual-studio-code"
 
 mas "Okta Verify", id: 490179405
