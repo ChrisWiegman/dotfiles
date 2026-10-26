@@ -6,7 +6,8 @@ brew "pam-reattach"
 brew "tmux"
 
 cask "claude-code"
-cask "ears"
+casl "maccy"
+cask "moom"
 cask "visual-studio-code"
 
 mas "Okta Verify", id: 490179405
