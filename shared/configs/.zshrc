@@ -100,9 +100,22 @@ fi
 
 # ---- Aliases ----
 alias fdns="sudo dscacheutil -flushcache; sudo killall -HUP mDNSResponder"
-alias gup="git fetch --all --prune; git pull --ff-only"
 alias mip="dig -4 TXT +short o-o.myaddr.l.google.com @ns1.google.com"
 alias szh='echo "Reloading shell..."; source ~/.zshrc'
+
+# ---- Pull and delete local branches whose upstream was deleted ----
+# `function` keyword so a previously loaded `gup` alias doesn't expand here on reload.
+function gup {
+  git fetch --all --prune || return
+  git pull --ff-only
+
+  local current branch track
+  current="$(git branch --show-current)"
+  git for-each-ref --format='%(refname:short) %(upstream:track)' refs/heads |
+    while read -r branch track; do
+      [[ "$track" == "[gone]" && "$branch" != "$current" ]] && git branch -D "$branch"
+    done
+}
 
 
 # ---- Update Homebrew packages and casks ----
