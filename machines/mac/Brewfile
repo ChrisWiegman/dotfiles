@@ -10,7 +10,6 @@ brew "tmux"
 
 cask "chriswiegman/backup-github/backup-github"
 cask "focusrite-control-2"
-cask "protonvpn"
 cask "quicken"
 cask "signal"
 cask "visual-studio-code"
