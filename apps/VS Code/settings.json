@@ -1,9 +1,4 @@
 {
-    "[css]": {
-        "editor.codeActionsOnSave": {
-            "source.fixAll.stylelint": "explicit"
-        }
-    },
     "[go]": {
         "editor.codeActionsOnSave": {
             "source.organizeImports": "explicit"
@@ -14,14 +9,6 @@
             "source.fixAll.eslint": "explicit"
         },
         "editor.defaultFormatter": "dbaeumer.vscode-eslint"
-    },
-    "[php]": {
-        "editor.defaultFormatter": "wongjn.php-sniffer"
-    },
-    "[scss]": {
-        "editor.codeActionsOnSave": {
-            "source.fixAll.stylelint": "explicit"
-        }
     },
     "[typescript]": {
         "editor.codeActionsOnSave": {
@@ -41,6 +28,7 @@
     "chat.disableAIFeatures": true,
     "claudeCode.hideOnboarding": true,
     "claudeCode.preferredLocation": "panel",
+    "claudeCode.useCtrlEnterToSend": true,
     "cSpell.ignoreWords": [
         "Wiegman"
     ],
@@ -80,8 +68,7 @@
         ]
     },
     "emmet.includeLanguages": {
-        "javascript": "javascriptreact",
-        "typescript": "html"
+        "javascript": "javascriptreact"
     },
     "emmet.triggerExpansionOnTab": true,
     "eslint.validate": [
@@ -94,8 +81,8 @@
     "explorer.confirmDelete": false,
     "explorer.decorations.badges": false,
     "explorer.openEditors.visible": 1,
-    "files.autoSave": "afterDelay",
-    "files.autoSaveDelay": 500,
+    "files.autoSave": "onFocusChange",
+    "files.insertFinalNewline": true,
     "files.trimFinalNewlines": true,
     "files.trimTrailingWhitespace": true,
     "git-graph.dialog.addTag.pushToRemote": true,
@@ -131,114 +118,22 @@
     "go.lintOnSave": "workspace",
     "go.lintTool": "golangci-lint-v2",
     "go.toolsManagement.autoUpdate": true,
-    "harper.linters.OxfordComma": false,
-    "intelephense.codeLens.implementations.enable": true,
-    "intelephense.codeLens.overrides.enable": true,
-    "intelephense.codeLens.parent.enable": true,
-    "intelephense.codeLens.references.enable": true,
-    "intelephense.codeLens.usages.enable": true,
-    "intelephense.stubs": [
-        "apache",
-        "bcmath",
-        "bz2",
-        "calendar",
-        "com_dotnet",
-        "Core",
-        "ctype",
-        "curl",
-        "date",
-        "dba",
-        "dom",
-        "enchant",
-        "exif",
-        "FFI",
-        "fileinfo",
-        "filter",
-        "fpm",
-        "ftp",
-        "gd",
-        "gettext",
-        "gmp",
-        "hash",
-        "iconv",
-        "imap",
-        "intl",
-        "json",
-        "ldap",
-        "libxml",
-        "mbstring",
-        "meta",
-        "mysqli",
-        "oci8",
-        "odbc",
-        "openssl",
-        "pcntl",
-        "pcre",
-        "PDO",
-        "pdo_ibm",
-        "pdo_mysql",
-        "pdo_pgsql",
-        "pdo_sqlite",
-        "pgsql",
-        "Phar",
-        "posix",
-        "pspell",
-        "random",
-        "readline",
-        "Reflection",
-        "session",
-        "shmop",
-        "SimpleXML",
-        "snmp",
-        "soap",
-        "sockets",
-        "sodium",
-        "SPL",
-        "sqlite3",
-        "standard",
-        "superglobals",
-        "sysvmsg",
-        "sysvsem",
-        "sysvshm",
-        "tidy",
-        "tokenizer",
-        "xml",
-        "xmlreader",
-        "xmlrpc",
-        "xmlwriter",
-        "xsl",
-        "Zend OPcache",
-        "zip",
-        "zlib",
-        "wordpress"
-    ],
-    "intelephense.telemetry.enabled": false,
     "js/ts.inlayHints.functionLikeReturnTypes.enabled": true,
     "js/ts.inlayHints.parameterNames.enabled": "all",
     "js/ts.inlayHints.parameterTypes.enabled": true,
     "js/ts.updateImportsOnFileMove.enabled": "always",
     "markdownWordCount.minWordCount": 350,
-    "phpParameterHint.borderRadius": 3,
-    "phpParameterHint.fontSize": 11,
-    "phpParameterHint.hintOnlyLine": false,
-    "phpParameterHint.horizontalPadding": 0,
-    "phpParameterHint.verticalPadding": 0,
-    "phpSniffer.autoDetect": true,
     "remote.defaultExtensionsIfInstalledLocally": [
         "GitHub.vscode-pull-request-github"
     ],
     "security.workspace.trust.untrustedFiles": "open",
-    "stylelint.validate": [
-        "css",
-        "postcss",
-        "scss"
-    ],
     "telemetry.feedback.enabled": false,
     "telemetry.telemetryLevel": "off",
     "terminal.integrated.confirmOnExit": "never",
     "terminal.integrated.fontFamily": "MonoLisaCode, 'SF Mono', Menlo, Monaco, monospace",
     "terminal.integrated.fontSize": 13,
     "terminal.integrated.lineHeight": 1.4,
+    "terminal.integrated.scrollback": 10000,
     "update.mode": "none",
     "update.showReleaseNotes": false,
     "window.closeWhenEmpty": true,
@@ -253,13 +148,12 @@
         "editorGroup.border": "#00000000",
         "focusBorder": "#00000000",
         "panel.border": "#00000000",
-        "phpParameterHint.hintBackground": "#2d353b00",
-        "phpParameterHint.hintForeground": "#7f897da0",
         "sideBar.border": "#00000000",
         "statusBar.border": "#00000000"
     },
     "workbench.colorTheme": "Kana Dark",
     "workbench.commandPalette.history": 10,
+    "workbench.editor.closeOnFileDelete": true,
     "workbench.editor.highlightModifiedTabs": true,
     "workbench.editor.useModal": "off",
     "workbench.enableExperiments": false,
