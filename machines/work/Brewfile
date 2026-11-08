@@ -5,4 +5,3 @@ cask "claude-code"
 cask "visual-studio-code"
 
 mas "Okta Verify", id: 490179405
-mas "Wipr", id: 1662217862
