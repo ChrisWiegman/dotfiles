@@ -41,9 +41,9 @@ Swap `joy` for the machine you're setting up (`joy`, `mac`, or `work`).
 machine's App Store apps. Setup can't check this, and any App Store app it can't
 install is listed at the end of the run instead.
 
-On `mac` and `work`, also install the MonoLisa font (used by VS Code and the
-Terminal theme) from its thumb drive. Its license doesn't allow installing it
-any other way. If it's missing, setup lists it under **Needs your attention**.
+Also install the MonoLisa font (used by VS Code and the Terminal theme) from
+its thumb drive. Its license doesn't allow installing it any other way. If it's
+missing, setup lists it under **Needs your attention**.
 
 The script will install the Xcode Command Line Tools, clone this repo to
 `~/.dotfiles`, and re-exec from there. Once it finishes you can delete the
@@ -101,8 +101,8 @@ For the selected machine, `setup.sh`:
 4. Creates a new SSH key for this machine if it doesn't have one (`joy` and `mac`; `work` signs through 1Password). You pick a passphrase, which is saved in the Keychain. Setup then copies the public key and opens GitHub's "New SSH key" page. Add the key there twice, once as an **Authentication Key** and once as a **Signing Key**, while setup keeps running. Each machine gets its own key, so there's nothing to copy over from an old machine; just delete the old machine's key on GitHub.
 5. Installs everything in `shared/Brewfile` (tools every machine gets), then the machine's own `Brewfile`, via Homebrew.
 6. Enables Touch ID for `sudo` and turns on the firewall and its stealth mode. It warns if FileVault, Gatekeeper, System Integrity Protection, the screen-lock password, or automatic updates are off.
-7. Symlinks the shared and machine-specific config files (ssh, tmux, git, zsh, mise, etc.). SSH uses one shared config; machine-specific settings go in `machines/<machine>/configs/.ssh/config.d/*.conf`. GitHub's SSH host keys are pinned in `shared/configs/.ssh/known_hosts.d/github.com`, so a fresh machine never has to trust the key it sees on first connect; if GitHub rotates its keys, refresh that file from https://api.github.com/meta. On `joy` and `mac` it also writes `~/.config/git/allowed_signers` from the machine's key, so `git log --show-signature` can verify local commits. On `work`, commit signing comes from 1Password, which saves its config to `~/.gitconfig.local`. Setup can't do that step for you, so until the file exists it's listed under **Needs your attention**.
-8. Runs the machine's own `setup.sh`, if it has one (e.g. VS Code settings, the Terminal theme, and a check that the MonoLisa font is installed), then applies the machine's macOS and app settings (see [Mac settings](#mac-settings)).
+7. Symlinks the shared and machine-specific config files (ssh, tmux, git, zsh, mise, etc.). SSH uses one shared config; machine-specific settings go in `machines/<machine>/configs/.ssh/config.d/*.conf`. GitHub's SSH host keys are pinned in `shared/configs/.ssh/known_hosts.d/github.com`, so a fresh machine never has to trust the key it sees on first connect; if GitHub rotates its keys, refresh that file from https://api.github.com/meta. On `joy` and `mac` it also writes `~/.config/git/allowed_signers` from the machine's key, so `git log --show-signature` can verify local commits. On `work`, commit signing comes from 1Password, which saves its config to `~/.gitconfig.local`. Setup can't do that step for you, so until the file exists it's listed under **Needs your attention**. Last, it checks that the MonoLisa font is installed.
+8. Runs the machine's own `setup.sh`, if it has one (e.g. VS Code settings and the Terminal theme), then applies the machine's macOS and app settings (see [Mac settings](#mac-settings)).
 9. Clones any repos listed in the machine's `Repos` file into `~/Code`, over SSH if a key is set up and otherwise over HTTPS.
 
 Problems that shouldn't stop a rebuild (a Brewfile entry that fails to install,

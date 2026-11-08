@@ -8,4 +8,3 @@ SHAREDPATH="$1"
 # Link app configs that only belong on this machine.
 sh "$SHAREDPATH/scripts/vscode.sh" "$(dirname "$SHAREDPATH")"
 sh "$SHAREDPATH/scripts/terminal.sh" "$(dirname "$SHAREDPATH")"
-sh "$SHAREDPATH/scripts/fonts.sh"

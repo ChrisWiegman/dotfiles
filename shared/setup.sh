@@ -83,6 +83,9 @@ fi
 
 sh "$SHAREDPATH/scripts/configs.sh" "$SHAREDPATH" "$MACHINEPATH"
 
+# Fonts setup can't install (MonoLisa comes from its thumb drive).
+sh "$SHAREDPATH/scripts/fonts.sh"
+
 # Run the local config if its available
 # (App configs like VS Code and Terminal.app are opt-in per machine — call
 # scripts/vscode.sh / scripts/terminal.sh from a machine's setup.sh.)
