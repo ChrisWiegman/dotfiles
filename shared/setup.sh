@@ -27,7 +27,11 @@ if [ -z "$DOTFILES_SUDO_KEEPALIVE" ]; then
         echo "Administrator access is required to run setup." >&2
         exit 1
     fi
-    ( while true; do sudo -n true; sleep 60; kill -0 "$$" 2>/dev/null || exit; done ) &
+    (while true; do
+        sudo -n true
+        sleep 60
+        kill -0 "$$" 2>/dev/null || exit
+    done) &
 fi
 
 sh "$SHAREDPATH/scripts/mac.sh"
@@ -105,7 +109,7 @@ mkdir -p "$HOME/Code"
 if [ -f "$MACHINEPATH/Repos" ]; then
     echo "Cloning repos into ~/Code"
     while IFS= read -r repo || [ -n "$repo" ]; do
-        case "$repo" in ''|'#'*) continue ;; esac
+        case "$repo" in '' | '#'*) continue ;; esac
         reponame="$(basename "$repo" .git)"
         dest="$HOME/Code/$reponame"
         [ -d "$dest" ] && continue
@@ -114,20 +118,20 @@ if [ -f "$MACHINEPATH/Repos" ]; then
         # the ssh config, so a key that doesn't match fails instead of being
         # accepted.
         if GIT_SSH_COMMAND="ssh -o BatchMode=yes" \
-            git clone --quiet "$repo" "$dest" < /dev/null 2>/dev/null; then
+            git clone --quiet "$repo" "$dest" </dev/null 2>/dev/null; then
             echo "  cloned $reponame"
             continue
         fi
 
         https="$(echo "$repo" | sed -E 's#^git@github\.com:#https://github.com/#')"
         if [ "$https" != "$repo" ] && GIT_TERMINAL_PROMPT=0 \
-            git clone --quiet "$https" "$dest" < /dev/null; then
+            git clone --quiet "$https" "$dest" </dev/null; then
             git -C "$dest" remote set-url --push origin "$repo"
             echo "  cloned $reponame (over HTTPS)"
         else
             warn "Couldn't clone $repo (add your SSH key to GitHub and re-run setup)."
         fi
-    done < "$MACHINEPATH/Repos"
+    done <"$MACHINEPATH/Repos"
 fi
 
 echo
@@ -141,5 +145,5 @@ if [ -s "$DOTFILES_WARNINGS" ]; then
     echo "⚠️  Needs your attention:"
     while IFS= read -r line; do
         echo "   • $line"
-    done < "$DOTFILES_WARNINGS"
+    done <"$DOTFILES_WARNINGS"
 fi

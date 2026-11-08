@@ -20,7 +20,7 @@ fi
 # Launch Homebrew
 [ -s "/opt/homebrew/bin/brew" ] && eval "$(/opt/homebrew/bin/brew shellenv)"
 
-if ! command -v brew > /dev/null 2>&1; then
+if ! command -v brew >/dev/null 2>&1; then
     echo "Error: Homebrew installation failed" >&2
     exit 1
 fi
@@ -31,7 +31,7 @@ brew analytics off
 # (macOS no longer lets `mas` check App Store sign-in, so a signed-out App Store
 # shows up as failed `mas` lines in the bundle below.)
 if grep -q '^[[:space:]]*mas ' "$SHARED_BREWFILE" "${MACHINEPATH}/Brewfile" 2>/dev/null; then
-    if ! command -v mas > /dev/null 2>&1; then
+    if ! command -v mas >/dev/null 2>&1; then
         brew install mas
     fi
 fi
@@ -52,7 +52,7 @@ done
 # accepted before any xcrun-based tool (e.g. `mise install`, run right after this
 # script) will work. Accept it non-interactively now rather than let those steps
 # fail on the license prompt.
-if [ -d "/Applications/Xcode.app" ] && ! sudo xcodebuild -license status > /dev/null 2>&1; then
+if [ -d "/Applications/Xcode.app" ] && ! sudo xcodebuild -license status >/dev/null 2>&1; then
     echo "Accepting Xcode license..."
     sudo xcodebuild -license accept
 fi

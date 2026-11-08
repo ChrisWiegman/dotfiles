@@ -15,11 +15,11 @@ FW=/usr/libexec/ApplicationFirewall/socketfilterfw
 # of closed ports.
 if ! "$FW" --getglobalstate | grep -q 'State = 1'; then
     echo "  turning on the firewall"
-    sudo "$FW" --setglobalstate on > /dev/null || warn "Couldn't turn on the firewall. Enable it in System Settings > Network > Firewall."
+    sudo "$FW" --setglobalstate on >/dev/null || warn "Couldn't turn on the firewall. Enable it in System Settings > Network > Firewall."
 fi
 if ! "$FW" --getstealthmode | grep -q 'stealth mode is on'; then
     echo "  turning on firewall stealth mode"
-    sudo "$FW" --setstealthmode on > /dev/null || warn "Couldn't turn on firewall stealth mode. Enable it in System Settings > Network > Firewall > Options."
+    sudo "$FW" --setstealthmode on >/dev/null || warn "Couldn't turn on firewall stealth mode. Enable it in System Settings > Network > Firewall > Options."
 fi
 
 # FileVault normally gets turned on in Setup Assistant. Enabling it here would

@@ -13,19 +13,19 @@ trap 'echo "touchid.sh failed at line $LINENO" >&2' ERR
 [ -f /etc/pam.d/sudo_local.template ] || exit 0
 
 REATTACH_LIB=""
-if command -v brew > /dev/null 2>&1 && brew list pam-reattach > /dev/null 2>&1; then
+if command -v brew >/dev/null 2>&1 && brew list pam-reattach >/dev/null 2>&1; then
     REATTACH_LIB="$(brew --prefix pam-reattach)/lib/pam/pam_reattach.so"
 fi
 
 TMP="$(mktemp)"
-sed 's/^#auth/auth/' /etc/pam.d/sudo_local.template > "$TMP"
+sed 's/^#auth/auth/' /etc/pam.d/sudo_local.template >"$TMP"
 if [ -n "$REATTACH_LIB" ]; then
     sed -i '' "/pam_tid\.so/i\\
 auth       optional       $REATTACH_LIB
 " "$TMP"
 fi
 
-if ! diff -q "$TMP" /etc/pam.d/sudo_local > /dev/null 2>&1; then
+if ! diff -q "$TMP" /etc/pam.d/sudo_local >/dev/null 2>&1; then
     echo "Enabling Touch ID for sudo..."
     sudo cp "$TMP" /etc/pam.d/sudo_local
     sudo chmod 644 /etc/pam.d/sudo_local

@@ -18,7 +18,7 @@ TERMINAL_PROFILE="Kana Dark"
 TERMINAL_FILE="$APPS_DIR/Terminal/$TERMINAL_PROFILE.terminal"
 if [ -f "$TERMINAL_FILE" ]; then
     if ! /usr/libexec/PlistBuddy -c "Print :'Window Settings':'$TERMINAL_PROFILE'" \
-        "$HOME/Library/Preferences/com.apple.Terminal.plist" > /dev/null 2>&1; then
+        "$HOME/Library/Preferences/com.apple.Terminal.plist" >/dev/null 2>&1; then
         echo "  importing Terminal profile '$TERMINAL_PROFILE'"
         open "$TERMINAL_FILE"
         # Give Terminal a moment to register the imported profile.

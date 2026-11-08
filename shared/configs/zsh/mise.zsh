@@ -23,7 +23,8 @@ function r_mise() {
 
   # The active machine is whichever config dir ~/.zshrc resolves to, mirroring
   # M_CONFIG_DIR in scripts/configs.sh.
-  local zshrc; zshrc="$(readlink "$HOME/.zshrc" 2>/dev/null)" || return 0
+  local zshrc
+  zshrc="$(readlink "$HOME/.zshrc" 2>/dev/null)" || return 0
   local src="${zshrc:h}/.config/mise/config.toml"
   local dest="$HOME/.config/mise/config.toml"
 

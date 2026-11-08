@@ -8,11 +8,11 @@ export LANG="${LANG:-en_US.UTF-8}"
 # Cache shellenv output — re-generate only when the brew binary changes
 _brew_cache="${HOMEBREW_CACHE:-$HOME/Library/Caches/Homebrew}/brew_shellenv.sh"
 if [ -s "/opt/homebrew/bin/brew" ]; then
-    if [[ ! -f "$_brew_cache" || "/opt/homebrew/bin/brew" -nt "$_brew_cache" ]]; then
-        mkdir -p "${_brew_cache:h}"
-        /opt/homebrew/bin/brew shellenv >| "$_brew_cache"
-    fi
-    source "$_brew_cache"
+  if [[ ! -f "$_brew_cache" || "/opt/homebrew/bin/brew" -nt "$_brew_cache" ]]; then
+    mkdir -p "${_brew_cache:h}"
+    /opt/homebrew/bin/brew shellenv >|"$_brew_cache"
+  fi
+  source "$_brew_cache"
 fi
 unset _brew_cache
 
@@ -45,9 +45,9 @@ setopt CORRECT
 
 # ---- sudo escape (ESC ESC prepends sudo to current command) ----
 _sudo-command-line() {
-    [[ -z $BUFFER ]] && zle up-history
-    [[ $BUFFER != sudo\ * ]] && BUFFER="sudo $BUFFER"
-    zle end-of-line
+  [[ -z $BUFFER ]] && zle up-history
+  [[ $BUFFER != sudo\ * ]] && BUFFER="sudo $BUFFER"
+  zle end-of-line
 }
 zle -N _sudo-command-line
 bindkey "\e\e" _sudo-command-line
@@ -57,10 +57,10 @@ bindkey "\e\e" _sudo-command-line
 # Only inside a local tmux: anywhere else (VS Code's terminal, ssh) this would
 # launch or steal focus to Terminal for no reason.
 sudo() {
-    if [[ "$TERM_PROGRAM" == tmux && -z "$SSH_CONNECTION" ]]; then
-        osascript -e 'tell application "Terminal" to activate' >/dev/null 2>&1
-    fi
-    command sudo "$@"
+  if [[ "$TERM_PROGRAM" == tmux && -z "$SSH_CONNECTION" ]]; then
+    osascript -e 'tell application "Terminal" to activate' >/dev/null 2>&1
+  fi
+  command sudo "$@"
 }
 
 # ---- SSH keys from the Keychain ----
@@ -70,7 +70,7 @@ sudo() {
 # local key (work signs through 1Password's agent, so the system agent is always
 # empty there and this would otherwise run on every new shell).
 if [[ "$OSTYPE" == darwin* && -n "$SSH_AUTH_SOCK" && -f "$HOME/.ssh/id_ed25519" ]] && ! ssh-add -l >/dev/null 2>&1; then
-    ssh-add -q --apple-load-keychain 2>/dev/null
+  ssh-add -q --apple-load-keychain 2>/dev/null
 fi
 
 # ---- History (good shared defaults) ----
@@ -102,11 +102,11 @@ bindkey "${terminfo[kcud1]}" down-line-or-beginning-search
 # compinit. Touch the dump afterwards, since compinit only rewrites it when the
 # set of completion functions changes.
 autoload -Uz compinit
-_zcompdump_stale=( "$HOME"/.zcompdump(N.mh+24) )
-if (( ${#_zcompdump_stale} )); then
-    compinit && touch "$HOME/.zcompdump"
+_zcompdump_stale=("$HOME"/.zcompdump(N.mh+24))
+if ((${#_zcompdump_stale})); then
+  compinit && touch "$HOME/.zcompdump"
 else
-    compinit -C
+  compinit -C
 fi
 unset _zcompdump_stale
 zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
@@ -147,7 +147,6 @@ function gup {
       [[ "$track" == "[gone]" && "$branch" != "$current" ]] && git branch -D "$branch"
     done
 }
-
 
 # ---- Update Homebrew packages and casks ----
 update_homebrew() {
@@ -193,16 +192,22 @@ update_repos() {
   setopt localoptions nomonitor nobgnice
   echo "Updating code repositories"
   local CODE_DIR="$HOME/Code"
-  [[ -d "$CODE_DIR" ]] || { echo "$CODE_DIR does not exist. Skipping repo update."; return 0; }
+  [[ -d "$CODE_DIR" ]] || {
+    echo "$CODE_DIR does not exist. Skipping repo update."
+    return 0
+  }
 
   local gitdirs
   gitdirs=("${(@f)$(find "$CODE_DIR" -maxdepth 2 -type d -name ".git" 2>/dev/null)}")
-  [[ ${#gitdirs[@]} -gt 0 ]] || { echo "No git repositories found in $CODE_DIR. Skipping repo update."; return 0; }
+  [[ ${#gitdirs[@]} -gt 0 ]] || {
+    echo "No git repositories found in $CODE_DIR. Skipping repo update."
+    return 0
+  }
 
   local repo repodir pid
   local -i max_jobs="${UPDATE_REPOS_JOBS:-12}"
   local -a pids=()
-  (( max_jobs > 0 )) || max_jobs=1
+  ((max_jobs > 0)) || max_jobs=1
 
   for repo in "${gitdirs[@]}"; do
     repodir="${repo:h}"
@@ -213,8 +218,8 @@ update_repos() {
       local -i changed
 
       # Skip dirty working trees
-      if ! git -C "$current_repo" diff --quiet 2>/dev/null || \
-         ! git -C "$current_repo" diff --cached --quiet 2>/dev/null; then
+      if ! git -C "$current_repo" diff --quiet 2>/dev/null ||
+        ! git -C "$current_repo" diff --cached --quiet 2>/dev/null; then
         result="skipped (uncommitted changes)"
       # Fetch with prune — bail gracefully if offline or unreachable
       elif ! git -C "$current_repo" fetch --all --prune --quiet 2>/dev/null; then
@@ -242,7 +247,7 @@ update_repos() {
     pids+=($!)
 
     # Wait after each batch to keep network and process usage bounded.
-    if (( ${#pids[@]} >= max_jobs )); then
+    if ((${#pids[@]} >= max_jobs)); then
       for pid in "${pids[@]}"; do
         wait "$pid"
       done
@@ -263,32 +268,38 @@ flo() {
   local -a changes
   local -i found=0 shown=10
 
-  [[ -d "$code_dir" ]] || { echo "$code_dir does not exist."; return 0; }
+  [[ -d "$code_dir" ]] || {
+    echo "$code_dir does not exist."
+    return 0
+  }
 
   for gitdir in "$code_dir"/.git(N) "$code_dir"/*/.git(N); do
     repo="${gitdir:h}"
     changes=("${(@f)$(git -C "$repo" status --porcelain 2>/dev/null)}")
-    changes=(${changes:#})  # drop the empty element a clean repo leaves
-    (( ${#changes} )) || continue
+    changes=(${changes:#}) # drop the empty element a clean repo leaves
+    ((${#changes})) || continue
 
-    (( found++ ))
+    ((found++))
     print -P -- "%F{yellow}${repo:t}%f -- ${#changes} uncommitted"
     print -rl -- "    "${^changes[1,shown]}
-    (( ${#changes} > shown )) && echo "    ... and $(( ${#changes} - shown )) more"
+    ((${#changes} > shown)) && echo "    ... and $((${#changes} - shown)) more"
   done
 
-  (( found )) || echo "No uncommitted work in ${code_dir/#$HOME/~}."
+  ((found)) || echo "No uncommitted work in ${code_dir/#$HOME/~}."
 }
 
 # ---- Update dotfiles ----
 update_dotfiles() {
   echo "Updating dotfiles"
   local DOT="$HOME/.dotfiles"
-  [[ -d "$DOT/.git" ]] || { echo "$DOT is not a git repo. Skipping."; return 0; }
+  [[ -d "$DOT/.git" ]] || {
+    echo "$DOT is not a git repo. Skipping."
+    return 0
+  }
 
-  pushd "$DOT" > /dev/null || return 0
+  pushd "$DOT" >/dev/null || return 0
   gup
-  popd > /dev/null
+  popd >/dev/null
 
   szh
 }
@@ -298,7 +309,7 @@ update_dotfiles() {
 
 # ---- Daily runner (runs once per day) ----
 rup() {
-  [[ $(typeset -f update_repos)    ]] && update_repos
+  [[ $(typeset -f update_repos) ]] && update_repos
   [[ $(typeset -f update_dotfiles) ]] && update_dotfiles
 
   local stamp="${XDG_CACHE_HOME:-$HOME}/.rup.last"
@@ -308,10 +319,10 @@ rup() {
   if [[ -f "$stamp" ]] && [[ "$(cat "$stamp")" == "$today" ]]; then
     return 0
   fi
-  print -r -- "$today" >| "$stamp"
+  print -r -- "$today" >|"$stamp"
 
   [[ $(typeset -f update_app_store) ]] && update_app_store
   [[ $(typeset -f update_homebrew) ]] && update_homebrew
-  [[ $(typeset -f r_mise)           ]] && r_mise
-  [[ $(typeset -f u_mise)           ]] && u_mise
+  [[ $(typeset -f r_mise) ]] && r_mise
+  [[ $(typeset -f u_mise) ]] && u_mise
 }

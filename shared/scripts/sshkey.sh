@@ -46,7 +46,7 @@ ssh-keygen -q -t ed25519 -C "$COMMENT" -f "$KEY"
 # commit never stops to ask for the passphrase.
 ssh-add -q --apple-use-keychain "$KEY" || true
 
-pbcopy < "$KEY.pub"
+pbcopy <"$KEY.pub"
 open "https://github.com/settings/ssh/new" || true
 
 echo

@@ -52,7 +52,7 @@ fi
 app_management_status() {
     for plist in /Applications/*.app/Contents/Info.plist; do
         [ -f "$plist" ] && [ "$(stat -f %u "$plist")" = "$(id -u)" ] || continue
-        if ( : >> "$plist" ) 2>/dev/null; then
+        if (: >>"$plist") 2>/dev/null; then
             return 0
         fi
         return 1

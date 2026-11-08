@@ -38,7 +38,7 @@ M_CONFIG_DIR="$MACHINEPATH/configs"
 # Setup Mise if it is configured
 if [ -f "$M_CONFIG_DIR/.config/mise/config.toml" ]; then
     link_config "$M_CONFIG_DIR/.config/mise/config.toml" "$HOME/.config/mise/config.toml"
-    if ! command -v mise > /dev/null 2>&1; then
+    if ! command -v mise >/dev/null 2>&1; then
         warn "mise isn't installed (check the brew bundle output); tools in the mise config were not installed."
     elif ! mise install; then
         warn "mise install failed; open a new shell and run 'r_mise' to retry."
@@ -71,7 +71,7 @@ if grep -q 'id_ed25519' "$M_CONFIG_DIR/.gitconfig" 2>/dev/null && [ -f "$HOME/.s
     SIGNER_EMAIL="$(git config -f "$M_CONFIG_DIR/.gitconfig" user.email || true)"
     if [ -n "$SIGNER_EMAIL" ]; then
         mkdir -p "$HOME/.config/git"
-        printf '%s namespaces="git" %s\n' "$SIGNER_EMAIL" "$(cat "$HOME/.ssh/id_ed25519.pub")" >| "$HOME/.config/git/allowed_signers"
+        printf '%s namespaces="git" %s\n' "$SIGNER_EMAIL" "$(cat "$HOME/.ssh/id_ed25519.pub")" >|"$HOME/.config/git/allowed_signers"
     fi
 fi
 

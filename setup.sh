@@ -10,7 +10,7 @@ ARG_MACHINE="$(basename "${1:-}")"
 MACHINEPATH="$OURPWD/machines/$ARG_MACHINE"
 SHAREDPATH="$OURPWD/shared"
 
-die () {
+die() {
     echo >&2 "$@"
     exit 1
 }
@@ -20,17 +20,17 @@ die () {
 machines=""
 found=0
 for dir in "$OURPWD/machines"/*/; do
-  [ -d "$dir" ] || continue
-  name="$(basename "$dir")"
-  if [ "$name" = "$ARG_MACHINE" ]; then
-    found=1
-  fi
-  machines="${machines:+$machines, }'$name'"
+    [ -d "$dir" ] || continue
+    name="$(basename "$dir")"
+    if [ "$name" = "$ARG_MACHINE" ]; then
+        found=1
+    fi
+    machines="${machines:+$machines, }'$name'"
 done
 machines="$(echo "$machines" | sed 's/\(.*\), /\1, or /')"
 
 if [ "$found" -ne 1 ]; then
-  die "Please invoke script with either $machines as argument"
+    die "Please invoke script with either $machines as argument"
 fi
 
 sh "$SHAREDPATH/setup.sh" "$SHAREDPATH" "$MACHINEPATH"

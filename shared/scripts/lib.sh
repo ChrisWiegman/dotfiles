@@ -7,7 +7,7 @@
 warn() {
     echo "  ⚠️  $*" >&2
     if [ -n "$DOTFILES_WARNINGS" ]; then
-        echo "$*" >> "$DOTFILES_WARNINGS"
+        echo "$*" >>"$DOTFILES_WARNINGS"
     fi
 }
 
@@ -20,7 +20,10 @@ link_config() {
     dest="$2"
     perms="${3:-0644}"
 
-    [ -e "$src" ] || { echo "  skip (missing in repo): $src"; return 0; }
+    [ -e "$src" ] || {
+        echo "  skip (missing in repo): $src"
+        return 0
+    }
 
     mkdir -p "$(dirname "$dest")"
 
