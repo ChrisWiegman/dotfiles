@@ -86,7 +86,7 @@ For the selected machine, `setup.sh`:
 2. Installs the Xcode Command Line Tools and sets `zsh` as the default shell.
 3. Clones this repo to `~/.dotfiles` (and re-execs from there) if it isn't already. It fetches over HTTPS and pushes over SSH, so updates work before a GitHub SSH key exists.
 4. Creates a new SSH key for this machine if it doesn't have one (`joy` and `mac`; `work` signs through 1Password). You pick a passphrase, which is saved in the Keychain. Setup then copies the public key and opens GitHub's "New SSH key" page. Add the key there twice, once as an **Authentication Key** and once as a **Signing Key**, while setup keeps running. Each machine gets its own key, so there's nothing to copy over from an old machine; just delete the old machine's key on GitHub.
-5. Installs everything in the machine's `Brewfile` via Homebrew.
+5. Installs everything in `shared/Brewfile` (tools every machine gets), then the machine's own `Brewfile`, via Homebrew.
 6. Enables Touch ID for `sudo`, turns on the firewall and its stealth mode, and warns if FileVault is off.
 7. Symlinks the shared and machine-specific config files (ssh, tmux, git, zsh, mise, etc.). On `joy` and `mac` it also writes `~/.config/git/allowed_signers` from the machine's key, so `git log --show-signature` can verify local commits. On `work`, commit signing comes from 1Password, which saves its config to `~/.gitconfig.local`. Setup can't do that step for you, so until the file exists it's listed under **Needs your attention**.
 8. Runs the machine's own `setup.sh`, if it has one (e.g. VS Code settings and the Terminal theme), then applies the machine's macOS and app settings (see [Mac settings](#mac-settings)).

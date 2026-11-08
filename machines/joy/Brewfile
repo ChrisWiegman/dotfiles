@@ -1,8 +1,3 @@
-brew "mas"
-brew "mole"
-brew "pam-reattach"
-brew "tmux"
-
 cask "1password"
 cask "alfred"
 cask "dropbox"

@@ -1,11 +1,7 @@
 tap "chriswiegman/backup-github", trusted: true
 
 brew "hugo"
-brew "mas"
 brew "mise"
-brew "mole"
-brew "pam-reattach"
-brew "tmux"
 
 cask "chriswiegman/backup-github/backup-github"
 cask "focusrite-control-2"
