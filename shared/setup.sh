@@ -110,7 +110,10 @@ if [ -f "$MACHINEPATH/Repos" ]; then
         dest="$HOME/Code/$reponame"
         [ -d "$dest" ] && continue
 
-        if GIT_SSH_COMMAND="ssh -o BatchMode=yes -o StrictHostKeyChecking=accept-new" \
+        # No StrictHostKeyChecking override: GitHub's host keys are pinned in
+        # the ssh config, so a key that doesn't match fails instead of being
+        # accepted.
+        if GIT_SSH_COMMAND="ssh -o BatchMode=yes" \
             git clone --quiet "$repo" "$dest" < /dev/null 2>/dev/null; then
             echo "  cloned $reponame"
             continue

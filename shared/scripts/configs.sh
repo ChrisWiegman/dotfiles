@@ -21,6 +21,9 @@ chmod 0700 "$HOME/.ssh"
 
 link_config "$CONFIG_DIR/.ssh/config" "$HOME/.ssh/config" 0400
 
+# GitHub's pinned host keys, read by the ssh config's github.com block
+link_config "$CONFIG_DIR/.ssh/known_hosts.d/github.com" "$HOME/.ssh/known_hosts.d/github.com" 0444
+
 # Set up Tmux configs
 link_config "$CONFIG_DIR/.tmux.conf" "$HOME/.tmux.conf"
 
