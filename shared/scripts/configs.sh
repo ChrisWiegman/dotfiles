@@ -41,6 +41,14 @@ if [ -f "$M_CONFIG_DIR/.config/mise/config.toml" ]; then
     fi
 fi
 
+# Machine-specific SSH settings, pulled in by the shared config's Include.
+# Clear out old links first so a file removed from the repo stops applying.
+mkdir -p "$HOME/.ssh/config.d"
+find "$HOME/.ssh/config.d" -type l -delete
+for f in "$M_CONFIG_DIR/.ssh/config.d/"*.conf; do
+    [ -f "$f" ] && link_config "$f" "$HOME/.ssh/config.d/$(basename "$f")" 0600
+done
+
 # Set up Git configs
 if [ ! -f "$HOME/.gitconfig" ] || ! grep -q "signingkey" "$HOME/.gitconfig" 2>/dev/null; then
     link_config "$M_CONFIG_DIR/.gitconfig" "$HOME/.gitconfig"
