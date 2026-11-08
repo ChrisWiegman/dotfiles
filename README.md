@@ -89,7 +89,7 @@ For the selected machine, `setup.sh`:
 5. Installs everything in the machine's `Brewfile` via Homebrew.
 6. Enables Touch ID for `sudo`, turns on the firewall and its stealth mode, and warns if FileVault is off.
 7. Symlinks the shared and machine-specific config files (ssh, tmux, git, zsh, mise, etc.).
-8. Runs the machine's own `setup.sh`, if it has one (e.g. VS Code settings and the Terminal theme).
+8. Runs the machine's own `setup.sh`, if it has one (e.g. VS Code settings and the Terminal theme), then applies the machine's macOS and app settings (see [Mac settings](#mac-settings)).
 9. Clones any repos listed in the machine's `Repos` file into `~/Code`, over SSH if a key is set up and otherwise over HTTPS.
 
 Problems that shouldn't stop a rebuild (a Brewfile entry that fails to install,
@@ -99,3 +99,36 @@ those, then re-run setup; it skips anything already done.
 
 The script asks for your administrator password once up front and keeps that
 access alive for the rest of the run, so you can start it and walk away.
+
+## Mac settings
+
+Each machine keeps its System Settings and app preferences (Mail, Safari,
+Calendar, Reminders, Podcasts, Music, Notes, …) in `machines/<machine>/settings/`.
+There's one plist per preferences domain, holding only the keys being tracked.
+Window positions, timestamps, and account IDs stay out. Setup applies them, and
+the `macsettings` shell command keeps them up to date.
+
+Run `macsettings` from **Terminal**. It needs the same Full Disk Access as setup,
+because macOS hides sandboxed apps' settings (Mail, Safari, Notes, …) from
+everything else.
+
+**Capture a new setting.** Run `macsettings watch`, change the setting in System
+Settings or the app, and press Enter. It lists what changed; pick the ones to
+keep. Then commit `machines/<machine>/settings/`.
+
+**Settings changed over time.** `macsettings export` refreshes every tracked key
+from the Mac's current values. A key that's back to its default stops being
+tracked. Review with `git diff` and commit.
+
+**Other commands:**
+
+- `macsettings list` shows what's tracked.
+- `macsettings track <domain>` lists a domain's keys to pick from, and
+  `macsettings track <domain> <key>…` tracks specific keys.
+- `macsettings untrack <domain> [<key>…]` stops tracking keys.
+- `macsettings apply` writes the tracked settings to this Mac (setup does this).
+
+The machine comes from whichever one `~/.zshrc` is linked to; add
+`--machine <name>` to use another. To set up a machine that isn't built from
+this repo yet (an old Mac being replaced), clone the repo there and run
+`python3 shared/scripts/settings.py --machine <name> watch`.

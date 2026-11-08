@@ -85,6 +85,16 @@ if [ -s "$MACHINEPATH/setup.sh" ]; then
     sh "$MACHINEPATH/setup.sh" "$SHAREDPATH" "$MACHINEPATH"
 fi
 
+# Apply the machine's tracked macOS and app settings (machines/<m>/settings,
+# managed with `macsettings`; see shared/scripts/settings.py).
+if [ -d "$MACHINEPATH/settings" ]; then
+    echo "Applying macOS settings"
+    if ! /usr/bin/python3 -I "$SHAREDPATH/scripts/settings.py" \
+        --machine "$(basename "$MACHINEPATH")" apply; then
+        warn "Some macOS settings couldn't be applied (see above). Re-run: macsettings apply"
+    fi
+fi
+
 # Clone repos listed in the machine's Repos file into ~/Code. This runs last so
 # the ssh config is already linked. A fresh machine usually has no GitHub SSH
 # key yet, so fall back to an HTTPS clone (fine for public repos) that keeps

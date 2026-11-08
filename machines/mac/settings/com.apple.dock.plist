@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>autohide</key>
+	<true/>
+	<key>largesize</key>
+	<real>105.0</real>
+	<key>magnification</key>
+	<true/>
+	<key>minimize-to-application</key>
+	<true/>
+	<key>persistent-apps</key>
+	<array/>
+	<key>persistent-others</key>
+	<array/>
+	<key>show-process-indicators</key>
+	<false/>
+	<key>show-recents</key>
+	<false/>
+	<key>tilesize</key>
+	<real>51.0</real>
+</dict>
+</plist>

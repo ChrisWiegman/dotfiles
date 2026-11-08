@@ -122,6 +122,10 @@ alias fdns="sudo dscacheutil -flushcache; sudo killall -HUP mDNSResponder"
 alias mip="dig -4 TXT +short o-o.myaddr.l.google.com @ns1.google.com"
 alias szh='echo "Reloading shell..."; source ~/.zshrc'
 
+# Track, export, and apply this machine's macOS and app settings
+# (see `macsettings --help`).
+macsettings() { /usr/bin/python3 -I "$HOME/.dotfiles/shared/scripts/settings.py" "$@"; }
+
 # ---- Pull and delete local branches whose upstream was deleted ----
 # `function` keyword so a previously loaded `gup` alias doesn't expand here on reload.
 function gup {

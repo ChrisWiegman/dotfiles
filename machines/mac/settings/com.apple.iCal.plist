@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CalendarSidebarShown</key>
+	<false/>
+	<key>Default duration in minutes for new event</key>
+	<real>60.0</real>
+	<key>TimeZone support enabled</key>
+	<true/>
+	<key>first minute of day time range</key>
+	<integer>0</integer>
+	<key>last minute of day time range</key>
+	<integer>1440</integer>
+</dict>
+</plist>

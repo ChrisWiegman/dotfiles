@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>FXPreferredViewStyle</key>
+	<string>Nlsv</string>
+	<key>FXRemoveOldTrashItems</key>
+	<true/>
+	<key>NewWindowTarget</key>
+	<string>PfHm</string>
+	<key>ShowExternalHardDrivesOnDesktop</key>
+	<true/>
+	<key>ShowHardDrivesOnDesktop</key>
+	<false/>
+	<key>ShowPathbar</key>
+	<true/>
+	<key>ShowRemovableMediaOnDesktop</key>
+	<true/>
+	<key>ShowStatusBar</key>
+	<true/>
+</dict>
+</plist>
