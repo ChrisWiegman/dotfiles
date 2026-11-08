@@ -2,6 +2,7 @@
 brew "mas"
 brew "mole"
 brew "pam-reattach"
+brew "shellcheck"
 brew "tmux"
 
 cask "visual-studio-code"

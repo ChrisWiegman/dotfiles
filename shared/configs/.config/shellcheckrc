@@ -1,0 +1,6 @@
+# Shared shellcheck settings, linked to ~/.config/shellcheckrc on every machine.
+
+# Follow sourced files (`. ./lib.sh`) and resolve their paths from the script's
+# own directory, so helpers like lib.sh are checked instead of skipped.
+external-sources=true
+source-path=SCRIPTDIR
