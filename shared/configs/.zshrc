@@ -265,5 +265,4 @@ rup() {
   [[ $(typeset -f update_homebrew) ]] && update_homebrew
   [[ $(typeset -f r_mise)           ]] && r_mise
   [[ $(typeset -f u_mise)           ]] && u_mise
-  [[ $(typeset -f szh)             ]] && szh
 }
