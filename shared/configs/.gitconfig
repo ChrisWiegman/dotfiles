@@ -3,9 +3,11 @@
 
 [commit]
     gpgsign = true
+    verbose = true
 
 [tag]
     gpgsign = true
+    sort = version:refname
 
 [pull]
     rebase = false
@@ -13,6 +15,7 @@
 
 [push]
     default = simple
+    autoSetupRemote = true
 
 [color]
     ui = true
@@ -24,7 +27,14 @@
     conflictstyle = zdiff3
 
 [diff]
+    algorithm = histogram
     colorMoved = zebra
+
+[branch]
+    sort = -committerdate
+
+[rerere]
+    enabled = true
 
 [fetch]
     prune = true
