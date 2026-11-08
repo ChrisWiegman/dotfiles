@@ -85,11 +85,12 @@ For the selected machine, `setup.sh`:
 1. Checks that Terminal has the required macOS permissions (Full Disk Access and App Management), opening the right Settings panes and stopping if any are missing.
 2. Installs the Xcode Command Line Tools and sets `zsh` as the default shell.
 3. Clones this repo to `~/.dotfiles` (and re-execs from there) if it isn't already. It fetches over HTTPS and pushes over SSH, so updates work before a GitHub SSH key exists.
-4. Installs everything in the machine's `Brewfile` via Homebrew.
-5. Enables Touch ID for `sudo`.
-6. Symlinks the shared and machine-specific config files (ssh, tmux, git, zsh, mise, etc.).
-7. Runs the machine's own `setup.sh`, if it has one (e.g. VS Code settings and the Terminal theme).
-8. Clones any repos listed in the machine's `Repos` file into `~/Code`, over SSH if a key is set up and otherwise over HTTPS.
+4. Creates a new SSH key for this machine if it doesn't have one (`joy` and `mac`; `work` signs through 1Password). You pick a passphrase, which is saved in the Keychain. Setup then copies the public key and opens GitHub's "New SSH key" page. Add the key there twice, once as an **Authentication Key** and once as a **Signing Key**, while setup keeps running. Each machine gets its own key, so there's nothing to copy over from an old machine; just delete the old machine's key on GitHub.
+5. Installs everything in the machine's `Brewfile` via Homebrew.
+6. Enables Touch ID for `sudo`.
+7. Symlinks the shared and machine-specific config files (ssh, tmux, git, zsh, mise, etc.).
+8. Runs the machine's own `setup.sh`, if it has one (e.g. VS Code settings and the Terminal theme).
+9. Clones any repos listed in the machine's `Repos` file into `~/Code`, over SSH if a key is set up and otherwise over HTTPS.
 
 Problems that shouldn't stop a rebuild (a Brewfile entry that fails to install,
 a repo that can't be cloned yet, a missing SSH key) don't abort setup. They're

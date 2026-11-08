@@ -58,6 +58,10 @@ DOTFILES_WARNINGS="$(mktemp)"
 export DOTFILES_WARNINGS
 trap 'rm -f "$DOTFILES_WARNINGS"' EXIT
 
+# Create this machine's SSH key (if it needs one) before the long Homebrew step,
+# while you're still at the keyboard.
+sh "$SHAREDPATH/scripts/sshkey.sh" "$MACHINEPATH"
+
 sh "$SHAREDPATH/scripts/homebrew.sh" "$MACHINEPATH"
 
 sh "$SHAREDPATH/scripts/touchid.sh"

@@ -63,6 +63,14 @@ sudo() {
     command sudo "$@"
 }
 
+# ---- SSH keys from the Keychain ----
+# After a reboot the ssh-agent starts empty. Reload keys whose passphrases are
+# saved in the Keychain (setup's sshkey.sh saves them there), so git commit
+# signing works without prompting for a passphrase.
+if [[ "$OSTYPE" == darwin* && -n "$SSH_AUTH_SOCK" ]] && ! ssh-add -l >/dev/null 2>&1; then
+    ssh-add -q --apple-load-keychain 2>/dev/null
+fi
+
 # ---- History (good shared defaults) ----
 export HISTFILE="$HOME/.zsh_history"
 export HISTSIZE=50000
