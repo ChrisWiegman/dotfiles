@@ -1,0 +1,4 @@
+# Global gitignore. Git reads ~/.config/git/ignore by default, so no
+# core.excludesfile setting is needed.
+.DS_Store
+.claude/settings.local.json

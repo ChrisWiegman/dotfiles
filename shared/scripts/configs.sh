@@ -46,5 +46,8 @@ if [ ! -f "$HOME/.gitconfig" ] || ! grep -q "signingkey" "$HOME/.gitconfig" 2>/d
     link_config "$M_CONFIG_DIR/.gitconfig" "$HOME/.gitconfig"
 fi
 
+# Global gitignore (git reads ~/.config/git/ignore on its own)
+link_config "$CONFIG_DIR/.config/git/ignore" "$HOME/.config/git/ignore"
+
 # Set up shell config
 link_config "$M_CONFIG_DIR/.zshrc" "$HOME/.zshrc" 0600
