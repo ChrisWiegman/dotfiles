@@ -6,6 +6,7 @@ trap 'echo "work/setup.sh failed at line $LINENO" >&2' ERR
 SHAREDPATH="$1"
 MACHINEPATH="$2"
 
+# shellcheck source=SCRIPTDIR/../../shared/scripts/lib.sh
 . "$SHAREDPATH/scripts/lib.sh"
 
 # 1Password writes the commit-signing config (signing key and op-ssh-sign) to

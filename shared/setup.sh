@@ -51,6 +51,7 @@ if [ "$SHAREDPATH" != "$DOTFILES_DIR/shared" ]; then
     exec sh "$DOTFILES_DIR/setup.sh" "$MACHINE_NAME"
 fi
 
+# shellcheck source=SCRIPTDIR/scripts/lib.sh
 . "$SHAREDPATH/scripts/lib.sh"
 
 # Collect non-fatal problems from every step for the summary at the end.

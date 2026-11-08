@@ -8,6 +8,7 @@ MACHINEPATH="$2"
 
 echo "Setting up shared config files"
 
+# shellcheck source=SCRIPTDIR/lib.sh
 . "$SHAREDPATH/scripts/lib.sh"
 
 CONFIG_DIR="$SHAREDPATH/configs"

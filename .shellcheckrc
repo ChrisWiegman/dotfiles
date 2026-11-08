@@ -1,0 +1,8 @@
+# shellcheck settings for this repo. shellcheck stops at the first rc file it
+# finds, so this replaces ~/.config/shellcheckrc here; keep the shared settings.
+external-sources=true
+source-path=SCRIPTDIR
+
+# Setup scripts use `trap ... ERR` on purpose (see CLAUDE.md). /bin/sh on macOS
+# is bash in POSIX mode, which honors it, so the portability warning is noise.
+disable=SC3047
