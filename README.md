@@ -84,6 +84,9 @@ how I reset or update a machine.
 App Store apps, Homebrew packages, and mise tools, and installs anything added
 to the shared or machine `Brewfile` since setup last ran.
 
+`flo` ("find left overs") lists the repos in `~/Code` with uncommitted work,
+including untracked files.
+
 ## What setup does
 
 For the selected machine, `setup.sh`:

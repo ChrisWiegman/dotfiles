@@ -255,6 +255,31 @@ update_repos() {
   done
 }
 
+# ---- flo: Find Left Overs ----
+# List repos in ~/Code (the same ones update_repos updates) with uncommitted
+# work: staged, unstaged, or untracked files.
+flo() {
+  local code_dir="$HOME/Code" gitdir repo
+  local -a changes
+  local -i found=0 shown=10
+
+  [[ -d "$code_dir" ]] || { echo "$code_dir does not exist."; return 0; }
+
+  for gitdir in "$code_dir"/.git(N) "$code_dir"/*/.git(N); do
+    repo="${gitdir:h}"
+    changes=("${(@f)$(git -C "$repo" status --porcelain 2>/dev/null)}")
+    changes=(${changes:#})  # drop the empty element a clean repo leaves
+    (( ${#changes} )) || continue
+
+    (( found++ ))
+    print -P -- "%F{yellow}${repo:t}%f -- ${#changes} uncommitted"
+    print -rl -- "    "${^changes[1,shown]}
+    (( ${#changes} > shown )) && echo "    ... and $(( ${#changes} - shown )) more"
+  done
+
+  (( found )) || echo "No uncommitted work in ${code_dir/#$HOME/~}."
+}
+
 # ---- Update dotfiles ----
 update_dotfiles() {
   echo "Updating dotfiles"
