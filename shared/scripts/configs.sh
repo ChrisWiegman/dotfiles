@@ -57,7 +57,7 @@ fi
 # Global gitignore (git reads ~/.config/git/ignore on its own)
 link_config "$CONFIG_DIR/.config/git/ignore" "$HOME/.config/git/ignore"
 
-# shellcheck settings
+# Settings for shellcheck
 link_config "$CONFIG_DIR/.config/shellcheckrc" "$HOME/.config/shellcheckrc"
 
 # Let git verify commits signed with this machine's key. Only machines whose
