@@ -4,4 +4,9 @@ brew "mole"
 brew "pam-reattach"
 brew "tmux"
 
+cask "visual-studio-code"
+
+mas "Keynote", id: 361285480
+mas "Numbers", id: 361304891
+mas "Pages", id: 361309726
 mas "Wipr", id: 1662217862

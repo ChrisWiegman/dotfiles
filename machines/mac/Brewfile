@@ -7,9 +7,6 @@ cask "chriswiegman/backup-github/backup-github"
 cask "focusrite-control-2"
 cask "quicken"
 cask "signal"
-cask "visual-studio-code"
 
-mas "Numbers", id: 361304891
-mas "Pages", id: 361309726
 mas "Parachute Backup", id: 6748614170
 mas "Unread", id: 1363637349

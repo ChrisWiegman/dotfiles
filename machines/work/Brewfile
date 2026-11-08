@@ -2,6 +2,5 @@ brew "gh"
 brew "mise"
 
 cask "claude-code"
-cask "visual-studio-code"
 
 mas "Okta Verify", id: 490179405
