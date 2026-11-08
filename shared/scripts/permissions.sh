@@ -51,7 +51,7 @@ fi
 # permission is granted. Prints nothing and returns 2 if there's no app to probe.
 app_management_status() {
     for plist in /Applications/*.app/Contents/Info.plist; do
-        [ -f "$plist" ] && [ -O "$plist" ] || continue
+        [ -f "$plist" ] && [ "$(stat -f %u "$plist")" = "$(id -u)" ] || continue
         if ( : >> "$plist" ) 2>/dev/null; then
             return 0
         fi

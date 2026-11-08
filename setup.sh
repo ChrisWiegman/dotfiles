@@ -15,50 +15,19 @@ die () {
     exit 1
 }
 
-FOLDER="$OURPWD/machines"
-
-# Get only directories in the folder, not files
-dirs=""
-for dir in "$FOLDER"/*; do
-  [ -d "$dir" ] && dirs="$dirs $(basename "$dir")"
-done
-
-# Convert directory list to positional parameters for counting
-set -- $dirs
-count=$#
-
+# Each subfolder of machines/ is a valid target. Match the argument exactly
+# and list the targets for the usage message.
 machines=""
-
-if [ "$count" -eq 0 ]; then
-  echo "No directories found in $FOLDER"
-elif [ "$count" -eq 1 ]; then
-  machines="'$1'"
-else
-  i=1
-  while [ "$i" -le "$count" ]; do
-    eval d=\${$i}
-    if [ "$i" -eq "$count" ]; then
-      machines="${machines}or '$d'"
-    else
-      machines="${machines}'$d', "
-    fi
-    i=$(expr $i + 1)
-  done
-  echo
-fi
-
-# Validate original argument
-if [ -z "$ARG_MACHINE" ]; then
-  die "Please invoke script with either $machines as argument"
-fi
-
 found=0
-for d in $dirs; do
-  if [ "$ARG_MACHINE" = "$d" ]; then
+for dir in "$OURPWD/machines"/*/; do
+  [ -d "$dir" ] || continue
+  name="$(basename "$dir")"
+  if [ "$name" = "$ARG_MACHINE" ]; then
     found=1
-    break
   fi
+  machines="${machines:+$machines, }'$name'"
 done
+machines="$(echo "$machines" | sed 's/\(.*\), /\1, or /')"
 
 if [ "$found" -ne 1 ]; then
   die "Please invoke script with either $machines as argument"
