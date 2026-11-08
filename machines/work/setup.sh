@@ -18,6 +18,13 @@ chmod 0700 "$HOME/.ssh"
 
 link_config "$M_CONFIG_DIR/.ssh/config" "$HOME/.ssh/config" 0400
 
+# 1Password writes the commit-signing config (signing key and op-ssh-sign) to
+# ~/.gitconfig.local, which the work gitconfig includes. Setup can't do that
+# step, so flag it if it hasn't happened yet.
+if [ ! -f "$HOME/.gitconfig.local" ]; then
+    warn "No ~/.gitconfig.local yet, so commit signing will fail. In 1Password, set up SSH commit signing and save its config to ~/.gitconfig.local."
+fi
+
 # Prefer HTTPS (via the gh CLI credential helper) over SSH for GitHub git
 # operations. Commit/tag signing is unaffected either way, since it's handled
 # separately by 1Password's ssh-agent signing (gpg.format=ssh in
