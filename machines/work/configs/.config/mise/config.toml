@@ -16,5 +16,5 @@ shell_out = true
 
 [tools]
 go = "latest"
-node = "latest"
+node = "lts"
 npm = "latest"

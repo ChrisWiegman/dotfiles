@@ -7,5 +7,5 @@ gpg_verify = false
 
 [tools]
 go = "latest"
-node = "latest"
+node = "lts"
 npm = "latest"
