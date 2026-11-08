@@ -33,6 +33,11 @@
 [branch]
     sort = -committerdate
 
+# Check every object fetched, pushed, or received for corruption or malformed
+# data (e.g. paths that exploit case-insensitive filesystems) before using it.
+[transfer]
+    fsckObjects = true
+
 [rerere]
     enabled = true
 
