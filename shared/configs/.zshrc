@@ -54,8 +54,12 @@ bindkey "\e\e" _sudo-command-line
 
 # ---- sudo Touch ID focus (tmux detaches the auth prompt from Terminal, so
 # Touch ID won't arm until Terminal is frontmost -- activate it first) ----
+# Only inside a local tmux: anywhere else (VS Code's terminal, ssh) this would
+# launch or steal focus to Terminal for no reason.
 sudo() {
-    osascript -e 'tell application "Terminal" to activate' >/dev/null 2>&1
+    if [[ "$TERM_PROGRAM" == tmux && -z "$SSH_CONNECTION" ]]; then
+        osascript -e 'tell application "Terminal" to activate' >/dev/null 2>&1
+    fi
     command sudo "$@"
 }
 
@@ -80,12 +84,19 @@ bindkey "${terminfo[kcuu1]}" up-line-or-beginning-search
 bindkey "${terminfo[kcud1]}" down-line-or-beginning-search
 
 # ---- Completion niceties ----
+# Do the full (slow) compinit at most once a day and trust the cached dump
+# otherwise. The glob qualifier has to be in a real glob: inside [[ ]] it's a
+# literal string (without EXTENDED_GLOB), which made every shell run the full
+# compinit. Touch the dump afterwards, since compinit only rewrites it when the
+# set of completion functions changes.
 autoload -Uz compinit
-if [[ -n ${HOME}/.zcompdump(#qN.mh+24) ]]; then
-    compinit
+_zcompdump_stale=( "$HOME"/.zcompdump(N.mh+24) )
+if (( ${#_zcompdump_stale} )); then
+    compinit && touch "$HOME/.zcompdump"
 else
     compinit -C
 fi
+unset _zcompdump_stale
 zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
 
 # ---- Editor ----
@@ -227,7 +238,7 @@ rup() {
   [[ $(typeset -f update_repos)    ]] && update_repos
   [[ $(typeset -f update_dotfiles) ]] && update_dotfiles
 
-  local stamp="${XDG_CACHE_HOME:-$HOME/}/.rup.last"
+  local stamp="${XDG_CACHE_HOME:-$HOME}/.rup.last"
   mkdir -p "${stamp:h}"
 
   local today="$(date +%Y-%m-%d)"
