@@ -122,8 +122,6 @@ else
 fi
 
 # ---- Aliases ----
-alias fdns="sudo dscacheutil -flushcache; sudo killall -HUP mDNSResponder"
-alias mip="dig -4 TXT +short o-o.myaddr.l.google.com @ns1.google.com"
 alias szh='echo "Reloading shell..."; source ~/.zshrc'
 
 # Track, export, and apply this machine's macOS and app settings
