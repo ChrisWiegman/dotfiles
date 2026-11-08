@@ -27,6 +27,8 @@ link_config "$M_CONFIG_DIR/.ssh/config" "$HOME/.ssh/config" 0400
 if command -v gh >/dev/null 2>&1 && gh auth status -h github.com >/dev/null 2>&1; then
     gh config set -h github.com git_protocol https
     gh auth setup-git
+else
+    warn "GitHub CLI isn't signed in. Run 'gh auth login', then re-run setup to switch git to HTTPS via gh."
 fi
 
 sh "$SHAREDPATH/scripts/vscode.sh" "$(dirname "$SHAREDPATH")"

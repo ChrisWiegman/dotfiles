@@ -3,8 +3,10 @@
 set -e
 trap 'echo "setup.sh failed at line $LINENO" >&2' ERR
 
-OURPWD=$PWD
-ARG_MACHINE="$(basename "$1")"
+# Resolve paths from this script's location, not the current directory, so
+# `sh ~/Downloads/dotfiles-main/setup.sh joy` works from anywhere.
+OURPWD="$(cd "$(dirname "$0")" && pwd)"
+ARG_MACHINE="$(basename "${1:-}")"
 MACHINEPATH="$OURPWD/machines/$ARG_MACHINE"
 SHAREDPATH="$OURPWD/shared"
 
@@ -13,7 +15,7 @@ die () {
     exit 1
 }
 
-FOLDER="./machines"
+FOLDER="$OURPWD/machines"
 
 # Get only directories in the folder, not files
 dirs=""

@@ -1,6 +1,16 @@
 # Shared helpers for setup scripts. Source this file; it defines no top-level
 # behavior of its own.
 
+# Report a non-fatal problem now and again in the end-of-setup summary, so one
+# bad step (a renamed cask, an App Store sign-in) doesn't abort the whole run.
+# shared/setup.sh exports DOTFILES_WARNINGS as the file collecting these.
+warn() {
+    echo "  ⚠️  $*" >&2
+    if [ -n "$DOTFILES_WARNINGS" ]; then
+        echo "$*" >> "$DOTFILES_WARNINGS"
+    fi
+}
+
 # Symlink a repo file into place, replacing whatever is there. Backs up a real
 # (non-symlink) file once so nothing is lost the first time we take ownership.
 # $3 = optional permissions for the linked file (chmod follows the symlink to

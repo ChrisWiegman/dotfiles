@@ -14,7 +14,7 @@ Note this is an evolving repo and tends to represent where my machines are on an
 
 Each subfolder of `machines` is a target you can pass to `setup.sh`:
 
-- **joy** my personal laptop
+- **joy** Joy's laptop
 - **mac** my personal desktop
 - **work** my work machine
 
@@ -29,18 +29,17 @@ you only need a copy of this repo and the name of the machine you're setting up.
 
 Run setup from **Apple's Terminal app** (the macOS privacy permissions below
 attach to whichever app is running it). On a brand-new Mac `git` isn't available,
-so grab the repo as a zip, extract it, and run the setup script from wherever it
-landed:
+so download the repo as a tarball and run the setup script from it — one line:
 
 ```sh
-# Download and extract the repo (anywhere — Downloads is fine)
-curl -L https://github.com/ChrisWiegman/dotfiles/archive/refs/heads/main.zip -o dotfiles.zip
-unzip dotfiles.zip
-cd dotfiles-main
-
-# Run setup for the target machine (joy, mac, or work)
-./setup.sh mac
+curl -fsSL https://github.com/ChrisWiegman/dotfiles/archive/refs/heads/main.tar.gz | tar -xz && sh dotfiles-main/setup.sh joy
 ```
+
+Swap `joy` for the machine you're setting up (`joy`, `mac`, or `work`).
+
+**Before you start:** sign in to the App Store with the Apple ID that owns the
+machine's App Store apps. Setup can't check this, and any App Store app it can't
+install is listed at the end of the run instead.
 
 The script will install the Xcode Command Line Tools, clone this repo to
 `~/.dotfiles`, and re-exec from there. Once it finishes you can delete the
@@ -49,8 +48,8 @@ downloaded copy — `~/.dotfiles` is the canonical clone going forward.
 > **Heads up — the first run may stop on purpose.** Before doing anything, setup
 > checks that Terminal has the macOS permissions it needs (see below). If they're
 > missing it opens the right Settings panes, tells you what to enable, and stops.
-> Grant them, **quit and reopen Terminal**, and run `./setup.sh mac` again — the
-> second run goes start to finish.
+> Grant them, **quit and reopen Terminal**, and run `sh dotfiles-main/setup.sh joy`
+> again (from the same folder) — the second run goes start to finish.
 
 ### macOS permissions
 
@@ -85,12 +84,17 @@ For the selected machine, `setup.sh`:
 
 1. Checks that Terminal has the required macOS permissions (Full Disk Access and App Management), opening the right Settings panes and stopping if any are missing.
 2. Installs the Xcode Command Line Tools and sets `zsh` as the default shell.
-3. Clones this repo to `~/.dotfiles` (and re-execs from there) if it isn't already.
-4. Creates `~/Code` and clones any repos listed in the machine's `Repos` file.
-5. Installs everything in the machine's `Brewfile` via Homebrew (prompting you to sign in to the Mac App Store first if the Brewfile needs it).
+3. Clones this repo to `~/.dotfiles` (and re-execs from there) if it isn't already. It fetches over HTTPS and pushes over SSH, so updates work before a GitHub SSH key exists.
+4. Installs everything in the machine's `Brewfile` via Homebrew.
+5. Enables Touch ID for `sudo`.
 6. Symlinks the shared and machine-specific config files (ssh, tmux, git, zsh, mise, etc.).
-7. Links app configs from `apps/` (VS Code settings/keybindings) and imports the Terminal theme.
-8. Runs the machine's own `setup.sh`, if it has one, for any final machine-specific steps.
+7. Runs the machine's own `setup.sh`, if it has one (e.g. VS Code settings and the Terminal theme).
+8. Clones any repos listed in the machine's `Repos` file into `~/Code`, over SSH if a key is set up and otherwise over HTTPS.
+
+Problems that shouldn't stop a rebuild (a Brewfile entry that fails to install,
+a repo that can't be cloned yet, a missing SSH key) don't abort setup. They're
+collected and listed under **Needs your attention** when it finishes. Fix
+those, then re-run setup; it skips anything already done.
 
 The script asks for your administrator password once up front and keeps that
 access alive for the rest of the run, so you can start it and walk away.

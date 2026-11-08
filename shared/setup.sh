@@ -42,28 +42,21 @@ if [ "$SHAREDPATH" != "$DOTFILES_DIR/shared" ]; then
     if [ ! -d "$DOTFILES_DIR/.git" ]; then
         echo "Cloning dotfiles to $DOTFILES_DIR..."
         git clone "$DOTFILES_REPO_HTTPS" "$DOTFILES_DIR"
-        git -C "$DOTFILES_DIR" remote set-url origin "$DOTFILES_REPO_SSH"
+        # Fetch over HTTPS (works anonymously, so `rup` keeps updating dotfiles
+        # even on a machine with no GitHub SSH key) and push over SSH.
+        git -C "$DOTFILES_DIR" remote set-url --push origin "$DOTFILES_REPO_SSH"
     fi
     MACHINE_NAME="$(basename "$MACHINEPATH")"
     cd "$DOTFILES_DIR"
     exec sh "$DOTFILES_DIR/setup.sh" "$MACHINE_NAME"
 fi
 
-# Create the code folder if we don't have it
-if [ ! -d "$HOME/Code" ]; then
-    mkdir -p "$HOME/Code"
-fi
+. "$SHAREDPATH/scripts/lib.sh"
 
-# Clone repos listed in the machine's Repos file into ~/Code
-if [ -f "$MACHINEPATH/Repos" ]; then
-    while IFS= read -r repo || [ -n "$repo" ]; do
-        [ -z "$repo" ] && continue
-        reponame="$(basename "$repo" .git)"
-        if [ ! -d "$HOME/Code/$reponame" ]; then
-            git clone "$repo" "$HOME/Code/$reponame"
-        fi
-    done < "$MACHINEPATH/Repos"
-fi
+# Collect non-fatal problems from every step for the summary at the end.
+DOTFILES_WARNINGS="$(mktemp)"
+export DOTFILES_WARNINGS
+trap 'rm -f "$DOTFILES_WARNINGS"' EXIT
 
 sh "$SHAREDPATH/scripts/homebrew.sh" "$MACHINEPATH"
 
@@ -86,8 +79,46 @@ if [ -s "$MACHINEPATH/setup.sh" ]; then
     sh "$MACHINEPATH/setup.sh" "$SHAREDPATH" "$MACHINEPATH"
 fi
 
+# Clone repos listed in the machine's Repos file into ~/Code. This runs last so
+# the ssh config is already linked. A fresh machine usually has no GitHub SSH
+# key yet, so fall back to an HTTPS clone (fine for public repos) that keeps
+# SSH as the push URL, and never let one repo stop the run.
+mkdir -p "$HOME/Code"
+if [ -f "$MACHINEPATH/Repos" ]; then
+    echo "Cloning repos into ~/Code"
+    while IFS= read -r repo || [ -n "$repo" ]; do
+        case "$repo" in ''|'#'*) continue ;; esac
+        reponame="$(basename "$repo" .git)"
+        dest="$HOME/Code/$reponame"
+        [ -d "$dest" ] && continue
+
+        if GIT_SSH_COMMAND="ssh -o BatchMode=yes -o StrictHostKeyChecking=accept-new" \
+            git clone --quiet "$repo" "$dest" < /dev/null 2>/dev/null; then
+            echo "  cloned $reponame"
+            continue
+        fi
+
+        https="$(echo "$repo" | sed -E 's#^git@github\.com:#https://github.com/#')"
+        if [ "$https" != "$repo" ] && GIT_TERMINAL_PROMPT=0 \
+            git clone --quiet "$https" "$dest" < /dev/null; then
+            git -C "$dest" remote set-url --push origin "$repo"
+            echo "  cloned $reponame (over HTTPS)"
+        else
+            warn "Couldn't clone $repo (add your SSH key to GitHub and re-run setup)."
+        fi
+    done < "$MACHINEPATH/Repos"
+fi
+
 echo
 echo "✅ Setup complete for '$(basename "$MACHINEPATH")'."
 echo "   • Homebrew packages, casks, and App Store apps installed"
 echo "   • Shell, git, ssh, tmux, mise, and app configs linked"
 echo "   Open a new terminal (or run 'szh') to pick up the new shell config."
+
+if [ -s "$DOTFILES_WARNINGS" ]; then
+    echo
+    echo "⚠️  Needs your attention:"
+    while IFS= read -r line; do
+        echo "   • $line"
+    done < "$DOTFILES_WARNINGS"
+fi
