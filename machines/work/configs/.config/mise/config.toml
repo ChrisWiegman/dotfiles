@@ -1,9 +1,5 @@
 [settings]
-github_attestations = false
 disable_hints = ["*"]
-
-[settings.node]
-gpg_verify = false
 
 # Use real npm rather than mise's built-in installer so platform-native
 # optional dependencies are resolved for this machine. This does NOT run
