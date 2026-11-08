@@ -1,7 +1,6 @@
 tap "chriswiegman/backup-github", trusted: true
 
 brew "hugo"
-brew "lychee"
 brew "mas"
 brew "mise"
 brew "mole"
@@ -14,11 +13,8 @@ cask "quicken"
 cask "signal"
 cask "visual-studio-code"
 
-mas "Keynote", id: 361285480
 mas "Numbers", id: 361304891
 mas "Pages", id: 361309726
 mas "Parachute Backup", id: 6748614170
-mas "Pixelmator Pro", id: 6746662575
 mas "Unread", id: 1363637349
 mas "Wipr", id: 1662217862
-mas "Xcode", id: 497799835
