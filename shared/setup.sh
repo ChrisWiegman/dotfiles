@@ -66,6 +66,8 @@ sh "$SHAREDPATH/scripts/homebrew.sh" "$MACHINEPATH"
 
 sh "$SHAREDPATH/scripts/touchid.sh"
 
+sh "$SHAREDPATH/scripts/security.sh"
+
 # homebrew.sh runs `brew shellenv` in its own shell, so that PATH never reaches
 # us. Repeat it here on a fresh machine, where /opt/homebrew/bin isn't on PATH
 # yet, so the steps below can find brew-installed tools (configs.sh runs
