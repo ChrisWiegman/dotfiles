@@ -85,9 +85,10 @@ if [ -s "$MACHINEPATH/setup.sh" ]; then
     sh "$MACHINEPATH/setup.sh" "$SHAREDPATH" "$MACHINEPATH"
 fi
 
-# Apply the machine's tracked macOS and app settings (machines/<m>/settings,
-# managed with `macsettings`; see shared/scripts/settings.py).
-if [ -d "$MACHINEPATH/settings" ]; then
+# Apply the tracked macOS and app settings: shared/settings on every machine,
+# then the machine's own machines/<m>/settings (managed with `macsettings`;
+# see shared/scripts/settings.py).
+if [ -d "$SHAREDPATH/settings" ] || [ -d "$MACHINEPATH/settings" ]; then
     echo "Applying macOS settings"
     if ! /usr/bin/python3 -I "$SHAREDPATH/scripts/settings.py" \
         --machine "$(basename "$MACHINEPATH")" apply; then

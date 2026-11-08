@@ -5,7 +5,9 @@ Settings live per machine in machines/<machine>/settings/, one XML plist per
 preferences domain holding only the keys being tracked (not the whole domain,
 which is full of window positions, timestamps, and account-specific IDs).
 Settings for the -currentHost (ByHost) variant of a domain live in
-settings/currentHost/.
+settings/currentHost/. Settings every machine gets live in shared/settings/;
+`apply` writes those first, then the machine's own, so a machine can override
+a shared value. Use --machine shared to track or list the shared ones.
 
 Commands (run from Terminal, which has Full Disk Access; without it macOS
 hides sandboxed apps' settings such as Mail, Safari, and Notes):
@@ -28,7 +30,8 @@ hides sandboxed apps' settings such as Mail, Safari, and Notes):
 Domains are names like com.apple.dock or NSGlobalDomain; prefix one with
 currentHost/ for its ByHost variant (e.g. currentHost/com.apple.screensaver).
 The machine defaults to whichever one ~/.zshrc is linked from; pass
---machine <name> to choose another.
+--machine <name> to choose another, or --machine shared for the settings
+every machine gets.
 """
 
 import argparse
@@ -43,6 +46,7 @@ import time
 DOTFILES = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 HOME = os.path.expanduser("~")
 CURRENT_HOST = "currentHost/"
+SHARED = "shared"  # --machine name for shared/settings, applied on every machine
 
 # Keys that are app state rather than preferences. They're hidden from `watch`
 # and `track` listings (pass --all to see them) but can still be tracked by name.
@@ -84,6 +88,8 @@ def detect_machine():
 
 
 def settings_dir(machine):
+    if machine == SHARED:
+        return os.path.join(DOTFILES, "shared", "settings")
     mdir = os.path.join(DOTFILES, "machines", machine)
     if not os.path.isdir(mdir):
         sys.exit(f"No machine named '{machine}' in {os.path.join(DOTFILES, 'machines')}.")
@@ -330,20 +336,24 @@ def cmd_apply(args, sdir):
     restart = set()
     changed = 0
     failed = []
-    for domain in tracked_domains(sdir):
-        try:
-            ensure_container(domain)
-            live = read_domain(domain)
-            for key, value in sorted(load_tracked(sdir, domain).items()):
-                if live.get(key) != value:
-                    write_key(domain, key, value)
-                    changed += 1
-                    restart.update(RESTART.get(domain, []))
-        except (NoAccess, subprocess.CalledProcessError) as err:
-            failed.append(f"{domain}: {err}")
+    # Shared settings first, then the machine's, so the machine's values win.
+    sdirs = [sdir] if args.machine == SHARED else [settings_dir(SHARED), sdir]
+    for domain_dir in sdirs:
+        for domain in tracked_domains(domain_dir):
+            try:
+                ensure_container(domain)
+                live = read_domain(domain)
+                for key, value in sorted(load_tracked(domain_dir, domain).items()):
+                    if live.get(key) != value:
+                        write_key(domain, key, value)
+                        changed += 1
+                        restart.update(RESTART.get(domain, []))
+            except (NoAccess, subprocess.CalledProcessError) as err:
+                failed.append(f"{domain}: {err}")
     for app in sorted(restart):
         subprocess.run(["killall", app], capture_output=True)
-    print(f"Applied settings for '{args.machine}': "
+    label = args.machine if args.machine == SHARED else f"{args.machine}' + 'shared"
+    print(f"Applied settings for '{label}': "
           + (f"{changed} change(s)." if changed else "already up to date."))
     if changed:
         print("  Some changes (menu bar, keyboard, trackpad) need a log out and back in,"

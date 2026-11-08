@@ -108,6 +108,11 @@ There's one plist per preferences domain, holding only the keys being tracked.
 Window positions, timestamps, and account IDs stay out. Setup applies them, and
 the `macsettings` shell command keeps them up to date.
 
+Settings every machine should get (like not writing `.DS_Store` files to
+network and USB drives) live in `shared/settings/`. Setup applies those first,
+then the machine's own, so a machine can override a shared value. Manage them
+with `macsettings --machine shared …`.
+
 Run `macsettings` from **Terminal**. It needs the same Full Disk Access as setup,
 because macOS hides sandboxed apps' settings (Mail, Safari, Notes, …) from
 everything else.
