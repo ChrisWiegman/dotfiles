@@ -78,6 +78,12 @@ cd ~/.dotfiles
 Re-running `./setup.sh <machine>` from `~/.dotfiles` at any time is safe and is
 how I reset or update a machine.
 
+### Day to day
+
+`rup` updates the repos in `~/Code` and this repo. Once a day it also updates
+App Store apps, Homebrew packages, and mise tools, and installs anything added
+to the shared or machine `Brewfile` since setup last ran.
+
 ## What setup does
 
 For the selected machine, `setup.sh`:

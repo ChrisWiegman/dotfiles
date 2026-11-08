@@ -148,7 +148,25 @@ update_homebrew() {
   command brew update --quiet
   command brew upgrade -y --quiet
   command brew upgrade -y --cask --greedy --quiet
+  bundle_homebrew
   command brew cleanup --prune=all --quiet
+}
+
+# ---- Install new Brewfile entries ----
+# Setup installs the shared and machine Brewfiles, but an entry added since
+# (say, from another machine) would otherwise wait for the next setup run.
+# The machine is whichever one ~/.zshrc links to, as in r_mise.
+bundle_homebrew() {
+  local zshrc brewfile
+  zshrc="$(readlink "$HOME/.zshrc" 2>/dev/null)" || return 0
+  for brewfile in "$HOME/.dotfiles/shared/Brewfile" "${zshrc:h:h}/Brewfile"; do
+    [[ -f "$brewfile" ]] || continue
+    command brew bundle check --no-upgrade --quiet --file="$brewfile" >/dev/null 2>&1 && continue
+    echo "Installing new entries from ${brewfile#$HOME/.dotfiles/}"
+    command brew bundle install --no-upgrade --quiet --file="$brewfile" ||
+      echo "Some entries in $brewfile failed to install (App Store apps need you signed in)"
+    rm -f "$brewfile.lock.json"
+  done
 }
 
 # ---- Update Mac App Store apps ----
