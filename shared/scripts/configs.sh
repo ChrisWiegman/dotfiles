@@ -49,5 +49,16 @@ fi
 # Global gitignore (git reads ~/.config/git/ignore on its own)
 link_config "$CONFIG_DIR/.config/git/ignore" "$HOME/.config/git/ignore"
 
+# Let git verify commits signed with this machine's key. Only machines whose
+# gitconfig signs with ~/.ssh/id_ed25519 (sshkey.sh creates it earlier in setup);
+# work signs through 1Password, which manages its own config.
+if grep -q 'id_ed25519' "$M_CONFIG_DIR/.gitconfig" 2>/dev/null && [ -f "$HOME/.ssh/id_ed25519.pub" ]; then
+    SIGNER_EMAIL="$(git config -f "$M_CONFIG_DIR/.gitconfig" user.email || true)"
+    if [ -n "$SIGNER_EMAIL" ]; then
+        mkdir -p "$HOME/.config/git"
+        printf '%s namespaces="git" %s\n' "$SIGNER_EMAIL" "$(cat "$HOME/.ssh/id_ed25519.pub")" >| "$HOME/.config/git/allowed_signers"
+    fi
+fi
+
 # Set up shell config
 link_config "$M_CONFIG_DIR/.zshrc" "$HOME/.zshrc" 0600
