@@ -27,3 +27,33 @@ fi
 if ! fdesetup status | grep -q 'FileVault is On'; then
     warn "FileVault is off. Turn it on in System Settings > Privacy & Security > FileVault, and keep the recovery key somewhere safe."
 fi
+
+# The rest are on by default and each needs a person (a confirmation dialog,
+# a password, or Recovery mode) to change, so only flag them if they're off.
+if ! spctl --status 2>/dev/null | grep -q 'assessments enabled'; then
+    warn "Gatekeeper is off. Turn it back on with: sudo spctl --global-enable"
+fi
+
+if ! csrutil status 2>/dev/null | grep -q 'enabled\.$'; then
+    warn "System Integrity Protection is off. Turn it back on from Recovery mode with: csrutil enable"
+fi
+
+# sysadminctl prints its answer on stderr, e.g. "screenLock delay is immediate".
+if sysadminctl -screenLock status 2>&1 | grep -q 'screenLock is off'; then
+    warn "The screen doesn't lock with a password. Set it in System Settings > Lock Screen > Require password after screen saver begins."
+fi
+
+# Only an explicit 0 means off: a fresh Mac may not have written these yet.
+updates_off=""
+for key in AutomaticCheckEnabled AutomaticDownload AutomaticallyInstallMacOSUpdates \
+    CriticalUpdateInstall ConfigDataInstall; do
+    if [ "$(defaults read /Library/Preferences/com.apple.SoftwareUpdate "$key" 2>/dev/null)" = "0" ]; then
+        updates_off="$updates_off $key"
+    fi
+done
+if [ "$(defaults read /Library/Preferences/com.apple.commerce AutoUpdate 2>/dev/null)" = "0" ]; then
+    updates_off="$updates_off AppStoreAutoUpdate"
+fi
+if [ -n "$updates_off" ]; then
+    warn "Some automatic updates are off ($(echo "$updates_off" | sed 's/^ //')). Turn them on in System Settings > General > Software Update > Automatic Updates."
+fi
