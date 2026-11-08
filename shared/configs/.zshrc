@@ -77,10 +77,12 @@ fi
 export HISTFILE="$HOME/.zsh_history"
 export HISTSIZE=50000
 export SAVEHIST=50000
-setopt APPEND_HISTORY
-setopt INC_APPEND_HISTORY
+# SHARE_HISTORY already writes each command as it runs (no need for
+# INC_APPEND_HISTORY); EXTENDED_HISTORY records when each command ran.
 setopt SHARE_HISTORY
+setopt EXTENDED_HISTORY
 setopt HIST_IGNORE_DUPS
+setopt HIST_VERIFY
 setopt HIST_IGNORE_SPACE
 setopt HIST_REDUCE_BLANKS
 
