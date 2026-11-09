@@ -21,16 +21,45 @@ FONT_DIR="$HOME/Library/Fonts"
 
 echo "Checking fonts"
 
-# Ask macOS for its installed font families, wherever the font files live. Also
-# accept the font files themselves: fonts copied a moment ago (on the run before
-# setup re-execs) may not be registered yet.
-monolisa_installed() {
+# shellcheck source=SCRIPTDIR/lib.sh
+. "$(dirname "$0")/lib.sh"
+
+# Register font files with the current login session so apps that are already
+# running (Terminal, which is running setup) can use them right away. Copying a
+# file into ~/Library/Fonts is enough for the next login, but macOS doesn't
+# always pick it up before then, and a Terminal profile imported in the
+# meantime falls back to another font. Errors are ignored: we check afterwards
+# whether the font is actually available.
+register_fonts() {
+    osascript -l JavaScript -e 'ObjC.import("CoreText");
+        function run(argv) {
+            argv.forEach(function (path) {
+                $.CTFontManagerRegisterFontsForURL($.NSURL.fileURLWithPath(path),
+                    $.kCTFontManagerScopeSession, null);
+            });
+        }' "$@" >/dev/null 2>&1 || true
+}
+
+# Succeed if MonoLisa font files are already in a font folder.
+files_installed() {
     for f in "$FONT_DIR"/MonoLisaCode*.ttf /Library/Fonts/MonoLisaCode*.ttf; do
         [ -f "$f" ] && return 0
     done
-    osascript -l JavaScript -e 'ObjC.import("AppKit");
-        ObjC.deepUnwrap($.NSFontManager.sharedFontManager.availableFontFamilies).join("\n")' \
-        2>/dev/null | grep -qx 'MonoLisaCode'
+    return 1
+}
+
+# Make the installed files usable now, or explain why they aren't yet. Setup
+# carries on either way; terminal.sh skips the Terminal profile until the font
+# loads.
+activate() {
+    register_fonts "$FONT_DIR"/MonoLisaCode*.ttf /Library/Fonts/MonoLisaCode*.ttf
+    if monolisa_available; then
+        echo "  MonoLisa: installed"
+    else
+        echo "  ⚠️  MonoLisa is in $FONT_DIR but macOS hasn't loaded it yet. Setup will"
+        echo "     skip the Terminal theme; log out and back in, then run setup again."
+    fi
+    exit 0
 }
 
 missing() {
@@ -46,9 +75,14 @@ missing() {
     exit 1
 }
 
-if monolisa_installed; then
+if monolisa_available; then
     echo "  MonoLisa: installed"
     exit 0
+fi
+
+# Copied on an earlier run but not loaded (or installed by hand): just load it.
+if files_installed; then
+    activate
 fi
 
 zip=""
@@ -74,3 +108,4 @@ for ttf in "$tmp"/*.ttf; do
 done
 
 [ "$installed" -eq 1 ] || missing "$zip has no .ttf files."
+activate

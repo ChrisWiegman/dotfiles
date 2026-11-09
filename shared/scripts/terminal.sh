@@ -11,12 +11,22 @@ trap 'echo "terminal.sh failed at line $LINENO" >&2' ERR
 DOTFILES_ROOT="$1"
 APPS_DIR="$DOTFILES_ROOT/apps"
 
+# shellcheck source=SCRIPTDIR/lib.sh
+. "$DOTFILES_ROOT/shared/scripts/lib.sh"
+
 echo "Setting up Terminal.app theme"
 
 # Import the profile (if not already known to Terminal) and make it the default.
 TERMINAL_PROFILE="Kana Dark"
 TERMINAL_FILE="$APPS_DIR/Terminal/$TERMINAL_PROFILE.terminal"
 if [ -f "$TERMINAL_FILE" ]; then
+    # The profile uses MonoLisa. Terminal resolves the font when the profile is
+    # imported, so importing it before macOS has loaded the font leaves the
+    # profile on a fallback font. Wait for a run where the font is available.
+    if ! monolisa_available; then
+        warn "Skipped the Terminal theme: macOS hasn't loaded the MonoLisa font yet. Log out and back in, then re-run setup."
+        exit 0
+    fi
     if ! /usr/libexec/PlistBuddy -c "Print :'Window Settings':'$TERMINAL_PROFILE'" \
         "$HOME/Library/Preferences/com.apple.Terminal.plist" >/dev/null 2>&1; then
         echo "  importing Terminal profile '$TERMINAL_PROFILE'"

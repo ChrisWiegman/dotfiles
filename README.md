@@ -53,9 +53,13 @@ there (`sh /Volumes/<drive>/dotfiles/setup.sh joy`):
 
 Setup needs the font, so it checks for it before doing anything else. If
 MonoLisa isn't installed, it looks for `MonoLisa*.zip` in the folder that holds
-the copy you ran it from and copies its `.ttf` files into `~/Library/Fonts`. If
-there's no zip, setup stops and explains what to do. Once the font is in place,
-the drive isn't needed for the rest of the run.
+the copy you ran it from, copies its `.ttf` files into `~/Library/Fonts`, and
+registers them with the current login session so Terminal and other open apps
+can use the font right away, without a restart. If there's no zip, setup stops
+and explains what to do. Once the font is in place, the drive isn't needed for
+the rest of the run. If macOS still hasn't loaded the font, setup skips the
+Terminal theme (so the profile doesn't get stuck on a fallback font) and asks
+you to log out and back in and run setup again.
 
 The script will install the Xcode Command Line Tools, clone this repo to
 `~/.dotfiles`, and re-exec from there. Once it finishes you can delete the
@@ -107,7 +111,7 @@ including untracked files.
 
 For the selected machine, `setup.sh`:
 
-1. Installs the MonoLisa font from the zip beside the repo copy you ran it from (see above), or stops if the font is missing and there's no zip.
+1. Installs the MonoLisa font from the zip beside the repo copy you ran it from and loads it for open apps (see above), or stops if the font is missing and there's no zip.
 2. Checks that Terminal has the required macOS permissions (Full Disk Access and App Management), opening the right Settings panes and stopping if any are missing.
 3. Installs the Xcode Command Line Tools and sets `zsh` as the default shell.
 4. Clones this repo to `~/.dotfiles` (and re-execs from there) if it isn't already. It fetches over HTTPS and pushes over SSH, so updates work before a GitHub SSH key exists.

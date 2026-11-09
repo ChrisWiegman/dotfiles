@@ -11,6 +11,15 @@ warn() {
     fi
 }
 
+# Succeed if apps can use the MonoLisa font right now. This asks macOS for the
+# font families it has loaded, so a font file copied into ~/Library/Fonts that
+# macOS hasn't registered yet doesn't count.
+monolisa_available() {
+    osascript -l JavaScript -e 'ObjC.import("AppKit");
+        ObjC.deepUnwrap($.NSFontManager.sharedFontManager.availableFontFamilies).join("\n")' \
+        2>/dev/null | grep -qx 'MonoLisaCode'
+}
+
 # Symlink a repo file into place, replacing whatever is there. Backs up a real
 # (non-symlink) file once so nothing is lost the first time we take ownership.
 # $3 = optional permissions for the linked file (chmod follows the symlink to
