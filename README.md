@@ -41,9 +41,20 @@ Swap `joy` for the machine you're setting up (`joy`, `mac`, or `work`).
 machine's App Store apps. Setup can't check this, and any App Store app it can't
 install is listed at the end of the run instead.
 
-Also install the MonoLisa font (used by VS Code and the Terminal theme) from
-its thumb drive. Its license doesn't allow installing it any other way. If it's
-missing, setup lists it under **Needs your attention**.
+The MonoLisa font (used by VS Code and the Terminal theme) can only be
+installed from its thumb drive, so it isn't in this repo. To have setup install
+it, put a copy of this repo on the drive next to the font zip and run setup from
+there (`sh /Volumes/<drive>/dotfiles/setup.sh joy`):
+
+```text
+<drive>/MonoLisaCode.zip
+<drive>/dotfiles/
+```
+
+Setup looks for `MonoLisa*.zip` in the folder that holds the copy you ran it
+from, and copies its `.ttf` files into `~/Library/Fonts`. Keep the drive
+plugged in until setup finishes. If the font is still missing, setup lists it
+under **Needs your attention**.
 
 The script will install the Xcode Command Line Tools, clone this repo to
 `~/.dotfiles`, and re-exec from there. Once it finishes you can delete the

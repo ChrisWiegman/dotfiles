@@ -51,6 +51,10 @@ if [ "$SHAREDPATH" != "$DOTFILES_DIR/shared" ]; then
         git -C "$DOTFILES_DIR" remote set-url --push origin "$DOTFILES_REPO_SSH"
     fi
     MACHINE_NAME="$(basename "$MACHINEPATH")"
+    # Remember where setup was started (an external drive, ~/Downloads) so
+    # fonts.sh can still find the MonoLisa zip kept beside that copy.
+    DOTFILES_BOOTSTRAP_DIR="$(dirname "$SHAREDPATH")"
+    export DOTFILES_BOOTSTRAP_DIR
     cd "$DOTFILES_DIR"
     exec sh "$DOTFILES_DIR/setup.sh" "$MACHINE_NAME"
 fi
@@ -83,7 +87,7 @@ fi
 
 sh "$SHAREDPATH/scripts/configs.sh" "$SHAREDPATH" "$MACHINEPATH"
 
-# Fonts setup can't install (MonoLisa comes from its thumb drive).
+# MonoLisa: installed from a zip beside the repo copy setup started from.
 sh "$SHAREDPATH/scripts/fonts.sh"
 
 # Run the local config if its available
