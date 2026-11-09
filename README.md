@@ -51,10 +51,11 @@ there (`sh /Volumes/<drive>/dotfiles/setup.sh joy`):
 <drive>/dotfiles/
 ```
 
-Setup looks for `MonoLisa*.zip` in the folder that holds the copy you ran it
-from, and copies its `.ttf` files into `~/Library/Fonts`. Keep the drive
-plugged in until setup finishes. If the font is still missing, setup lists it
-under **Needs your attention**.
+Setup needs the font, so it checks for it before doing anything else. If
+MonoLisa isn't installed, it looks for `MonoLisa*.zip` in the folder that holds
+the copy you ran it from and copies its `.ttf` files into `~/Library/Fonts`. If
+there's no zip, setup stops and explains what to do. Once the font is in place,
+the drive isn't needed for the rest of the run.
 
 The script will install the Xcode Command Line Tools, clone this repo to
 `~/.dotfiles`, and re-exec from there. Once it finishes you can delete the
@@ -106,15 +107,16 @@ including untracked files.
 
 For the selected machine, `setup.sh`:
 
-1. Checks that Terminal has the required macOS permissions (Full Disk Access and App Management), opening the right Settings panes and stopping if any are missing.
-2. Installs the Xcode Command Line Tools and sets `zsh` as the default shell.
-3. Clones this repo to `~/.dotfiles` (and re-execs from there) if it isn't already. It fetches over HTTPS and pushes over SSH, so updates work before a GitHub SSH key exists.
-4. Creates a new SSH key for this machine if it doesn't have one (`joy` and `mac`; `work` signs through 1Password). You pick a passphrase, which is saved in the Keychain. Setup then copies the public key and opens GitHub's "New SSH key" page. Add the key there twice, once as an **Authentication Key** and once as a **Signing Key**, while setup keeps running. Each machine gets its own key, so there's nothing to copy over from an old machine; just delete the old machine's key on GitHub.
-5. Installs everything in `shared/Brewfile` (tools every machine gets), then the machine's own `Brewfile`, via Homebrew.
-6. Enables Touch ID for `sudo` and turns on the firewall and its stealth mode. It warns if FileVault, Gatekeeper, System Integrity Protection, the screen-lock password, or automatic updates are off.
-7. Symlinks the shared and machine-specific config files (ssh, tmux, git, zsh, mise, etc.). SSH uses one shared config; machine-specific settings go in `machines/<machine>/configs/.ssh/config.d/*.conf`. GitHub's SSH host keys are pinned in `shared/configs/.ssh/known_hosts.d/github.com`, so a fresh machine never has to trust the key it sees on first connect; if GitHub rotates its keys, refresh that file from https://api.github.com/meta. On `joy` and `mac` it also writes `~/.config/git/allowed_signers` from the machine's key, so `git log --show-signature` can verify local commits. On `work`, commit signing comes from 1Password, which saves its config to `~/.gitconfig.local`. 1Password itself is installed by Iru (work's device management), not Homebrew, and setup warns if it isn't there yet. Setup can't do that step for you, so until the file exists it's listed under **Needs your attention**. Last, it checks that the MonoLisa font is installed.
-8. Runs the machine's own `setup.sh`, if it has one (e.g. VS Code settings and the Terminal theme), then applies the machine's macOS and app settings (see [Mac settings](#mac-settings)).
-9. Clones any repos listed in the machine's `Repos` file into `~/Code`, over SSH if a key is set up and otherwise over HTTPS.
+1. Installs the MonoLisa font from the zip beside the repo copy you ran it from (see above), or stops if the font is missing and there's no zip.
+2. Checks that Terminal has the required macOS permissions (Full Disk Access and App Management), opening the right Settings panes and stopping if any are missing.
+3. Installs the Xcode Command Line Tools and sets `zsh` as the default shell.
+4. Clones this repo to `~/.dotfiles` (and re-execs from there) if it isn't already. It fetches over HTTPS and pushes over SSH, so updates work before a GitHub SSH key exists.
+5. Creates a new SSH key for this machine if it doesn't have one (`joy` and `mac`; `work` signs through 1Password). You pick a passphrase, which is saved in the Keychain. Setup then copies the public key and opens GitHub's "New SSH key" page. Add the key there twice, once as an **Authentication Key** and once as a **Signing Key**, while setup keeps running. Each machine gets its own key, so there's nothing to copy over from an old machine; just delete the old machine's key on GitHub.
+6. Installs everything in `shared/Brewfile` (tools every machine gets), then the machine's own `Brewfile`, via Homebrew.
+7. Enables Touch ID for `sudo` and turns on the firewall and its stealth mode. It warns if FileVault, Gatekeeper, System Integrity Protection, the screen-lock password, or automatic updates are off.
+8. Symlinks the shared and machine-specific config files (ssh, tmux, git, zsh, mise, etc.). SSH uses one shared config; machine-specific settings go in `machines/<machine>/configs/.ssh/config.d/*.conf`. GitHub's SSH host keys are pinned in `shared/configs/.ssh/known_hosts.d/github.com`, so a fresh machine never has to trust the key it sees on first connect; if GitHub rotates its keys, refresh that file from https://api.github.com/meta. On `joy` and `mac` it also writes `~/.config/git/allowed_signers` from the machine's key, so `git log --show-signature` can verify local commits. On `work`, commit signing comes from 1Password, which saves its config to `~/.gitconfig.local`. 1Password itself is installed by Iru (work's device management), not Homebrew, and setup warns if it isn't there yet. Setup can't do that step for you, so until the file exists it's listed under **Needs your attention**.
+9. Runs the machine's own `setup.sh`, if it has one (e.g. VS Code settings and the Terminal theme), then applies the machine's macOS and app settings (see [Mac settings](#mac-settings)).
+10. Clones any repos listed in the machine's `Repos` file into `~/Code`, over SSH if a key is set up and otherwise over HTTPS.
 
 Problems that shouldn't stop a rebuild (a Brewfile entry that fails to install,
 a repo that can't be cloned yet, a missing SSH key) don't abort setup. They're

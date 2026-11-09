@@ -6,6 +6,13 @@ trap 'echo "setup.sh failed at line $LINENO" >&2' ERR
 SHAREDPATH="$1"
 MACHINEPATH="$2"
 
+# Install MonoLisa from the zip beside this repo copy (its thumb drive) before
+# anything else, and stop if it can't be: VS Code and Terminal need it, and
+# finding out at the end of a long run would waste it.
+if ! sh "$SHAREDPATH/scripts/fonts.sh"; then
+    exit 1
+fi
+
 # Check macOS privacy permissions before anything else. If something is missing,
 # permissions.sh opens the right Settings pane and explains what to enable; we then
 # stop cleanly so the user can grant it, restart Terminal, and re-run setup. (Full
@@ -51,10 +58,6 @@ if [ "$SHAREDPATH" != "$DOTFILES_DIR/shared" ]; then
         git -C "$DOTFILES_DIR" remote set-url --push origin "$DOTFILES_REPO_SSH"
     fi
     MACHINE_NAME="$(basename "$MACHINEPATH")"
-    # Remember where setup was started (an external drive, ~/Downloads) so
-    # fonts.sh can still find the MonoLisa zip kept beside that copy.
-    DOTFILES_BOOTSTRAP_DIR="$(dirname "$SHAREDPATH")"
-    export DOTFILES_BOOTSTRAP_DIR
     cd "$DOTFILES_DIR"
     exec sh "$DOTFILES_DIR/setup.sh" "$MACHINE_NAME"
 fi
@@ -86,9 +89,6 @@ if [ -s "/opt/homebrew/bin/brew" ]; then
 fi
 
 sh "$SHAREDPATH/scripts/configs.sh" "$SHAREDPATH" "$MACHINEPATH"
-
-# MonoLisa: installed from a zip beside the repo copy setup started from.
-sh "$SHAREDPATH/scripts/fonts.sh"
 
 # Run the local config if its available
 # (App configs like VS Code and Terminal.app are opt-in per machine — call
