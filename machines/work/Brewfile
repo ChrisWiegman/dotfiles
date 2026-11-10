@@ -2,5 +2,6 @@ brew "gh"
 brew "mise"
 
 cask "claude-code"
+cask "ears"
 
 mas "Okta Verify", id: 490179405
