@@ -1,11 +1,7 @@
 # Installed on every machine, before the machine's own Brewfile.
-brew "fzf"
-brew "gitleaks"
 brew "mas"
 brew "mole"
 brew "pam-reattach"
-brew "shellcheck"
-brew "shfmt"
 brew "tmux"
 
 cask "visual-studio-code"

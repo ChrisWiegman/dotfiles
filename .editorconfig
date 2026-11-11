@@ -1,8 +1,5 @@
 root = true
 
-# shfmt reads these, so a plain `shfmt -w` keeps the repo's style. It only
-# finds *.sh and *.zsh on its own; pass the .zshrc files by name.
-
 # Setup scripts (POSIX sh)
 [*.sh]
 indent_style = space
@@ -12,4 +9,3 @@ indent_size = 4
 [{*.zsh,.zshrc}]
 indent_style = space
 indent_size = 2
-shell_variant = zsh

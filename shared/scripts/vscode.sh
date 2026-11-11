@@ -10,7 +10,6 @@ trap 'echo "vscode.sh failed at line $LINENO" >&2' ERR
 DOTFILES_ROOT="$1"
 APPS_DIR="$DOTFILES_ROOT/apps"
 
-# shellcheck source=SCRIPTDIR/lib.sh
 . "$DOTFILES_ROOT/shared/scripts/lib.sh"
 
 echo "Setting up VS Code configs"

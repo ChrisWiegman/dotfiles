@@ -21,7 +21,6 @@ FONT_DIR="$HOME/Library/Fonts"
 
 echo "Checking fonts"
 
-# shellcheck source=SCRIPTDIR/lib.sh
 . "$(dirname "$0")/lib.sh"
 
 # Register font files with the current login session so apps that are already

@@ -8,7 +8,6 @@ MACHINEPATH="$2"
 
 echo "Setting up shared config files"
 
-# shellcheck source=SCRIPTDIR/lib.sh
 . "$SHAREDPATH/scripts/lib.sh"
 
 CONFIG_DIR="$SHAREDPATH/configs"
@@ -60,9 +59,6 @@ fi
 
 # Global gitignore (git reads ~/.config/git/ignore on its own)
 link_config "$CONFIG_DIR/.config/git/ignore" "$HOME/.config/git/ignore"
-
-# Settings for shellcheck
-link_config "$CONFIG_DIR/.config/shellcheckrc" "$HOME/.config/shellcheckrc"
 
 # Let git verify commits signed with this machine's key. Only machines whose
 # gitconfig signs with ~/.ssh/id_ed25519 (sshkey.sh creates it earlier in setup);

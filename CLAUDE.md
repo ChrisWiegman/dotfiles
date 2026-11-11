@@ -30,7 +30,7 @@ with any change to setup behavior.
 
 ## Checking changes
 
-- `sh -n` and `shellcheck` setup scripts; `zsh -n` zsh files.
+- `sh -n` setup scripts; `zsh -n` zsh files.
 - Test tmux config changes on an isolated server: `tmux -L test -f <file> ...`.
 - Test SSH config with `ssh -F <file> -G github.com`.
 - `brew bundle check --file=<Brewfile>` confirms a Brewfile resolves.

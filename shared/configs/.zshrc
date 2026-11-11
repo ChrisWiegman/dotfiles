@@ -111,12 +111,6 @@ fi
 unset _zcompdump_stale
 zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
 
-# ---- fzf: Ctrl-R fuzzy history, Ctrl-T file picker, Option-C cd ----
-# After compinit, which fzf's ** completion hooks into.
-if command -v fzf >/dev/null 2>&1; then
-  source <(fzf --zsh)
-fi
-
 # ---- Editor ----
 export EDITOR="${EDITOR:-vim}"
 
