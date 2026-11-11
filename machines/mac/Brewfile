@@ -1,6 +1,7 @@
 tap "chriswiegman/backup-github", trusted: true
 
 brew "gh"
+brew "hugo"
 brew "mise"
 
 cask "chriswiegman/backup-github/backup-github"
