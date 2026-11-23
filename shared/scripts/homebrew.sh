@@ -10,15 +10,20 @@ SHARED_BREWFILE="$(cd "$(dirname "$0")/.." && pwd)/Brewfile"
 
 echo "Setting up Homebrew"
 
-if test ! "$(command -v brew)"; then
+# Load an existing install first: brew may be installed but not on PATH yet (a
+# run that stopped before ~/.zshrc was linked), and the check below would then
+# run the installer again.
+if [ -s "/opt/homebrew/bin/brew" ]; then
+    eval "$(/opt/homebrew/bin/brew shellenv)"
+fi
+
+if ! command -v brew >/dev/null 2>&1; then
     echo "Homebrew not installed. Installing."
     # NONINTERACTIVE skips the "Press RETURN to continue" pause; the sudo
     # keep-alive in shared/setup.sh supplies the admin access it needs.
     NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+    [ -s "/opt/homebrew/bin/brew" ] && eval "$(/opt/homebrew/bin/brew shellenv)"
 fi
-
-# Launch Homebrew
-[ -s "/opt/homebrew/bin/brew" ] && eval "$(/opt/homebrew/bin/brew shellenv)"
 
 if ! command -v brew >/dev/null 2>&1; then
     echo "Error: Homebrew installation failed" >&2
@@ -47,15 +52,6 @@ for brewfile in "$SHARED_BREWFILE" "${MACHINEPATH}/Brewfile"; do
     fi
     rm -f "${brewfile}.lock.json"
 done
-
-# If the Brewfile installed the full Xcode app (via `mas`), its license must be
-# accepted before any xcrun-based tool (e.g. `go build` with cgo, or a later setup
-# step) will work. Accept it non-interactively now rather than let those steps
-# fail on the license prompt.
-if [ -d "/Applications/Xcode.app" ] && ! sudo xcodebuild -license status >/dev/null 2>&1; then
-    echo "Accepting Xcode license..."
-    sudo xcodebuild -license accept
-fi
 
 # Cleanup all leftovers from the installation.
 brew cleanup --prune=all --quiet

@@ -4,9 +4,16 @@
 # functions, no rup. Terminal.app sets LANG; a bare `ssh` often does not.
 export LANG="${LANG:-en_US.UTF-8}"
 
+# Keep PATH and fpath free of duplicates. `szh` and `rup` re-source this file,
+# and the machine .zshrc's go.zsh and brew shellenv below prepend again each time.
+# Flag the scalars too: brew shellenv assigns PATH directly, which skips -U on
+# the array alone.
+typeset -U PATH path FPATH fpath
+
 # ---- Homebrew first (so PATH/FPATH are set before completions load) ----
-# Cache shellenv output — re-generate only when the brew binary changes
-_brew_cache="${HOMEBREW_CACHE:-$HOME/Library/Caches/Homebrew}/brew_shellenv.sh"
+# Cache shellenv output — re-generate only when the brew binary changes. Not in
+# Homebrew's own cache folder: `brew cleanup --prune=all` empties that.
+_brew_cache="${XDG_CACHE_HOME:-$HOME/.cache}/zsh/brew_shellenv.zsh"
 if [ -s "/opt/homebrew/bin/brew" ]; then
   if [[ ! -f "$_brew_cache" || "/opt/homebrew/bin/brew" -nt "$_brew_cache" ]]; then
     mkdir -p "${_brew_cache:h}"

@@ -1,6 +1,7 @@
 brew "gh"
 brew "go"
 brew "node"
+brew "shellcheck"
 
 cask "claude-code"
 cask "ears"

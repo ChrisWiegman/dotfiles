@@ -4,6 +4,7 @@ brew "gh"
 brew "go"
 brew "hugo"
 brew "node"
+brew "shellcheck"
 
 cask "chriswiegman/backup-github/backup-github"
 cask "focusrite-control-2"

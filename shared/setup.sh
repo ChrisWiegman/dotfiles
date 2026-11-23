@@ -1,7 +1,7 @@
 #!/bin/sh
 
 set -e
-trap 'echo "setup.sh failed at line $LINENO" >&2' ERR
+trap 'echo "shared/setup.sh failed at line $LINENO" >&2' ERR
 
 SHAREDPATH="$1"
 MACHINEPATH="$2"
@@ -23,7 +23,8 @@ if ! sh "$SHAREDPATH/scripts/permissions.sh" "$(basename "$MACHINEPATH")"; then
 fi
 
 # Request administrator access once and keep the sudo timestamp warm for the rest
-# of the run so steps that need it (Rosetta, etc.) don't pause for a password.
+# of the run so steps that need it (the Homebrew installer, Touch ID, the
+# firewall) don't pause for a password.
 # This survives the re-exec below because `exec` preserves the process PID, and
 # the keep-alive loop exits once that PID is gone. The env marker keeps us from
 # starting a second loop on the re-exec.
@@ -75,17 +76,17 @@ sh "$SHAREDPATH/scripts/sshkey.sh" "$MACHINEPATH"
 
 sh "$SHAREDPATH/scripts/homebrew.sh" "$MACHINEPATH"
 
-sh "$SHAREDPATH/scripts/touchid.sh"
-
-sh "$SHAREDPATH/scripts/security.sh"
-
 # homebrew.sh runs `brew shellenv` in its own shell, so that PATH never reaches
 # us. Repeat it here on a fresh machine, where /opt/homebrew/bin isn't on PATH
-# yet, so the steps below (configs.sh and the machine setup) can find
-# brew-installed tools.
+# yet, so every step below can find brew-installed tools (touchid.sh needs
+# pam-reattach, configs.sh needs tmux).
 if [ -s "/opt/homebrew/bin/brew" ]; then
     eval "$(/opt/homebrew/bin/brew shellenv)"
 fi
+
+sh "$SHAREDPATH/scripts/touchid.sh"
+
+sh "$SHAREDPATH/scripts/security.sh"
 
 sh "$SHAREDPATH/scripts/configs.sh" "$SHAREDPATH" "$MACHINEPATH"
 

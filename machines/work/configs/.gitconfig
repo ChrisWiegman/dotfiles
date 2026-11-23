@@ -7,6 +7,10 @@
 
 [include]
     path = ~/.gitconfig.local
+
+# GitHub over HTTPS, authenticated by the gh CLI (`gh auth login`). The empty
+# helper clears any helper set elsewhere so only gh's is used. This is
+# `gh auth setup-git`'s output, tabs and all, so a later run of it leaves no diff.
 [credential "https://github.com"]
 	helper = 
 	helper = !/opt/homebrew/bin/gh auth git-credential

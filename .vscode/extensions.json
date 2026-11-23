@@ -3,10 +3,9 @@
         "ChrisWiegman.kana-vscode-theme",
         "mhutchie.git-graph",
         "donjayamanne.githistory",
-        "github.vscode-github-actions",
         "GitHub.vscode-pull-request-github",
         "streetsidesoftware.code-spell-checker",
-        "chriswiegman.cw-changie",
-        "pflannery.vscode-versionlens"
+        "EditorConfig.EditorConfig",
+        "timonwong.shellcheck"
     ]
 }

@@ -39,12 +39,17 @@ if [ -f "$TERMINAL_FILE" ]; then
     # the profile (colors, fonts) is kept as is.
     if [ "$(/usr/libexec/PlistBuddy -c "Print :'Window Settings':'$TERMINAL_PROFILE':useOptionAsMetaKey" \
         "$HOME/Library/Preferences/com.apple.Terminal.plist" 2>/dev/null)" != "true" ]; then
+        # The pipeline fails if Terminal hasn't registered a just-imported
+        # profile yet. Without the `||`, set -e would end this script (and the
+        # machine setup calling it) here.
         PROFILE_XML="$(defaults export com.apple.Terminal - |
-            plutil -extract "Window Settings.$TERMINAL_PROFILE" xml1 -o - - |
-            plutil -replace useOptionAsMetaKey -bool YES -o - -)"
+            plutil -extract "Window Settings.$TERMINAL_PROFILE" xml1 -o - - 2>/dev/null |
+            plutil -replace useOptionAsMetaKey -bool YES -o - - 2>/dev/null)" || PROFILE_XML=""
         if [ -n "$PROFILE_XML" ]; then
             defaults write com.apple.Terminal "Window Settings" -dict-add "$TERMINAL_PROFILE" "$PROFILE_XML"
             echo "  turned on Option as Meta key (restart Terminal to use it)"
+        else
+            warn "Couldn't turn on Option as Meta key for the '$TERMINAL_PROFILE' Terminal profile yet. Re-run setup to try again."
         fi
     fi
 

@@ -42,10 +42,9 @@ for f in "$M_CONFIG_DIR/.ssh/config.d/"*.conf; do
     [ -f "$f" ] && link_config "$f" "$HOME/.ssh/config.d/$(basename "$f")" 0600
 done
 
-# Set up Git configs
-if [ ! -f "$HOME/.gitconfig" ] || ! grep -q "signingkey" "$HOME/.gitconfig" 2>/dev/null; then
-    link_config "$M_CONFIG_DIR/.gitconfig" "$HOME/.gitconfig"
-fi
+# Set up Git configs. Always linked: 1Password's signing settings on work live
+# in ~/.gitconfig.local, which the work gitconfig includes.
+link_config "$M_CONFIG_DIR/.gitconfig" "$HOME/.gitconfig"
 
 # Global gitignore (git reads ~/.config/git/ignore on its own)
 link_config "$CONFIG_DIR/.config/git/ignore" "$HOME/.config/git/ignore"

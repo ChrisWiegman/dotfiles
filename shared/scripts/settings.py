@@ -254,6 +254,21 @@ def parse_selection(answer, count):
     return [i for i in picked if 0 <= i < count]
 
 
+def ask_selection(count):
+    """Ask which of the numbered items to track. Asks again after a typo
+    instead of crashing, which would throw away a `watch` session."""
+    while True:
+        try:
+            answer = input("Track which? (e.g. 1 3 5-7, a for all, Enter for none): ")
+        except EOFError:
+            return []
+        try:
+            return parse_selection(answer, count)
+        except ValueError:
+            print("  Didn't understand that. Use numbers and ranges like 1 3 5-7, "
+                  "a for all, or Enter for none.")
+
+
 # ---------------------------------------------------------------- commands
 
 def cmd_list(args, sdir):
@@ -283,11 +298,7 @@ def cmd_track(args, sdir):
         if hidden:
             print(f"      ({hidden} more hidden as app state; add --all to show them)")
         print("      (* already tracked)")
-        try:
-            answer = input("Track which? (e.g. 1 3 5-7, a for all, Enter for none): ")
-        except EOFError:
-            return
-        args.keys = [keys[i] for i in parse_selection(answer, len(keys))]
+        args.keys = [keys[i] for i in ask_selection(len(keys))]
         if not args.keys:
             return
     tracked = load_tracked(sdir, args.domain)
@@ -430,11 +441,10 @@ def cmd_watch(args, sdir):
         print(f"{i:4}{mark} {domain} {key}: {short(old, 25)} -> {short(new, 40)}")
     if hidden:
         print(f"      ({hidden} app-state changes hidden; add --all to show them)")
-    try:
-        answer = input("Track which? (e.g. 1 3 5-7, a for all, Enter for none): ")
-    except EOFError:
+    picked = ask_selection(len(changes))
+    if not picked:
         return
-    for i in parse_selection(answer, len(changes)):
+    for i in picked:
         domain, key, _, new = changes[i]
         tracked[domain][key] = new
         print(f"  tracking {domain} {key}")

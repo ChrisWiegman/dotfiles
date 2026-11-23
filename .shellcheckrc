@@ -1,0 +1,10 @@
+# Setup scripts are POSIX sh, run by macOS's /bin/sh (bash in sh mode).
+shell=sh
+
+# SC3047: the `trap ... ERR` naming each script is a repo convention. It isn't
+# POSIX, but macOS's /bin/sh supports it.
+disable=SC3047
+
+# SC1091: scripts source lib.sh through a runtime path ("$(dirname "$0")/lib.sh",
+# "$SHAREDPATH/scripts/lib.sh") that shellcheck can't follow.
+disable=SC1091
