@@ -13,3 +13,19 @@ cask "signal"
 
 mas "Parachute Backup", id: 6748614170
 mas "Unread", id: 1363637349
+
+vscode "anthropic.claude-code"
+vscode "chriswiegman.ai-usage-limits"
+vscode "chriswiegman.cw-changie"
+vscode "chriswiegman.cw-markdown-word-count"
+vscode "chriswiegman.kana-vscode-theme"
+vscode "chriswiegman.vscode-hugo-image-importer"
+vscode "dbaeumer.vscode-eslint"
+vscode "donjayamanne.githistory"
+vscode "editorconfig.editorconfig"
+vscode "github.vscode-github-actions"
+vscode "github.vscode-pull-request-github"
+vscode "mhutchie.git-graph"
+vscode "pflannery.vscode-versionlens"
+vscode "streetsidesoftware.code-spell-checker"
+vscode "tamasfe.even-better-toml"
