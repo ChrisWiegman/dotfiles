@@ -8,6 +8,7 @@ Note this is an evolving repo and tends to represent where my machines are on an
 
 - **apps** Configs for the various apps I use
 - **machines** dotfiles and setup scripts that are applicable per machine
+- **profiles** Mac settings for a group of machines (see [Mac settings](#mac-settings))
 - **shared** dotfiles and setup scripts that I can use on any machine
 
 ## Machines
@@ -138,10 +139,24 @@ There's one plist per preferences domain, holding only the keys being tracked.
 Window positions, timestamps, and account IDs stay out. Setup applies them, and
 the `macsettings` shell command keeps them up to date.
 
-Settings every machine should get (like not writing `.DS_Store` files to
-network and USB drives) live in `shared/settings/`. Setup applies those first,
-then the machine's own, so a machine can override a shared value. Manage them
-with `macsettings --machine shared …`.
+Settings come in three layers, which setup applies in this order, so a later
+layer overrides an earlier one:
+
+1. `shared/settings/`: every machine, Joy's included (like not writing
+   `.DS_Store` files to network and USB drives). Manage them with
+   `macsettings --machine shared …`.
+2. `profiles/<name>/settings/`: a group of machines. A machine gets a profile
+   by listing its name in `machines/<machine>/Profiles`; `mac` and `work` both
+   list `chris`, for settings I want on my machines but not Joy's. Manage them
+   with `macsettings --profile chris …`.
+3. `machines/<machine>/settings/`: that machine alone (the default).
+
+`track`, `watch`, `untrack`, and `export` change one layer: the machine's own
+unless you pass `--machine shared` or `--profile <name>`. In their listings,
+`*` marks a key already tracked in that layer and `+` one tracked in a shared
+or profile layer. To move a key into a profile, track it there
+(`macsettings --profile chris track <domain> <key>`), then untrack it from the
+machine (`macsettings untrack <domain> <key>`).
 
 Run `macsettings` from **Terminal**. It needs the same Full Disk Access as setup,
 because macOS hides sandboxed apps' settings (Mail, Safari, Notes, …) from
@@ -153,11 +168,16 @@ keep. Then commit `machines/<machine>/settings/`.
 
 **Settings changed over time.** `macsettings export` refreshes every tracked key
 from the Mac's current values. A key that's back to its default stops being
-tracked. Review with `git diff` and commit.
+tracked. If a whole domain reads back empty (usually because macOS is hiding it,
+as it does without Full Disk Access), export leaves it alone and says so rather
+than untracking everything in it. Export only changes the machine's own layer,
+but it lists any shared or profile key that's different on this Mac, since the
+next setup run would put the tracked value back. Review with `git diff` and
+commit.
 
 **Other commands:**
 
-- `macsettings list` shows what's tracked.
+- `macsettings list` shows what's tracked, in every layer the machine gets.
 - `macsettings track <domain>` lists a domain's keys to pick from, and
   `macsettings track <domain> <key>…` tracks specific keys.
 - `macsettings untrack <domain> [<key>…]` stops tracking keys.

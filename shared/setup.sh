@@ -98,14 +98,12 @@ if [ -s "$MACHINEPATH/setup.sh" ]; then
 fi
 
 # Apply the tracked macOS and app settings: shared/settings on every machine,
-# then the machine's own machines/<m>/settings (managed with `macsettings`;
-# see shared/scripts/settings.py).
-if [ -d "$SHAREDPATH/settings" ] || [ -d "$MACHINEPATH/settings" ]; then
-    echo "Applying macOS settings"
-    if ! /usr/bin/python3 -I "$SHAREDPATH/scripts/settings.py" \
-        --machine "$(basename "$MACHINEPATH")" apply; then
-        warn "Some macOS settings couldn't be applied (see above). Re-run: macsettings apply"
-    fi
+# then any profiles listed in machines/<m>/Profiles, then the machine's own
+# machines/<m>/settings (managed with `macsettings`; see shared/scripts/settings.py).
+echo "Applying macOS settings"
+if ! /usr/bin/python3 -I "$SHAREDPATH/scripts/settings.py" \
+    --machine "$(basename "$MACHINEPATH")" apply; then
+    warn "Some macOS settings couldn't be applied (see above). Re-run: macsettings apply"
 fi
 
 # Clone repos listed in the machine's Repos file into ~/Code. This runs last so

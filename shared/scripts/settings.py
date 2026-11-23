@@ -1,13 +1,20 @@
 #!/usr/bin/python3 -I
 """Track, export, and apply macOS settings for a dotfiles machine.
 
-Settings live per machine in machines/<machine>/settings/, one XML plist per
-preferences domain holding only the keys being tracked (not the whole domain,
-which is full of window positions, timestamps, and account-specific IDs).
-Settings for the -currentHost (ByHost) variant of a domain live in
-settings/currentHost/. Settings every machine gets live in shared/settings/;
-`apply` writes those first, then the machine's own, so a machine can override
-a shared value. Use --machine shared to track or list the shared ones.
+Settings are stored as one XML plist per preferences domain, holding only the
+keys being tracked (not the whole domain, which is full of window positions,
+timestamps, and account-specific IDs). Settings for the -currentHost (ByHost)
+variant of a domain go in a currentHost/ subfolder. They're kept in layers,
+which `apply` merges in this order, so a later layer wins:
+
+  shared/settings/            every machine (--machine shared)
+  profiles/<name>/settings/   machines that list <name> in machines/<m>/Profiles
+                              (--profile <name>)
+  machines/<m>/settings/      that machine alone (the default)
+
+`track`, `untrack`, `watch`, and `export` work on one layer: the machine's own,
+unless --machine shared or --profile <name> picks another. For a machine,
+`apply` and `list` cover all of its layers.
 
 Commands (run from Terminal, which has Full Disk Access; without it macOS
 hides sandboxed apps' settings such as Mail, Safari, and Notes):
@@ -23,6 +30,8 @@ hides sandboxed apps' settings such as Mail, Safari, and Notes):
                          are given).
   export                 Refresh every tracked key from this Mac's current
                          values. Run after changing settings, then commit.
+                         For a machine, also points out keys from its shared
+                         and profile layers that differ on this Mac.
   apply                  Write the tracked settings to this Mac (setup runs
                          this).
   list                   Show the tracked settings.
@@ -30,11 +39,11 @@ hides sandboxed apps' settings such as Mail, Safari, and Notes):
 Domains are names like com.apple.dock or NSGlobalDomain; prefix one with
 currentHost/ for its ByHost variant (e.g. currentHost/com.apple.screensaver).
 The machine defaults to whichever one ~/.zshrc is linked from; pass
---machine <name> to choose another, or --machine shared for the settings
-every machine gets.
+--machine <name> to choose another.
 """
 
 import argparse
+import collections
 import concurrent.futures
 import os
 import plistlib
@@ -60,7 +69,18 @@ NOISE = re.compile(
     r"|Window(H|V)?(Pos|Size)|[Rr]ects?$|Frame|[Ss]croll[Pp]osition|[Ss]elected"
 )
 
+# Real settings whose names look like app state to NOISE: 24-hour time ends in
+# "Time", the screen saver's delay is idleTime, the Dock's show-recents says
+# "recent", menu bar item visibility and toolbar layouts share prefixes with
+# window state, and Safari's restore-windows options say "Session".
+SETTING = re.compile(
+    r"^(AppleICUForce(12|24)HourTime$|idleTime$|show-recents$|NSRecentDocumentsLimit$"
+    r"|NSStatusItem Visible |NSToolbar Configuration )"
+    r"|Restor(e|ing)Session"
+)
+
 # Restart these after applying so the changes show up without logging out.
+# A currentHost/ domain uses the entry for its plain name.
 RESTART = {
     "com.apple.dock": ["Dock"],
     "com.apple.finder": ["Finder"],
@@ -68,14 +88,44 @@ RESTART = {
     "com.apple.controlcenter": ["ControlCenter"],
     "com.apple.menuextra.clock": ["ControlCenter"],
     "com.apple.systemuiserver": ["SystemUIServer"],
+    "com.apple.screencapture": ["SystemUIServer"],
+    "com.apple.WindowManager": ["WindowManager"],
+    "com.apple.Spotlight": ["Spotlight"],
+    "com.apple.TextInputMenu": ["TextInputMenuAgent"],
 }
+
+# Keyboard, keyboard-shortcut, trackpad, and mouse settings are read at login.
+# Apple's activateSettings reloads them for the current session instead.
+ACTIVATE_SETTINGS = ("/System/Library/PrivateFrameworks/SystemAdministration.framework/"
+                     "Resources/activateSettings")
+RELOAD = {
+    "NSGlobalDomain",
+    "com.apple.symbolichotkeys",
+    "com.apple.HIToolbox",
+    "com.apple.AppleMultitouchTrackpad",
+    "com.apple.driver.AppleBluetoothMultitouch.trackpad",
+    "com.apple.AppleMultitouchMouse",
+    "com.apple.driver.AppleBluetoothMultitouch.mouse",
+}
+
+# One layer of tracked settings. `flag` is the macsettings option that picks it,
+# for hints.
+Layer = collections.namedtuple("Layer", "label sdir flag")
 
 
 class NoAccess(Exception):
     pass
 
 
-# ---------------------------------------------------------------- machines
+def is_noise(key):
+    return bool(NOISE.search(key)) and not SETTING.search(key)
+
+
+def base_domain(domain):
+    return domain[len(CURRENT_HOST):] if domain.startswith(CURRENT_HOST) else domain
+
+
+# ---------------------------------------------------------------- layers
 
 def detect_machine():
     target = os.path.realpath(os.path.join(HOME, ".zshrc"))
@@ -87,13 +137,55 @@ def detect_machine():
     sys.exit("Couldn't tell which machine this is from ~/.zshrc; pass --machine <name>.")
 
 
-def settings_dir(machine):
-    if machine == SHARED:
-        return os.path.join(DOTFILES, "shared", "settings")
+def machine_dir(machine):
     mdir = os.path.join(DOTFILES, "machines", machine)
     if not os.path.isdir(mdir):
         sys.exit(f"No machine named '{machine}' in {os.path.join(DOTFILES, 'machines')}.")
-    return os.path.join(mdir, "settings")
+    return mdir
+
+
+def machine_profiles(machine):
+    """Profiles listed in machines/<machine>/Profiles, one per line, in order."""
+    path = os.path.join(machine_dir(machine), "Profiles")
+    if not os.path.exists(path):
+        return []
+    with open(path) as f:
+        names = [line.split("#", 1)[0].strip() for line in f]
+    return [n for n in names if n]
+
+
+def known_profiles():
+    machines = os.path.join(DOTFILES, "machines")
+    return {p for m in os.listdir(machines) if os.path.isdir(os.path.join(machines, m))
+            for p in machine_profiles(m)}
+
+
+def shared_layer():
+    return Layer(SHARED, os.path.join(DOTFILES, "shared", "settings"), "--machine shared")
+
+
+def profile_layer(name):
+    return Layer(f"profile {name}", os.path.join(DOTFILES, "profiles", name, "settings"),
+                 f"--profile {name}")
+
+
+def machine_layer(machine):
+    return Layer(machine, os.path.join(machine_dir(machine), "settings"), f"--machine {machine}")
+
+
+def target_layers(args):
+    """The layers a command covers, lowest first. The last one is where
+    track, untrack, watch, and export write."""
+    if args.profile:
+        if args.profile not in known_profiles():
+            sys.exit(f"No machine uses a profile named '{args.profile}'. "
+                     "List it in machines/<machine>/Profiles first.")
+        return [profile_layer(args.profile)]
+    if args.machine == SHARED:
+        return [shared_layer()]
+    return ([shared_layer()]
+            + [profile_layer(p) for p in machine_profiles(args.machine)]
+            + [machine_layer(args.machine)])
 
 
 def domain_file(sdir, domain):
@@ -132,6 +224,14 @@ def save_tracked(sdir, domain, values):
         plistlib.dump(values, f, sort_keys=True)
 
 
+def tracked_below(layers, domain):
+    """Keys of a domain tracked in the layers under the target one."""
+    keys = set()
+    for layer in layers[:-1]:
+        keys.update(load_tracked(layer.sdir, domain))
+    return keys
+
+
 # ---------------------------------------------------------------- defaults
 
 def container_plist(name):
@@ -155,18 +255,22 @@ def defaults_args(domain):
 
 
 def check_access(domain):
+    """Raise NoAccess if macOS is hiding the domain's settings file from us,
+    rather than let `defaults` read it as empty."""
     if domain.startswith(CURRENT_HOST):
         return
-    cpath = container_plist(domain)
-    if os.path.exists(cpath):
-        try:
-            with open(cpath, "rb"):
-                pass
-        except PermissionError:
-            raise NoAccess(
-                f"macOS is blocking access to {domain}'s settings. Run this from "
-                "Terminal, and give Terminal Full Disk Access in System Settings > "
-                "Privacy & Security.")
+    for path in (container_plist(domain),
+                 os.path.join(HOME, "Library", "Preferences", domain + ".plist")):
+        if os.path.exists(path):
+            try:
+                with open(path, "rb"):
+                    pass
+            except PermissionError:
+                raise NoAccess(
+                    f"macOS is blocking access to {domain}'s settings. Run this from "
+                    "Terminal, and give Terminal Full Disk Access in System Settings > "
+                    "Privacy & Security.")
+            return
 
 
 def read_domain(domain):
@@ -238,6 +342,15 @@ def short(value, width=70):
     return text if len(text) <= width else text[: width - 1] + "…"
 
 
+def mark(key, here, below):
+    return "*" if key in here else "+" if key in below else " "
+
+
+def print_legend(layers):
+    print("      (* already tracked"
+          + (", + tracked in a shared or profile layer)" if len(layers) > 1 else ")"))
+
+
 def parse_selection(answer, count):
     answer = answer.strip().lower()
     if answer in ("a", "all"):
@@ -271,33 +384,36 @@ def ask_selection(count):
 
 # ---------------------------------------------------------------- commands
 
-def cmd_list(args, sdir):
-    domains = tracked_domains(sdir)
-    if not domains:
-        print(f"No settings tracked for '{args.machine}' yet. Start with: macsettings watch")
-        return
-    for domain in domains:
-        print(domain)
-        for key, value in sorted(load_tracked(sdir, domain).items()):
-            print(f"    {key} = {short(value)}")
+def cmd_list(args, layers):
+    for layer in layers:
+        domains = tracked_domains(layer.sdir)
+        if len(layers) > 1:
+            print(f"--- {layer.label}" + ("" if domains else " (nothing tracked)"))
+        elif not domains:
+            print(f"No settings tracked for '{layer.label}' yet. "
+                  f"Start with: macsettings {layer.flag} watch")
+        for domain in domains:
+            print(domain)
+            for key, value in sorted(load_tracked(layer.sdir, domain).items()):
+                print(f"    {key} = {short(value)}")
 
 
-def cmd_track(args, sdir):
+def cmd_track(args, layers):
+    sdir = layers[-1].sdir
     live = read_domain(args.domain)
     if not args.keys:
-        keys = sorted(k for k in live if args.all or not NOISE.search(k))
+        keys = sorted(k for k in live if args.all or not is_noise(k))
         hidden = len(live) - len(keys)
         if not keys:
             print(f"{args.domain} has no settings to show"
                   + (f" ({hidden} hidden as app state; add --all)" if hidden else "."))
             return
-        tracked = load_tracked(sdir, args.domain)
+        here, below = load_tracked(sdir, args.domain), tracked_below(layers, args.domain)
         for i, key in enumerate(keys, 1):
-            mark = "*" if key in tracked else " "
-            print(f"{i:4}{mark} {key} = {short(live[key])}")
+            print(f"{i:4}{mark(key, here, below)} {key} = {short(live[key])}")
         if hidden:
             print(f"      ({hidden} more hidden as app state; add --all to show them)")
-        print("      (* already tracked)")
+        print_legend(layers)
         args.keys = [keys[i] for i in ask_selection(len(keys))]
         if not args.keys:
             return
@@ -311,7 +427,8 @@ def cmd_track(args, sdir):
     save_tracked(sdir, args.domain, tracked)
 
 
-def cmd_untrack(args, sdir):
+def cmd_untrack(args, layers):
+    sdir = layers[-1].sdir
     tracked = load_tracked(sdir, args.domain)
     if not tracked:
         print(f"Nothing tracked for {args.domain}.")
@@ -322,11 +439,25 @@ def cmd_untrack(args, sdir):
     save_tracked(sdir, args.domain, tracked)
 
 
-def cmd_export(args, sdir):
+def cmd_export(args, layers):
+    target = layers[-1]
     changed = 0
-    for domain in tracked_domains(sdir):
-        tracked = load_tracked(sdir, domain)
-        live = read_domain(domain)
+    skipped = []
+    for domain in tracked_domains(target.sdir):
+        tracked = load_tracked(target.sdir, domain)
+        try:
+            live = read_domain(domain)
+        except NoAccess as err:
+            skipped.append(f"{domain}: {err}")
+            continue
+        if not live:
+            # A tracked domain that reads back empty is far more likely hidden
+            # from us than reset to defaults in full. Untracking every key on
+            # that guess would lose them, so leave it for a person to decide.
+            skipped.append(f"{domain} read back empty, so it was left as is. If every key "
+                           f"really is back to its default, run: "
+                           f"macsettings {target.flag} untrack {domain}")
+            continue
         for key in list(tracked):
             if key not in live:
                 # Unset on this Mac means it's back to the default; stop tracking it.
@@ -337,38 +468,81 @@ def cmd_export(args, sdir):
                 print(f"  {domain} {key}: {short(tracked[key], 30)} -> {short(live[key], 30)}")
                 tracked[key] = live[key]
                 changed += 1
-        save_tracked(sdir, domain, tracked)
-    print(f"Exported settings for '{args.machine}': "
+        save_tracked(target.sdir, domain, tracked)
+    print(f"Exported settings for '{target.label}': "
           + (f"{changed} change(s). Review with git diff and commit." if changed
              else "already up to date."))
+    if len(layers) > 1:
+        report_drift(layers)
+    if skipped:
+        for line in skipped:
+            print(f"  skipped: {line}", file=sys.stderr)
+        sys.exit(1)
 
 
-def cmd_apply(args, sdir):
+def report_drift(layers):
+    """List keys from the layers under this machine's own (shared, profiles)
+    that differ on this Mac. Export leaves those layers alone because other
+    machines get them too, and the next apply would put the tracked value back."""
+    drift = []
+    overridden = collections.defaultdict(set)  # keys a higher layer tracks
+    for i, layer in reversed(list(enumerate(layers))):
+        for domain in tracked_domains(layer.sdir):
+            tracked = load_tracked(layer.sdir, domain)
+            if i < len(layers) - 1:
+                try:
+                    live = read_domain(domain)
+                except NoAccess:
+                    live = {}
+                for key, value in sorted(tracked.items()):
+                    if live and key not in overridden[domain] and live.get(key, "<unset>") != value:
+                        drift.append((layer, domain, key, value, live.get(key, "<unset>")))
+            overridden[domain].update(tracked)
+    if not drift:
+        return
+    print("These come from other layers and differ on this Mac. The next apply puts the "
+          "tracked value back:")
+    for layer, domain, key, old, new in drift:
+        print(f"  {layer.label}: {domain} {key}: {short(old, 30)} -> {short(new, 30)}")
+    flags = sorted({layer.flag for layer, *_ in drift})
+    print("  To keep this Mac's values, export that layer (macsettings "
+          + " export, or macsettings ".join(flags)
+          + " export), or track the key on this machine alone to override it.")
+
+
+def cmd_apply(args, layers):
+    # Merge the layers first, so a key tracked in more than one is written
+    # once, with the value from the highest layer.
+    wanted = {}
+    for layer in layers:
+        for domain in tracked_domains(layer.sdir):
+            wanted.setdefault(domain, {}).update(load_tracked(layer.sdir, domain))
+
     restart = set()
+    reload = False
     changed = 0
     failed = []
-    # Shared settings first, then the machine's, so the machine's values win.
-    sdirs = [sdir] if args.machine == SHARED else [settings_dir(SHARED), sdir]
-    for domain_dir in sdirs:
-        for domain in tracked_domains(domain_dir):
-            try:
-                ensure_container(domain)
-                live = read_domain(domain)
-                for key, value in sorted(load_tracked(domain_dir, domain).items()):
-                    if live.get(key) != value:
-                        write_key(domain, key, value)
-                        changed += 1
-                        restart.update(RESTART.get(domain, []))
-            except (NoAccess, subprocess.CalledProcessError) as err:
-                failed.append(f"{domain}: {err}")
+    for domain, values in wanted.items():
+        try:
+            ensure_container(domain)
+            live = read_domain(domain)
+            for key, value in sorted(values.items()):
+                if live.get(key) != value:
+                    write_key(domain, key, value)
+                    changed += 1
+                    restart.update(RESTART.get(base_domain(domain), []))
+                    reload = reload or base_domain(domain) in RELOAD
+        except (NoAccess, subprocess.CalledProcessError) as err:
+            failed.append(f"{domain}: {err}")
+    if reload and os.path.exists(ACTIVATE_SETTINGS):
+        subprocess.run([ACTIVATE_SETTINGS, "-u"], capture_output=True)
     for app in sorted(restart):
         subprocess.run(["killall", app], capture_output=True)
-    label = args.machine if args.machine == SHARED else f"{args.machine}' + 'shared"
-    print(f"Applied settings for '{label}': "
+    print(f"Applied settings ({', '.join(layer.label for layer in layers)}): "
           + (f"{changed} change(s)." if changed else "already up to date."))
     if changed:
-        print("  Some changes (menu bar, keyboard, trackpad) need a log out and back in,"
-              " and open apps need a restart.")
+        print("  A few changes (like input sources) only take effect after a log out and"
+              " back in, and open apps need a restart.")
     if failed:
         for line in failed:
             print(f"  failed: {line}", file=sys.stderr)
@@ -403,13 +577,14 @@ def snapshot(domains):
         return dict(pool.map(grab, domains))
 
 
-def cmd_watch(args, sdir):
+def cmd_watch(args, layers):
+    sdir = layers[-1].sdir
     domains = snapshot_domains(args.domains)
     print(f"Snapshotting {len(domains)} settings domains…")
     before = snapshot(domains)
     blocked = sorted(d for d, v in before.items() if v is None)
     if blocked:
-        print(f"  Can't read {len(blocked)} sandboxed app(s) (e.g. {blocked[0]}). Run this "
+        print(f"  Can't read {len(blocked)} protected domain(s) (e.g. {blocked[0]}). Run this "
               "from Terminal with Full Disk Access to include them.")
     try:
         input("Now change the settings you want to capture, then press Enter here… ")
@@ -426,7 +601,7 @@ def cmd_watch(args, sdir):
                 continue
             if key not in new:
                 continue  # removed: reset to default; nothing to track
-            if not args.all and NOISE.search(key):
+            if not args.all and is_noise(key):
                 hidden += 1
                 continue
             changes.append((domain, key, old.get(key, "<unset>"), new[key]))
@@ -436,11 +611,13 @@ def cmd_watch(args, sdir):
               + (f" ({hidden} app-state changes hidden; add --all)." if hidden else "."))
         return
     tracked = {d: load_tracked(sdir, d) for d in {c[0] for c in changes}}
+    below = {d: tracked_below(layers, d) for d in tracked}
     for i, (domain, key, old, new) in enumerate(changes, 1):
-        mark = "*" if key in tracked[domain] else " "
-        print(f"{i:4}{mark} {domain} {key}: {short(old, 25)} -> {short(new, 40)}")
+        print(f"{i:4}{mark(key, tracked[domain], below[domain])} {domain} {key}: "
+              f"{short(old, 25)} -> {short(new, 40)}")
     if hidden:
         print(f"      ({hidden} app-state changes hidden; add --all to show them)")
+    print_legend(layers)
     picked = ask_selection(len(changes))
     if not picked:
         return
@@ -456,7 +633,10 @@ def main():
     parser = argparse.ArgumentParser(
         prog="macsettings", description=__doc__,
         formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument("--machine", help="machine to use (default: from ~/.zshrc)")
+    target = parser.add_mutually_exclusive_group()
+    target.add_argument("--machine", help="machine to use (default: from ~/.zshrc), "
+                        "or 'shared' for the settings every machine gets")
+    target.add_argument("--profile", help="profile to use (see machines/<m>/Profiles)")
     sub = parser.add_subparsers(dest="command", required=True)
     sub.add_parser("list")
     sub.add_parser("export")
@@ -473,11 +653,12 @@ def main():
     p.add_argument("--all", action="store_true", help="include app-state changes")
     args = parser.parse_args()
 
-    args.machine = args.machine or detect_machine()
-    sdir = settings_dir(args.machine)
+    if not args.profile:
+        args.machine = args.machine or detect_machine()
+    layers = target_layers(args)
     try:
         {"list": cmd_list, "track": cmd_track, "untrack": cmd_untrack,
-         "export": cmd_export, "apply": cmd_apply, "watch": cmd_watch}[args.command](args, sdir)
+         "export": cmd_export, "apply": cmd_apply, "watch": cmd_watch}[args.command](args, layers)
     except NoAccess as err:
         sys.exit(str(err))
     except KeyboardInterrupt:

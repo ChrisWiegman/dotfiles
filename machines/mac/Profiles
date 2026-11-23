@@ -1,0 +1,3 @@
+# Settings profiles this machine gets, applied after shared/settings and before
+# its own settings/. Each is profiles/<name>/settings (see `macsettings --help`).
+chris
