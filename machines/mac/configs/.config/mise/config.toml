@@ -1,7 +1,0 @@
-[settings]
-disable_hints = ["*"]
-
-[tools]
-go = "latest"
-node = "lts"
-npm = "latest"

@@ -49,8 +49,8 @@ for brewfile in "$SHARED_BREWFILE" "${MACHINEPATH}/Brewfile"; do
 done
 
 # If the Brewfile installed the full Xcode app (via `mas`), its license must be
-# accepted before any xcrun-based tool (e.g. `mise install`, run right after this
-# script) will work. Accept it non-interactively now rather than let those steps
+# accepted before any xcrun-based tool (e.g. `go build` with cgo, or a later setup
+# step) will work. Accept it non-interactively now rather than let those steps
 # fail on the license prompt.
 if [ -d "/Applications/Xcode.app" ] && ! sudo xcodebuild -license status >/dev/null 2>&1; then
     echo "Accepting Xcode license..."

@@ -81,8 +81,8 @@ sh "$SHAREDPATH/scripts/security.sh"
 
 # homebrew.sh runs `brew shellenv` in its own shell, so that PATH never reaches
 # us. Repeat it here on a fresh machine, where /opt/homebrew/bin isn't on PATH
-# yet, so the steps below can find brew-installed tools (configs.sh runs
-# `mise install` and would abort setup with "mise: command not found").
+# yet, so the steps below (configs.sh and the machine setup) can find
+# brew-installed tools.
 if [ -s "/opt/homebrew/bin/brew" ]; then
     eval "$(/opt/homebrew/bin/brew shellenv)"
 fi
@@ -143,7 +143,7 @@ fi
 echo
 echo "✅ Setup complete for '$(basename "$MACHINEPATH")'."
 echo "   • Homebrew packages, casks, and App Store apps installed"
-echo "   • Shell, git, ssh, tmux, mise, and app configs linked"
+echo "   • Shell, git, ssh, tmux, and app configs linked"
 echo "   Open a new terminal (or run 'szh') to pick up the new shell config."
 
 if [ -s "$DOTFILES_WARNINGS" ]; then

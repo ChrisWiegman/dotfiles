@@ -19,7 +19,7 @@ with any change to setup behavior.
   `machines/<m>/Brewfile`; the shared SSH config `Include`s
   `~/.ssh/config.d/*.conf`, linked from `machines/<m>/configs/.ssh/config.d/`.
 - Machine selection at runtime comes from where `~/.zshrc` links to
-  (see `r_mise` and `settings.py`).
+  (see `bundle_homebrew` and `settings.py`).
 
 ## Signing and keys
 

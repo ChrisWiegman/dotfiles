@@ -154,7 +154,7 @@ update_homebrew() {
 # ---- Install new Brewfile entries ----
 # Setup installs the shared and machine Brewfiles, but an entry added since
 # (say, from another machine) would otherwise wait for the next setup run.
-# The machine is whichever one ~/.zshrc links to, as in r_mise.
+# The machine is whichever one ~/.zshrc links to.
 bundle_homebrew() {
   local zshrc brewfile
   zshrc="$(readlink "$HOME/.zshrc" 2>/dev/null)" || return 0
@@ -317,6 +317,4 @@ rup() {
 
   [[ $(typeset -f update_app_store) ]] && update_app_store
   [[ $(typeset -f update_homebrew) ]] && update_homebrew
-  [[ $(typeset -f r_mise) ]] && r_mise
-  [[ $(typeset -f u_mise) ]] && u_mise
 }

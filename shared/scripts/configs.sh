@@ -34,16 +34,6 @@ tmux source-file ~/.tmux.conf 2>/dev/null || true
 # Setting up machine-specific configs
 M_CONFIG_DIR="$MACHINEPATH/configs"
 
-# Setup Mise if it is configured
-if [ -f "$M_CONFIG_DIR/.config/mise/config.toml" ]; then
-    link_config "$M_CONFIG_DIR/.config/mise/config.toml" "$HOME/.config/mise/config.toml"
-    if ! command -v mise >/dev/null 2>&1; then
-        warn "mise isn't installed (check the brew bundle output); tools in the mise config were not installed."
-    elif ! mise install; then
-        warn "mise install failed; open a new shell and run 'r_mise' to retry."
-    fi
-fi
-
 # Machine-specific SSH settings, pulled in by the shared config's Include.
 # Clear out old links first so a file removed from the repo stops applying.
 mkdir -p "$HOME/.ssh/config.d"

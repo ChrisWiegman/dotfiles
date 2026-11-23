@@ -1,5 +1,6 @@
 brew "gh"
-brew "mise"
+brew "go"
+brew "node"
 
 cask "claude-code"
 cask "ears"
