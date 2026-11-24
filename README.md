@@ -134,10 +134,11 @@ access alive for the rest of the run, so you can start it and walk away.
 ## Mac settings
 
 Each machine keeps its System Settings and app preferences (Mail, Safari,
-Calendar, Reminders, Podcasts, Music, Notes, …) in `machines/<machine>/settings/`.
-There's one plist per preferences domain, holding only the keys being tracked.
-Window positions, timestamps, and account IDs stay out. Setup applies them, and
-the `macsettings` shell command keeps them up to date.
+Calendar, Reminders, Podcasts, Music, Notes, …) and third-party apps' settings in
+`machines/<machine>/settings/`. There's one plist per preferences domain,
+holding only the keys being tracked. Window positions, timestamps, and account
+IDs stay out. Setup applies them, and the `macsettings` shell command keeps them
+up to date.
 
 Settings come in three layers, which setup applies in this order, so a later
 layer overrides an earlier one:
@@ -162,28 +163,50 @@ Run `macsettings` from **Terminal**. It needs the same Full Disk Access as setup
 because macOS hides sandboxed apps' settings (Mail, Safari, Notes, …) from
 everything else.
 
-**Capture a new setting.** Run `macsettings watch`, change the setting in System
-Settings or the app, and press Enter. It lists what changed; pick the ones to
-keep. Then commit `machines/<machine>/settings/`.
+**Save this Mac's settings.** Run `macsettings export`, review `git diff`, and
+commit `machines/<machine>/settings/`. In one pass it refreshes every tracked
+key from the Mac's current values and captures every new key that looks like a
+setting, in System Settings, Apple's apps, and third-party apps. It leaves out:
 
-**Settings changed over time.** `macsettings export` refreshes every tracked key
-from the Mac's current values. A key that's back to its default stops being
-tracked. If a whole domain reads back empty (usually because macOS is hiding it,
-as it does without Full Disk Access), export leaves it alone and says so rather
-than untracking everything in it. Export only changes the machine's own layer,
-but it lists any shared or profile key that's different on this Mac, since the
-next setup run would put the tracked value back. Review with `git diff` and
-commit.
+- Apple's background services (Siri, iCloud, Messages sync, and so on). Their
+  preferences are bookkeeping, and replaying some of it on a new Mac would do
+  harm, like telling Messages its first sync already happened.
+- App state: window positions, timestamps, "already showed this" flags, caches.
+- Anything that looks personal, because this repo is public: email addresses,
+  account and device IDs, MAC addresses, tokens, paths in your home folder, and
+  your name or the Mac's name.
+- Keys a shared or profile layer already tracks.
+
+Those filters are educated guesses, so read the diff before pushing.
+
+A key that's back to its default stops being tracked. If a whole domain reads
+back empty (usually because macOS is hiding it, as it does without Full Disk
+Access), export leaves it alone and says so rather than untracking everything in
+it. Export only captures into the machine's own layer (`--machine shared` and
+`--profile` exports just refresh what's tracked there), but it lists any shared
+or profile key that's different on this Mac, since the next setup run would put
+the tracked value back.
+
+**Leave something out.** `macsettings untrack <domain> [<key>…]` stops tracking
+keys, or a whole domain, and records them in the machine's
+`settings/_ignore.plist` so export doesn't capture them again.
+`macsettings track` brings them back, and `macsettings list` shows what's left
+out.
+
+**Find a specific setting.** Run `macsettings watch`, change the setting in
+System Settings or the app, and press Enter. It lists what changed; pick the
+ones to keep. This is the way to add a setting export leaves out, or one for a
+shared or profile layer.
 
 **Other commands:**
 
 - `macsettings list` shows what's tracked, in every layer the machine gets.
 - `macsettings track <domain>` lists a domain's keys to pick from, and
   `macsettings track <domain> <key>…` tracks specific keys.
-- `macsettings untrack <domain> [<key>…]` stops tracking keys.
 - `macsettings apply` writes the tracked settings to this Mac (setup does this).
 
 The machine comes from whichever one `~/.zshrc` is linked to; add
-`--machine <name>` to use another. To set up a machine that isn't built from
-this repo yet (an old Mac being replaced), clone the repo there and run
-`python3 shared/scripts/settings.py --machine <name> watch`.
+`--machine <name>` to use another. To save the settings of a Mac that isn't
+built from this repo yet (an old Mac being replaced), clone the repo there,
+create `machines/<name>/`, and run
+`python3 shared/scripts/settings.py --machine <name> export`.

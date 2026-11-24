@@ -23,6 +23,9 @@ with any change to setup behavior.
   `machines/<m>/settings`. `shared` reaches Joy's machine too.
 - Machine selection at runtime comes from where `~/.zshrc` links to
   (see `bundle_homebrew` and `settings.py`).
+- This repo is public. `macsettings export` filters personal data out of
+  captured settings, but read every `*/settings/` diff for names, IDs, and
+  paths before committing.
 
 ## Signing and keys
 

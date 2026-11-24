@@ -16,6 +16,13 @@ which `apply` merges in this order, so a later layer wins:
 unless --machine shared or --profile <name> picks another. For a machine,
 `apply` and `list` cover all of its layers.
 
+For a machine, `export` captures everything it can in one go: every key that
+looks like a setting in System Settings, Apple's apps, and third-party apps
+(not Apple's background services, whose preferences are bookkeeping). It
+leaves out app state, anything that looks personal (this repo is public),
+keys a shared or profile layer already tracks, and whatever `untrack` told it
+to leave out (kept in the layer's settings/_ignore.plist).
+
 Commands (run from Terminal, which has Full Disk Access; without it macOS
 hides sandboxed apps' settings such as Mail, Safari, and Notes):
 
@@ -27,11 +34,13 @@ hides sandboxed apps' settings such as Mail, Safari, and Notes):
                          list the domain's keys to choose from.
   untrack <domain> [key ...]
                          Stop tracking keys (all of the domain's keys if none
-                         are given).
+                         are given). For a machine, export also stops
+                         capturing them; `track` brings them back.
   export                 Refresh every tracked key from this Mac's current
-                         values. Run after changing settings, then commit.
-                         For a machine, also points out keys from its shared
-                         and profile layers that differ on this Mac.
+                         values and, for a machine, capture every new setting.
+                         Run after changing settings, review with git diff,
+                         then commit. For a machine, also points out keys from
+                         its shared and profile layers that differ on this Mac.
   apply                  Write the tracked settings to this Mac (setup runs
                          this).
   list                   Show the tracked settings.
@@ -45,6 +54,8 @@ The machine defaults to whichever one ~/.zshrc is linked from; pass
 import argparse
 import collections
 import concurrent.futures
+import datetime
+import functools
 import os
 import plistlib
 import re
@@ -67,6 +78,17 @@ NOISE = re.compile(
     r"|UUID|[Uu]uid|GUID|Identifier$|ID$|IDs$|[Cc]ache|[Aa]nalytics|[Mm]igrat"
     r"|[Bb]ookmark|-url$|[Rr]ecent|[Ss]eed$|[Tt]oken|[Cc]ount$|[Vv]ersion"
     r"|Window(H|V)?(Pos|Size)|[Rr]ects?$|Frame|[Ss]croll[Pp]osition|[Ss]elected"
+    # Onboarding and "already did that" flags, migrations, logging, capability
+    # caches, and similar bookkeeping.
+    r"|^_|[Uu]pgrade|[Hh]as(Shown|Seen|Displayed|Been|Launched|Set|Started|Finished"
+    r"|Performed)|[Dd]id[A-Z]|^did|^[Hh]ave[A-Z]|[Ff]irst(Launch|Run|Login)"
+    r"|[Oo]nboarding|[Ww]hatsNew|[Ww]elcome|FTE|[Rr]ecen|[Dd]ebug|[Ll]ogging|[Ll]og[A-Z]"
+    r"|[Rr]eason|[Aa]ttempt|[Pp]ending|Requested|[Cc]ompleted?($|[A-Z])|Performed"
+    r"|Eligib|[Nn]eeds[A-Z]|[Ss]upport(s|ed)?[A-Z]|^store[A-Z]|[Ii]mported|[Bb]adge"
+    r"|[Ii][Cc]loud|Window[\w.]*Location|SyncState|^AutoUnlock|^com\.apple\.gms\."
+    r"|[Uu]pdateLevel|[Uu]tterance|[Dd]isclosure|Greetings?|Snapshot|Sent$|OneTime"
+    r"|[Ss]yncing|Ever[A-Z]|SyncExtensions|Upsell|[Ii]ntroduction|NotFirst|MiniBuddy"
+    r"|SplitView|Connected$|^trash-full$|[Ss]egment$"
 )
 
 # Real settings whose names look like app state to NOISE: 24-hour time ends in
@@ -78,6 +100,64 @@ SETTING = re.compile(
     r"|NSStatusItem Visible |NSToolbar Configuration )"
     r"|Restor(e|ing)Session"
 )
+
+# What export captures on its own for a machine. Any key anywhere can still be
+# tracked by name with `track`.
+#
+# Apple's settings live in the domains for System Settings and Apple's apps.
+# The few hundred other Apple domains belong to background services, and hold
+# their bookkeeping (sync flags, counters, account IDs) rather than settings;
+# replaying some of it on a new Mac would even do harm, like telling Messages
+# its first sync already happened.
+APPLE_SETTINGS = re.compile(
+    r"^(NSGlobalDomain|pbs|com\.apple\.("
+    # System Settings and the desktop
+    r"dock|finder|WindowManager|controlcenter|menuextra\..*|systemuiserver|Spotlight"
+    r"|screencapture|screensaver|loginwindow|desktopservices|sharingd|universalcontrol"
+    r"|LaunchServices/com\.apple\.launchservices\.secure|ExtensionsPreferences\..*"
+    r"|scriptmenu|FolderActionsDispatcher|batteryui\..*|AppStore|TelephonyUtilities"
+    r"|Siri|assistant\.support|assistant\.backedup|AdLib"
+    r"|universalaccess|Accessibility|mediaaccessibility.*|ComfortSounds|CoreGraphics"
+    r"|HIToolbox|symbolichotkeys|TextInputMenu|keyboard\.preferences|inputmethod\..*"
+    r"|AppleMultitouch.*|driver\.Apple(BluetoothMultitouch|HIDMouse).*"
+    # Apple's apps
+    r"|Safari|mail|Notes|iCal|reminders|Music|Music\.eq|podcasts|TV|Photos"
+    r"|photos\.shareddefaults|Preview|TextEdit|Terminal|ActivityMonitor|Console"
+    r"|DiskUtility|QuickTimePlayerX|Maps|weather|stocks|news|FaceTime|MobileSMS"
+    r"|keychainaccess|ScriptEditor2|Automator|iWork\..*|freeform|iBooksX|dt\.Xcode"
+    r"|FontBook|calculator|Dictionary|VoiceMemos|screensharing"
+    r"))$"
+)
+# Third-party apps are named like com.company.App. Their updaters, helpers,
+# and crash reporters are bookkeeping too.
+THIRD_PARTY = re.compile(r"^(?!com\.apple\.|systemgroup\.|group\.)[\w-]+(\.[\w-]+)+$")
+THIRD_PARTY_SKIP = re.compile(
+    r"keystone|autoupdate|updater?$|crashpad|crash.?report|helper|agent$|daemon"
+    r"|launcher|analytics|telemetry", re.IGNORECASE)
+
+# Since this repo is public, export also leaves out anything that looks
+# personal or tied to this Mac. Keys whose names say they hold something
+# private:
+PRIVATE_KEY = re.compile(
+    r"passw(or)?d|secret|token|credential|licen[cs]e|serial|registration|e-?mail"
+    r"|account|cookie|api.?key|auth|salt|birth|dsid|apns|nickname|identifier|identit|apple.?id"
+    r"|persistent.?id|signature|(^|[^a-z])id([^a-z]|$)", re.IGNORECASE)
+# Text in a key or value: email addresses, paths in a home folder, IDs and
+# MAC addresses, hashes, and phone numbers.
+PRIVATE_TEXT = re.compile(
+    r"[\w.+-]+@[\w-]+\.[\w.-]+"
+    r"|/Users/|file://"
+    r"|[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}"
+    r"|\b[0-9A-Fa-f]{2}([:-])[0-9A-Fa-f]{2}(\1[0-9A-Fa-f]{2}){4}\b"
+    r"|[0-9A-Fa-f]{32,}|\+\d{10,15}\b|tel:", re.ASCII)
+# Text in a value (key names run long, so not those): tokens, and URLs with a
+# query string, which tends to carry IDs.
+TOKEN_TEXT = re.compile(
+    r"[A-Za-z0-9+/_-]{40,}|\b(?=[A-Za-z+/_-]*\d)[A-Za-z0-9+/_-]{24,}|https?://\S*\?", re.ASCII)
+# Text that marks a value as app state: dates, and window positions.
+STATE_TEXT = re.compile(r"\b\d{4}-\d{2}-\d{2}\b|^\{\{?-?\d+(\.\d+)?, -?\d+", re.ASCII)
+# Values bigger than this are caches or history, not settings.
+MAX_CAPTURE_BYTES = 64 * 1024
 
 # Restart these after applying so the changes show up without logging out.
 # A currentHost/ domain uses the entry for its plain name.
@@ -109,8 +189,12 @@ RELOAD = {
 }
 
 # One layer of tracked settings. `flag` is the macsettings option that picks it,
-# for hints.
-Layer = collections.namedtuple("Layer", "label sdir flag")
+# for hints; `kind` is shared, profile, or machine.
+Layer = collections.namedtuple("Layer", "label sdir flag kind")
+
+# Reserved file name in a layer's settings/ folder for what export never
+# captures: {domain: True} for a whole domain, {domain: [key, ...]} for keys.
+IGNORE = "_ignore"
 
 
 class NoAccess(Exception):
@@ -123,6 +207,77 @@ def is_noise(key):
 
 def base_domain(domain):
     return domain[len(CURRENT_HOST):] if domain.startswith(CURRENT_HOST) else domain
+
+
+def capturable(domain):
+    """Whether export captures new keys in this domain on its own."""
+    name = base_domain(domain)
+    return bool(APPLE_SETTINGS.search(name)
+                or (THIRD_PARTY.search(name) and not THIRD_PARTY_SKIP.search(name)))
+
+
+@functools.lru_cache(maxsize=None)
+def personal_text():
+    """Your name (from git), your login, and this Mac's names, which turn up in
+    settings like a shared music library's name."""
+    words, names = {os.path.basename(HOME)}, set()
+    for cmd, split in ((["git", "config", "--get", "user.name"], True),
+                       (["scutil", "--get", "ComputerName"], False),
+                       (["scutil", "--get", "LocalHostName"], False)):
+        try:
+            out = subprocess.run(cmd, capture_output=True, text=True).stdout.strip()
+        except OSError:
+            continue
+        (words.update(out.split()) if split else names.add(out))
+    parts = [rf"\b{re.escape(w)}\b" for w in words | names if len(w) >= 3]
+    return re.compile("|".join(parts), re.IGNORECASE) if parts else None
+
+
+def strings_in(value):
+    """Every string in a value, its dictionary keys included. Data is read as
+    ASCII and as UTF-16, the two ways property lists store text in it."""
+    if isinstance(value, dict):
+        for k, v in value.items():
+            yield k
+            yield from strings_in(v)
+    elif isinstance(value, list):
+        for v in value:
+            yield from strings_in(v)
+    elif isinstance(value, bytes):
+        yield value.decode("latin-1")
+        yield value.decode("utf-16-be", "ignore")
+    elif isinstance(value, str):
+        yield value
+
+
+def has_date(value):
+    if isinstance(value, datetime.datetime):
+        return True
+    if isinstance(value, dict):
+        return any(has_date(v) for v in value.values())
+    if isinstance(value, list):
+        return any(has_date(v) for v in value)
+    return False
+
+
+def worth_capturing(key, value):
+    """Whether export should start tracking a key it found: a setting rather
+    than app state, and nothing personal."""
+    if is_noise(key) or PRIVATE_KEY.search(key) or has_date(value):
+        return False
+    if len(plistlib.dumps(value)) > MAX_CAPTURE_BYTES:
+        return False
+    # Bookmark and alias data are file references into someone's folders.
+    if isinstance(value, bytes) and value[:4] in (b"book", b"alis"):
+        return False
+    personal = personal_text()
+    values = list(strings_in(value))
+    for text in [key, *values]:
+        if PRIVATE_TEXT.search(text) or STATE_TEXT.search(text):
+            return False
+        if personal and personal.search(text):
+            return False
+    return not any(TOKEN_TEXT.search(text) for text in values)
 
 
 # ---------------------------------------------------------------- layers
@@ -161,16 +316,18 @@ def known_profiles():
 
 
 def shared_layer():
-    return Layer(SHARED, os.path.join(DOTFILES, "shared", "settings"), "--machine shared")
+    return Layer(SHARED, os.path.join(DOTFILES, "shared", "settings"), "--machine shared",
+                 "shared")
 
 
 def profile_layer(name):
     return Layer(f"profile {name}", os.path.join(DOTFILES, "profiles", name, "settings"),
-                 f"--profile {name}")
+                 f"--profile {name}", "profile")
 
 
 def machine_layer(machine):
-    return Layer(machine, os.path.join(machine_dir(machine), "settings"), f"--machine {machine}")
+    return Layer(machine, os.path.join(machine_dir(machine), "settings"), f"--machine {machine}",
+                 "machine")
 
 
 def target_layers(args):
@@ -200,7 +357,7 @@ def tracked_domains(sdir):
         d = os.path.join(sdir, sub)
         if os.path.isdir(d):
             for name in sorted(os.listdir(d)):
-                if name.endswith(".plist"):
+                if name.endswith(".plist") and not name.startswith("_"):
                     found.append(prefix + name[: -len(".plist")])
     return found
 
@@ -230,6 +387,17 @@ def tracked_below(layers, domain):
     for layer in layers[:-1]:
         keys.update(load_tracked(layer.sdir, domain))
     return keys
+
+
+def unignore(layer, domain, keys):
+    """Let export capture these keys again, now that they're tracked by hand."""
+    ignore = load_tracked(layer.sdir, IGNORE)
+    entry = ignore.get(domain)
+    if isinstance(entry, list) and set(keys) & set(entry):
+        ignore[domain] = [k for k in entry if k not in keys]
+        if not ignore[domain]:
+            del ignore[domain]
+        save_tracked(layer.sdir, IGNORE, ignore)
 
 
 # ---------------------------------------------------------------- defaults
@@ -396,6 +564,10 @@ def cmd_list(args, layers):
             print(domain)
             for key, value in sorted(load_tracked(layer.sdir, domain).items()):
                 print(f"    {key} = {short(value)}")
+        ignore = load_tracked(layer.sdir, IGNORE)
+        if ignore:
+            print("export leaves out: " + ", ".join(
+                d if v is True else f"{d} ({', '.join(v)})" for d, v in sorted(ignore.items())))
 
 
 def cmd_track(args, layers):
@@ -425,32 +597,62 @@ def cmd_track(args, layers):
         tracked[key] = live[key]
         print(f"  tracking {args.domain} {key} = {short(live[key])}")
     save_tracked(sdir, args.domain, tracked)
+    if layers[-1].kind == "machine":
+        unignore(layers[-1], args.domain, args.keys)
 
 
 def cmd_untrack(args, layers):
-    sdir = layers[-1].sdir
-    tracked = load_tracked(sdir, args.domain)
-    if not tracked:
+    target = layers[-1]
+    tracked = load_tracked(target.sdir, args.domain)
+    if not tracked and target.kind != "machine":
         print(f"Nothing tracked for {args.domain}.")
         return
     for key in args.keys or list(tracked):
         if tracked.pop(key, None) is not None:
             print(f"  untracked {args.domain} {key}")
-    save_tracked(sdir, args.domain, tracked)
+    save_tracked(target.sdir, args.domain, tracked)
+    if target.kind != "machine":
+        return
+    # Export captures a machine's settings on its own, so remember to leave
+    # these out, or they'd be back on the next export.
+    ignore = load_tracked(target.sdir, IGNORE)
+    if args.keys:
+        if ignore.get(args.domain) is not True:
+            ignore[args.domain] = sorted(set(ignore.get(args.domain) or []) | set(args.keys))
+        print("  export will leave those keys out from now on (track them to bring them back)")
+    else:
+        ignore[args.domain] = True
+        print(f"  export will leave {args.domain} out from now on "
+              "(track keys in it to bring them back)")
+    save_tracked(target.sdir, IGNORE, ignore)
 
 
 def cmd_export(args, layers):
     target = layers[-1]
-    changed = 0
-    skipped = []
-    for domain in tracked_domains(target.sdir):
+    capture = target.kind == "machine"
+    ignore = load_tracked(target.sdir, IGNORE) if capture else {}
+    domains = set(tracked_domains(target.sdir))
+    if capture:
+        domains.update(d for d in snapshot_domains(None)
+                       if capturable(d) and ignore.get(d) is not True)
+    print(f"Reading {len(domains)} settings domains…")
+    live_all = snapshot(sorted(domains))
+
+    changed = removed = added = 0
+    added_in = set()
+    skipped, blocked = [], []
+    for domain in sorted(domains):
         tracked = load_tracked(target.sdir, domain)
-        try:
-            live = read_domain(domain)
-        except NoAccess as err:
-            skipped.append(f"{domain}: {err}")
+        before = dict(tracked)
+        live = live_all.get(domain)
+        if live is None:
+            if tracked:
+                skipped.append(f"{domain}: macOS blocked reading it, so it was left as is. "
+                               "Run this from Terminal with Full Disk Access.")
+            else:
+                blocked.append(domain)
             continue
-        if not live:
+        if tracked and not live:
             # A tracked domain that reads back empty is far more likely hidden
             # from us than reset to defaults in full. Untracking every key on
             # that guess would lose them, so leave it for a person to decide.
@@ -462,16 +664,37 @@ def cmd_export(args, layers):
             if key not in live:
                 # Unset on this Mac means it's back to the default; stop tracking it.
                 del tracked[key]
-                changed += 1
+                removed += 1
                 print(f"  {domain} {key}: no longer set here, untracked")
             elif live[key] != tracked[key]:
                 print(f"  {domain} {key}: {short(tracked[key], 30)} -> {short(live[key], 30)}")
                 tracked[key] = live[key]
                 changed += 1
-        save_tracked(target.sdir, domain, tracked)
+        entry = ignore.get(domain)
+        if capture and entry is not True and capturable(domain):
+            leave_out = tracked_below(layers, domain) | set(entry or [])
+            for key in sorted(live):
+                if key not in tracked and key not in leave_out and worth_capturing(key, live[key]):
+                    tracked[key] = live[key]
+                    added += 1
+                    added_in.add(domain)
+        if tracked != before:
+            save_tracked(target.sdir, domain, tracked)
+
+    summary = []
+    if added:
+        summary.append(f"{added} new setting(s) in {len(added_in)} domain(s)")
+    if changed:
+        summary.append(f"{changed} changed")
+    if removed:
+        summary.append(f"{removed} no longer set")
     print(f"Exported settings for '{target.label}': "
-          + (f"{changed} change(s). Review with git diff and commit." if changed
-             else "already up to date."))
+          + (", ".join(summary) + ". Review with git diff before committing (this repo is public)."
+             if summary else "already up to date."))
+    if blocked:
+        print(f"  Couldn't read {len(blocked)} protected domain(s) (like {blocked[0]}), so "
+              "nothing in them was captured. Run this from Terminal with Full Disk Access "
+              "to include them.")
     if len(layers) > 1:
         report_drift(layers)
     if skipped:
@@ -627,6 +850,8 @@ def cmd_watch(args, layers):
         print(f"  tracking {domain} {key}")
     for domain, values in tracked.items():
         save_tracked(sdir, domain, values)
+        if layers[-1].kind == "machine":
+            unignore(layers[-1], domain, list(values))
 
 
 def main():
