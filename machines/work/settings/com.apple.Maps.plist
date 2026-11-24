@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>DistanceUnits</key>
+	<string>Imperial</string>
+	<key>NavigationVoiceGuidanceLevelCycling</key>
+	<integer>2</integer>
+	<key>NavigationVoiceGuidanceLevelDriving</key>
+	<integer>2</integer>
+	<key>NavigationVoiceGuidanceLevelWalking</key>
+	<integer>2</integer>
+</dict>
+</plist>
