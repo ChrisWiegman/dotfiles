@@ -89,6 +89,13 @@ NOISE = re.compile(
     r"|[Uu]pdateLevel|[Uu]tterance|[Dd]isclosure|Greetings?|Snapshot|Sent$|OneTime"
     r"|[Ss]yncing|Ever[A-Z]|SyncExtensions|Upsell|[Ii]ntroduction|NotFirst|MiniBuddy"
     r"|SplitView|Connected$|^trash-full$|[Ss]egment$"
+    # One-time launch tasks and fixups, sync and indexing state, usage
+    # counters, hashes of personal data, receipts, and window frames.
+    r"|LaunchTask|Fixup|IsDirty|[Ss]yncAnchor|[Rr]eindex|IndexInBatch|NumberOf|^lifetime"
+    r"|^daily[A-Z]|^initial[A-Z]|TimeCosts|Restore\w*Value$|\.hash$|[Mm]d5|[Rr]eceipt"
+    r"|[Ll]ocalTimeZone|BuildKey|record-zone|[Ww]indow_?[Ff]rame|WindowState$"
+    r"|ApplicationState$|[Pp]resentations$|[Rr]etry|PrivacyReport|PrivacyProxy"
+    r"|LaunchInfo|MinimumWidths|^OpenWindows$|WasDefault|CheckedFor|[Pp]rompted"
 )
 
 # Real settings whose names look like app state to NOISE: 24-hour time ends in
@@ -264,6 +271,10 @@ def worth_capturing(key, value):
     """Whether export should start tracking a key it found: a setting rather
     than app state, and nothing personal."""
     if is_noise(key) or PRIVATE_KEY.search(key) or has_date(value):
+        return False
+    # A URL in a key name means per-item state, like Podcasts' play state for
+    # every show followed.
+    if "://" in key:
         return False
     if len(plistlib.dumps(value)) > MAX_CAPTURE_BYTES:
         return False
