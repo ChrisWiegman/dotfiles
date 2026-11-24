@@ -96,6 +96,8 @@ NOISE = re.compile(
     r"|[Ll]ocalTimeZone|BuildKey|record-zone|[Ww]indow_?[Ff]rame|WindowState$"
     r"|ApplicationState$|[Pp]resentations$|[Rr]etry|PrivacyReport|PrivacyProxy"
     r"|LaunchInfo|MinimumWidths|^OpenWindows$|WasDefault|CheckedFor|[Pp]rompted"
+    # "Has the user changed X" flags that sit beside the real setting.
+    r"|UserSet[A-Z]"
 )
 
 # Real settings whose names look like app state to NOISE: 24-hour time ends in
@@ -286,8 +288,7 @@ CAPTURE = {
     "com.apple.Maps": _keys(r"DistanceUnits", r"NavigationVoiceGuidanceLevel\w+"),
     "com.apple.photos.shareddefaults": _keys(
         r"IPXDefault(EnhancedVisualSearchEnabled|ViewFullHDR)"),
-    "com.apple.AppStore": _keys(r"AutoPlayVideoSetting", r"UserSetAutoPlayVideoSetting",
-                                r"InAppReviewEnabled"),
+    "com.apple.AppStore": _keys(r"AutoPlayVideoSetting", r"InAppReviewEnabled"),
     "com.apple.TextEdit": _keys(
         r"RichText", r"CheckSpellingWhileTyping", r"CheckGrammarWithSpelling",
         r"CorrectSpellingAutomatically", r"SmartQuotes", r"SmartDashes", r"SmartLinks",
@@ -299,6 +300,15 @@ CAPTURE = {
 CAPTURE["com.apple.driver.AppleBluetoothMultitouch.trackpad"] = CAPTURE[
     "com.apple.AppleMultitouchTrackpad"]
 CAPTURE["com.apple.driver.AppleBluetoothMultitouch.mouse"] = CAPTURE["com.apple.AppleMultitouchMouse"]
+
+# Values some apps write for themselves at their defaults, which export doesn't
+# start tracking: tracking them would only restore a default. A key already
+# tracked keeps being refreshed whatever its value.
+KNOWN_DEFAULTS = {
+    # The App Store writes this on launch; UserSetAutoPlayVideoSetting stays
+    # false until you change it.
+    "com.apple.AppStore": {"AutoPlayVideoSetting": "on"},
+}
 
 # Since this repo is public, export also leaves out a value that looks
 # personal or tied to this Mac, even for a key in CAPTURE.
@@ -424,6 +434,9 @@ def worth_capturing(domain, key, value):
     for the domain, with nothing personal in it."""
     allowed = CAPTURE.get(base_domain(domain))
     if not allowed or not allowed.search(key) or has_date(value):
+        return False
+    defaults = KNOWN_DEFAULTS.get(base_domain(domain), {})
+    if key in defaults and defaults[key] == value:
         return False
     # A URL in a key name means per-item state, like Podcasts' play state for
     # every show followed.
