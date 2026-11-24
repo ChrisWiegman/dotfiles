@@ -104,8 +104,40 @@ NOISE = re.compile(
 # window state, and Safari's restore-windows options say "Session".
 SETTING = re.compile(
     r"^(AppleICUForce(12|24)HourTime$|idleTime$|show-recents$|NSRecentDocumentsLimit$"
-    r"|NSStatusItem Visible |NSToolbar Configuration )"
+    r"|NSStatusItem Visible |NSToolbar Configuration |_HIHideMenuBar$|ShowDate$"
+    r"|(first|last) minute of )"
     r"|Restor(e|ing)Session"
+)
+
+# Keys that are real preferences in form but not choices worth restoring:
+# values an app writes for itself, geometry, and internals. Hidden like NOISE.
+APP_WRITTEN = re.compile(
+    # Written by Electron apps (VS Code, Signal) and test browsers on every launch.
+    r"^(AppleTextDirection|NSForceRightToLeftWritingDirection|NSTreatUnknownArgumentsAsOpen)$"
+    r"|^Squirrel|WebKitLinkedOnOrAfter"
+    # Window geometry and transient UI state.
+    r"|[Ss]idebar(Min)?Width|DisclosedState|\.frame(\.v\d+)?$|IsRestoring|[Cc]ollapsed"
+    r"|TabbedWindowGroups|InSeparateWindows|^first shown minute|[Ff]ullscreen$|^bwui$"
+    r"|(List|Preview) Closed$|HideSuggestionsEmptyItemView"
+    # Framework internals and app bookkeeping.
+    r"|^NS(DontMakeMainWindowKey|EventConcurrentProcessingEnabled)$|UseNSDocumentView"
+    r"|PluginHost|WIPAlerts|DefaultsClasses|RemoteXPC|^SkipLoading|^SFCollaboration"
+    r"|ServicesShortcutsPresent|NotificationUpdated|IMAPServerPrefixes|^Index(Junk|Trash)$"
+    r"|BrowserSelectionController|CombinedStickerApps|EnhancedLinkSecurity"
+    # Detected capabilities, caches, and status.
+    r"|Available$|^Device\w*Forces|^can[A-Z]|-active$|ExtensionCapabilities|ExtensionName$"
+    r"|StatusKey$|^ModelName$|[Pp]rior[.A-Z]|Dictation Status|^(loc|region)$|[Dd]iagnostics$"
+    # Server-provided limits (Mail Drop), not choices.
+    r"|^(expiresAfterSeconds|(max|min)SizeKB|whitelistedDownloadDomains)$"
+    # Set by the system when assistive or automation apps connect; and the
+    # Accessibility mirror of key repeat, which NSGlobalDomain's KeyRepeat owns.
+    r"|^(ApplicationAccessibility|Automation|GenericAccessibilityClient)Enabled$"
+    r"|^KeyRepeat(Delay|Enabled|Interval)$"
+    # Setup Assistant's copy of a setting.
+    r"|Buddy"
+    # Terminal's default and startup profile: terminal.sh sets them once the
+    # profile is imported.
+    r"|Window Settings$"
 )
 
 # What export captures on its own for a machine. Any key anywhere can still be
@@ -209,7 +241,7 @@ class NoAccess(Exception):
 
 
 def is_noise(key):
-    return bool(NOISE.search(key)) and not SETTING.search(key)
+    return bool(NOISE.search(key) or APP_WRITTEN.search(key)) and not SETTING.search(key)
 
 
 def base_domain(domain):
