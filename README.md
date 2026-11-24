@@ -133,9 +133,9 @@ access alive for the rest of the run, so you can start it and walk away.
 
 ## Mac settings
 
-Each machine keeps its System Settings and app preferences (Mail, Safari,
-Calendar, Reminders, Podcasts, Music, Notes, …) and third-party apps' settings in
-`machines/<machine>/settings/`. There's one plist per preferences domain,
+Each machine keeps its System Settings and the settings of Apple's apps (Finder,
+Safari, Mail, Music, Calendar, …) in `machines/<machine>/settings/`, plus
+anything else tracked by hand. There's one plist per preferences domain,
 holding only the keys being tracked. Window positions, timestamps, and account
 IDs stay out. Setup applies them, and the `macsettings` shell command keeps them
 up to date.
@@ -165,19 +165,19 @@ everything else.
 
 **Save this Mac's settings.** Run `macsettings export`, review `git diff`, and
 commit `machines/<machine>/settings/`. In one pass it refreshes every tracked
-key from the Mac's current values and captures every new key that looks like a
-setting, in System Settings, Apple's apps, and third-party apps. It leaves out:
+key from the Mac's current values and captures the settings you can change in
+System Settings or in the Settings window of one of Apple's apps (Finder,
+Safari, Mail, Music, Calendar, Messages, and so on). Which keys those are is a
+list in `shared/scripts/settings.py` (`CAPTURE`). Everything else (View menu
+choices, window layouts, hidden preferences, third-party apps) is tracked only
+if you add it with `macsettings track` or `watch`. Export also leaves out:
 
-- Apple's background services (Siri, iCloud, Messages sync, and so on). Their
-  preferences are bookkeeping, and replaying some of it on a new Mac would do
-  harm, like telling Messages its first sync already happened.
-- App state: window positions, timestamps, "already showed this" flags, caches.
-- Anything that looks personal, because this repo is public: email addresses,
-  account and device IDs, MAC addresses, tokens, paths in your home folder, and
-  your name or the Mac's name.
+- Any value that looks personal, because this repo is public: email
+  addresses, account and device IDs, MAC addresses, tokens, paths in your home
+  folder, and your name or the Mac's name.
 - Keys a shared or profile layer already tracks.
 
-Those filters are educated guesses, so read the diff before pushing.
+Read the diff before pushing anyway.
 
 A key that's back to its default stops being tracked. If a whole domain reads
 back empty (usually because macOS is hiding it, as it does without Full Disk
@@ -195,8 +195,9 @@ out.
 
 **Find a specific setting.** Run `macsettings watch`, change the setting in
 System Settings or the app, and press Enter. It lists what changed; pick the
-ones to keep. This is the way to add a setting export leaves out, or one for a
-shared or profile layer.
+ones to keep. This is the way to add a setting export doesn't capture (one
+from a View menu, say, or a third-party app), or one for a shared or profile
+layer.
 
 **Other commands:**
 

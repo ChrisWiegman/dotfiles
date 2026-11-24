@@ -16,12 +16,12 @@ which `apply` merges in this order, so a later layer wins:
 unless --machine shared or --profile <name> picks another. For a machine,
 `apply` and `list` cover all of its layers.
 
-For a machine, `export` captures everything it can in one go: every key that
-looks like a setting in System Settings, Apple's apps, and third-party apps
-(not Apple's background services, whose preferences are bookkeeping). It
-leaves out app state, anything that looks personal (this repo is public),
-keys a shared or profile layer already tracks, and whatever `untrack` told it
-to leave out (kept in the layer's settings/_ignore.plist).
+For a machine, `export` also captures, in one go, every setting you can change
+in System Settings or in the Settings window of one of Apple's apps (the
+CAPTURE list below). It leaves out values that look personal (this repo is
+public), keys a shared or profile layer already tracks, and whatever `untrack`
+told it to leave out (kept in the layer's settings/_ignore.plist). Anything
+else is tracked only if you add it with `track` or `watch`.
 
 Commands (run from Terminal, which has Full Disk Access; without it macOS
 hides sandboxed apps' settings such as Mail, Safari, and Notes):
@@ -140,47 +140,169 @@ APP_WRITTEN = re.compile(
     r"|Window Settings$"
 )
 
-# What export captures on its own for a machine. Any key anywhere can still be
-# tracked by name with `track`.
-#
-# Apple's settings live in the domains for System Settings and Apple's apps.
-# The few hundred other Apple domains belong to background services, and hold
-# their bookkeeping (sync flags, counters, account IDs) rather than settings;
-# replaying some of it on a new Mac would even do harm, like telling Messages
-# its first sync already happened.
-APPLE_SETTINGS = re.compile(
-    r"^(NSGlobalDomain|pbs|com\.apple\.("
-    # System Settings and the desktop
-    r"dock|finder|WindowManager|controlcenter|menuextra\..*|systemuiserver|Spotlight"
-    r"|screencapture|screensaver|loginwindow|desktopservices|sharingd|universalcontrol"
-    r"|LaunchServices/com\.apple\.launchservices\.secure|ExtensionsPreferences\..*"
-    r"|scriptmenu|FolderActionsDispatcher|batteryui\..*|AppStore|TelephonyUtilities"
-    r"|Siri|assistant\.support|assistant\.backedup|AdLib"
-    r"|universalaccess|Accessibility|mediaaccessibility.*|ComfortSounds|CoreGraphics"
-    r"|HIToolbox|symbolichotkeys|TextInputMenu|keyboard\.preferences|inputmethod\..*"
-    r"|AppleMultitouch.*|driver\.Apple(BluetoothMultitouch|HIDMouse).*"
-    # Apple's apps
-    r"|Safari|mail|Notes|iCal|reminders|Music|Music\.eq|podcasts|TV|Photos"
-    r"|photos\.shareddefaults|Preview|TextEdit|Terminal|ActivityMonitor|Console"
-    r"|DiskUtility|QuickTimePlayerX|Maps|weather|stocks|news|FaceTime|MobileSMS"
-    r"|keychainaccess|ScriptEditor2|Automator|iWork\..*|freeform|iBooksX|dt\.Xcode"
-    r"|FontBook|calculator|Dictionary|VoiceMemos|screensharing"
-    r"))$"
-)
-# Third-party apps are named like com.company.App. Their updaters, helpers,
-# and crash reporters are bookkeeping too.
-THIRD_PARTY = re.compile(r"^(?!com\.apple\.|systemgroup\.|group\.)[\w-]+(\.[\w-]+)+$")
-THIRD_PARTY_SKIP = re.compile(
-    r"keystone|autoupdate|updater?$|crashpad|crash.?report|helper|agent$|daemon"
-    r"|launcher|analytics|telemetry", re.IGNORECASE)
+# What export captures on its own for a machine: the keys behind controls in
+# System Settings and in the Settings windows of Apple's apps, by domain (a
+# currentHost/ domain uses its plain name's entry). Anything else, like a View
+# menu choice or a hidden preference, is tracked only if you track it by hand.
+# Some key-to-control matches are best guesses; a key here that a machine
+# doesn't have set is simply skipped.
+def _keys(*patterns):
+    return re.compile("^(" + "|".join(patterns) + ")$")
 
-# Since this repo is public, export also leaves out anything that looks
-# personal or tied to this Mac. Keys whose names say they hold something
-# private:
-PRIVATE_KEY = re.compile(
-    r"passw(or)?d|secret|token|credential|licen[cs]e|serial|registration|e-?mail"
-    r"|account|cookie|api.?key|auth|salt|birth|dsid|apns|nickname|identifier|identit|apple.?id"
-    r"|persistent.?id|signature|(^|[^a-z])id([^a-z]|$)", re.IGNORECASE)
+
+CAPTURE = {
+    # System Settings
+    "NSGlobalDomain": _keys(
+        # Appearance
+        r"AppleInterfaceStyle", r"AppleInterfaceStyleSwitchesAutomatically",
+        r"AppleAccentColor", r"AppleHighlightColor", r"AppleIconAppearanceTheme",
+        r"NSGlassTintAmount", r"AppleShowScrollBars", r"AppleScrollerPagingBehavior",
+        r"NSTableViewDefaultSizeMode", r"AppleReduceDesktopTinting",
+        # Desktop & Dock, Menu Bar
+        r"AppleActionOnDoubleClick", r"AppleMiniaturizeOnDoubleClick", r"AppleWindowTabbingMode",
+        r"NSCloseAlwaysConfirmsChanges", r"NSQuitAlwaysKeepsWindows",
+        r"AppleSpacesSwitchOnActivate", r"_HIHideMenuBar", r"AppleMenuBarVisibleInFullscreen",
+        r"SLSMenuBarUseBlurredAppearance",
+        # Keyboard
+        r"AppleKeyboardUIMode", r"KeyRepeat", r"InitialKeyRepeat",
+        r"NSAutomatic(Capitalization|PeriodSubstitution|SpellingCorrection|QuoteSubstitution"
+        r"|DashSubstitution|TextCompletion|InlinePrediction)Enabled",
+        r"KB_(DoubleQuoteOption|SingleQuoteOption|SpellingLanguage)", r"NSUserQuotesArray",
+        # Language & Region, Date & Time
+        r"AppleLanguages", r"AppleLocale", r"AppleMeasurementUnits", r"AppleMetricUnits",
+        r"AppleTemperatureUnit", r"AppleFirstWeekday", r"AppleICUForce(12|24)HourTime",
+        r"AppleICUDateFormatStrings", r"AppleICUNumberSymbols", r"AppleLiveTextEnabled",
+        # Trackpad, Mouse, Sound, Accessibility (and the trackpad mirrors that the
+        # Trackpad pane writes to currentHost/NSGlobalDomain)
+        r"AppleEnableSwipeNavigateWithScrolls", r"AppleEnableMouseSwipeNavigateWithScrolls",
+        r"com\.apple\.swipescrolldirection",
+        r"com\.apple\.(trackpad|mouse|scrollwheel)\.(?!version$)\w+",
+        r"com\.apple\.sound\.beep\.(flash|volume|sound)", r"com\.apple\.sound\.uiaudio\.enabled",
+        r"com\.apple\.springing\.(enabled|delay)",
+        # Finder Settings > Advanced (stored globally)
+        r"AppleShowAllExtensions"),
+    "com.apple.dock": _keys(
+        r"autohide", r"largesize", r"magnification", r"minimize-to-application", r"mineffect",
+        r"orientation", r"launchanim", r"show-process-indicators", r"show-recents", r"tilesize",
+        r"mru-spaces", r"expose-group-apps", r"wvous-(tl|tr|bl|br)-(corner|modifier)",
+        r"show\w+GestureEnabled"),
+    "com.apple.WindowManager": _keys(
+        r"GloballyEnabled", r"AutoHide", r"AppWindowGroupingBehavior", r"HideDesktop",
+        r"StandardHideDesktopIcons", r"StageManagerHideWidgets", r"StandardHideWidgets",
+        r"EnableStandardClickToShowDesktop", r"EnableTiledWindowMargins",
+        r"EnableTilingByEdgeDrag", r"EnableTopTilingByEdgeDrag", r"EnableTilingOptionAccelerator"),
+    # Control Center and Menu Bar (which items show is in currentHost/)
+    "com.apple.controlcenter": _keys(
+        r"AutoHideMenuBarOption", r"RemoteLiveActivitiesEnabled", r"AirplayReceiverEnabled",
+        r"ShowSuggestions", r"Battery\w*", r"Bluetooth", r"Display", r"FocusModes", r"NowPlaying",
+        r"ScreenMirroring", r"Siri", r"Sound", r"Spotlight", r"WiFi", r"AirDrop",
+        r"KeyboardBrightness", r"UserSwitcher", r"Hearing", r"AccessibilityShortcuts",
+        r"StageManager", r"VPN", r"TimeMachine", r"MusicRecognition"),
+    "com.apple.menuextra.clock": _keys(
+        r"ShowAMPM", r"ShowDate", r"ShowDayOfWeek", r"ShowSeconds", r"IsAnalog",
+        r"FlashDateSeparators"),
+    "com.apple.Spotlight": _keys(
+        r"DisabledUTTypes", r"EnabledPreferenceRules", r"PasteboardHistoryEnabled", r"orderedItems",
+        r"MenuItemHidden"),
+    "com.apple.screensaver": _keys(r"idleTime", r"askForPassword", r"askForPasswordDelay",
+                                   r"moduleDict", r"showClock"),
+    "com.apple.Siri": _keys(r"StatusMenuVisible"),
+    "com.apple.assistant.support": _keys(
+        r"Assistant Enabled", r"Allow Explicit Content", r"Dictation Enabled",
+        r"Search Queries Data Sharing Status", r"Siri Data Sharing Opt-In Status"),
+    "com.apple.assistant.backedup": _keys(r"Output Voice"),
+    "com.apple.AdLib": _keys(r"allowApplePersonalizedAdvertising"),
+    "com.apple.sharingd": _keys(r"DiscoverableMode"),
+    "com.apple.HIToolbox": _keys(r"AppleEnabledInputSources", r"AppleFnUsageType",
+                                 r"AppleDictationAutoEnable"),
+    "com.apple.TextInputMenu": _keys(r"visible"),
+    "com.apple.keyboard.preferences": _keys(r"IsMixmojiSuggestionsEnabled"),
+    "com.apple.symbolichotkeys": _keys(r"AppleSymbolicHotKeys"),
+    "pbs": _keys(r"FinderActive", r"FinderOrdering", r"NSServicesStatus"),
+    "com.apple.ExtensionsPreferences.ShareMenu": _keys(r"displayOrder"),
+    "com.apple.universalaccess": _keys(
+        r"reduceMotion", r"reduceTransparency", r"increaseContrast", r"differentiateWithoutColor",
+        r"showToolbarButtonShapes", r"mouseDriverCursorSize", r"closeViewScrollWheelToggle",
+        r"closeViewHotkeysEnabled", r"closeViewSmoothImages", r"closeViewZoomMode",
+        r"stickyKey\w*", r"useStickyKeysShortcutKeys", r"slowKey\w*", r"mouseDriver\w*",
+        r"liveSpeechEnabled", r"flashScreen", r"voiceOverOnOffKey", r"virtualKeyboardOnOff",
+        r"cursorIsCustomized", r"grayscale", r"whiteOnBlack"),
+    "com.apple.CoreGraphics": _keys(r"DisplayUse(ForcedGray|InvertedPolarity)"),
+    "com.apple.ComfortSounds": _keys(r"comfortSoundsEnabled", r"timerEnabled"),
+    "com.apple.AppleMultitouchTrackpad": _keys(
+        r"Clicking", r"TrackpadRightClick", r"TrackpadCornerSecondaryClick",
+        r"(First|Second)ClickThreshold", r"ActuateDetents", r"ActuationStrength", r"ForceSuppressed",
+        r"TrackpadScroll", r"TrackpadMomentumScroll", r"TrackpadPinch", r"TrackpadRotate",
+        r"Trackpad(Two|Three|Four|Five)Finger\w+Gesture", r"TrackpadThreeFingerDrag",
+        r"Dragging", r"DragLock", r"USBMouseStopsTrackpad"),
+    "com.apple.AppleMultitouchMouse": _keys(
+        r"MouseButtonMode", r"Mouse(One|Two)Finger\w+Gesture", r"MouseMomentumScroll"),
+    "com.apple.driver.AppleHIDMouse": _keys(r"ButtonDominance"),
+    # Apple's apps (filled in below the dict)
+    "com.apple.finder": _keys(
+        r"NewWindowTarget", r"NewWindowTargetPath", r"ShowHardDrivesOnDesktop",
+        r"ShowExternalHardDrivesOnDesktop", r"ShowRemovableMediaOnDesktop",
+        r"ShowMountedServersOnDesktop", r"FinderSpawnTab", r"ShowRecentTags", r"FavoriteTagNames",
+        r"FXEnableExtensionChangeWarning", r"FXRemoveOldTrashItems", r"WarnOnEmptyTrash",
+        r"FXDefaultSearchScope", r"_FXSortFoldersFirst", r"_FXSortFoldersFirstOnDesktop",
+        r"FXEnableRemoveFromICloudDriveWarning"),
+    "com.apple.Safari": _keys(
+        r"AlwaysRestoreSessionAtLaunch", r"OpenPrivateWindowWhenNotRestoringSessionAtLaunch",
+        r"NewWindowBehavior", r"NewTabBehavior", r"HomePage", r"HistoryAgeInDaysLimit",
+        r"DownloadsClearingPolicy", r"AutoOpenSafeDownloads", r"TabCreationPolicy",
+        r"CommandClickMakesTabs", r"OpenNewTabsInFront", r"ShowStandaloneTabBar",
+        r"EnableNarrowTabs", r"ShowIconsInTabs", r"AutoFill\w+", r"SearchProviderShortName",
+        r"PrivateSearchProviderShortName", r"PrivateSearchEngineUsesNormalSearchEngineToggle",
+        r"SuppressSearchSuggestions", r"WebsiteSpecificSearchEnabled", r"PreloadTopHit",
+        r"ShowFavoritesUnderSmartSearchField", r"ShowFullURLInSmartSearchField",
+        r"EnableEnhancedPrivacyIn\w+", r"BlockStoragePolicy", r"WebKitStorageBlockingPolicy",
+        r"WebKitPreferences\.storageBlockingPolicy", r"WarnAboutFraudulentWebsites",
+        r"WebKitPreferences\.privateClickMeasurementEnabled", r"WebKitPreferences\.applePayEnabled",
+        r"WebKitPreferences\.pushAPIEnabled", r"IncludeDevelopMenu",
+        r"WebKitDeveloperExtrasEnabledPreferenceKey", r"WebKitPreferences\.developerExtrasEnabled",
+        r"UserStyleSheetEnabled", r"WebKitMinimumFontSize", r"ExtensionsEnabled"),
+    "com.apple.mail": _keys(
+        r"ArchiveOrDeleteMutedMessagesKey", r"ConversationViewSortDescending",
+        r"ConversationViewMarkAllAsRead", r"ConversationViewSpansMailboxes", r"EnableContactPhotos",
+        r"NumberOfSnippetLines", r"ShouldShowUnreadMessagesInBold", r"HighlightCorrespondence",
+        r"NSFont", r"NSFontSize", r"NSFixedPitchFont", r"NSFixedPitchFontSize", r"SendFormat",
+        r"AutoReplyFormat", r"SpellCheckingBehavior", r"PlayMailSounds", r"NewMessagesSoundName",
+        r"PollTime"),
+    "com.apple.Music": _keys(
+        r"TransitionsEnabled", r"TransitionsDuration", r"automaticallyDownloadArtwork",
+        r"downloadDolbyAtmos", r"losslessEnabled", r"soundEnhancer\w*", r"SoundCheck\w*",
+        r"userWantsPlaybackNotifications", r"PLGD:.+", r"encoderName", r"motionMode"),
+    "com.apple.iCal": _keys(
+        r"CalDefaultCalendar", r"Default duration in minutes for new event",
+        r"(first|last) minute of (day time range|work hours)", r"number of hours displayed",
+        r"n days of week", r"first day of week", r"Show Week Numbers", r"TimeZone support enabled",
+        r"enableTravelAdvisoriesForAutomaticBehavior", r"display birthdays calendar"),
+    "com.apple.MobileSMS": _keys(
+        r"DeleteVerificationCodes", r"FilterMessageRequests", r"KeepMessageForDays",
+        r"SSKeepMessages", r"SSKeepAttachments", r"PlaySoundsKey"),
+    "com.apple.TelephonyUtilities": _keys(
+        r"silenceUnknownFaceTimeCallers", r"filterUnknownCallersAsNewCallers",
+        r"FaceTimeNewCallersFilterMode", r"ReceptionistDisabled"),
+    "com.apple.Maps": _keys(r"DistanceUnits", r"NavigationVoiceGuidanceLevel\w+"),
+    "com.apple.photos.shareddefaults": _keys(
+        r"IPXDefault(EnhancedVisualSearchEnabled|ViewFullHDR)"),
+    "com.apple.AppStore": _keys(r"AutoPlayVideoSetting", r"UserSetAutoPlayVideoSetting",
+                                r"InAppReviewEnabled"),
+    "com.apple.TextEdit": _keys(
+        r"RichText", r"CheckSpellingWhileTyping", r"CheckGrammarWithSpelling",
+        r"CorrectSpellingAutomatically", r"SmartQuotes", r"SmartDashes", r"SmartLinks",
+        r"TextReplacement", r"ShowRuler"),
+    "com.apple.scriptmenu": _keys(r"ScriptMenuEnabled"),
+}
+# A Magic Trackpad or Magic Mouse keeps the same settings in its Bluetooth
+# driver's domain.
+CAPTURE["com.apple.driver.AppleBluetoothMultitouch.trackpad"] = CAPTURE[
+    "com.apple.AppleMultitouchTrackpad"]
+CAPTURE["com.apple.driver.AppleBluetoothMultitouch.mouse"] = CAPTURE["com.apple.AppleMultitouchMouse"]
+
+# Since this repo is public, export also leaves out a value that looks
+# personal or tied to this Mac, even for a key in CAPTURE.
+#
 # Text in a key or value: email addresses, paths in a home folder, IDs and
 # MAC addresses, hashes, and phone numbers.
 PRIVATE_TEXT = re.compile(
@@ -250,9 +372,7 @@ def base_domain(domain):
 
 def capturable(domain):
     """Whether export captures new keys in this domain on its own."""
-    name = base_domain(domain)
-    return bool(APPLE_SETTINGS.search(name)
-                or (THIRD_PARTY.search(name) and not THIRD_PARTY_SKIP.search(name)))
+    return base_domain(domain) in CAPTURE
 
 
 @functools.lru_cache(maxsize=None)
@@ -299,10 +419,11 @@ def has_date(value):
     return False
 
 
-def worth_capturing(key, value):
-    """Whether export should start tracking a key it found: a setting rather
-    than app state, and nothing personal."""
-    if is_noise(key) or PRIVATE_KEY.search(key) or has_date(value):
+def worth_capturing(domain, key, value):
+    """Whether export should start tracking a key it found: one CAPTURE lists
+    for the domain, with nothing personal in it."""
+    allowed = CAPTURE.get(base_domain(domain))
+    if not allowed or not allowed.search(key) or has_date(value):
         return False
     # A URL in a key name means per-item state, like Podcasts' play state for
     # every show followed.
@@ -717,7 +838,8 @@ def cmd_export(args, layers):
         if capture and entry is not True and capturable(domain):
             leave_out = tracked_below(layers, domain) | set(entry or [])
             for key in sorted(live):
-                if key not in tracked and key not in leave_out and worth_capturing(key, live[key]):
+                if (key not in tracked and key not in leave_out
+                        and worth_capturing(domain, key, live[key])):
                     tracked[key] = live[key]
                     added += 1
                     added_in.add(domain)
