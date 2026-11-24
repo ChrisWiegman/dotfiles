@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>AutoOpenSafeDownloads</key>
+	<false/>
+	<key>BlockStoragePolicy</key>
+	<integer>2</integer>
+	<key>DownloadsClearingPolicy</key>
+	<integer>2</integer>
+	<key>EnableEnhancedPrivacyInPrivateBrowsing</key>
+	<true/>
+	<key>EnableEnhancedPrivacyInRegularBrowsing</key>
+	<true/>
+	<key>ExtensionsEnabled</key>
+	<true/>
+	<key>HistoryAgeInDaysLimit</key>
+	<integer>30</integer>
+	<key>HomePage</key>
+	<string>https://www.apple.com/startpage/</string>
+	<key>IncludeDevelopMenu</key>
+	<true/>
+	<key>PrivateSearchEngineUsesNormalSearchEngineToggle</key>
+	<true/>
+	<key>PrivateSearchProviderShortName</key>
+	<string>DuckDuckGo</string>
+	<key>SearchProviderShortName</key>
+	<string>DuckDuckGo</string>
+	<key>ShowStandaloneTabBar</key>
+	<false/>
+	<key>UserStyleSheetEnabled</key>
+	<false/>
+	<key>WebKitDeveloperExtrasEnabledPreferenceKey</key>
+	<true/>
+	<key>WebKitPreferences.applePayEnabled</key>
+	<true/>
+	<key>WebKitPreferences.developerExtrasEnabled</key>
+	<true/>
+	<key>WebKitPreferences.privateClickMeasurementEnabled</key>
+	<false/>
+	<key>WebKitPreferences.pushAPIEnabled</key>
+	<true/>
+	<key>WebKitPreferences.storageBlockingPolicy</key>
+	<integer>1</integer>
+	<key>WebKitStorageBlockingPolicy</key>
+	<integer>1</integer>
+</dict>
+</plist>

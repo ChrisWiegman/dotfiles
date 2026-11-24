@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>FinderActive</key>
+	<dict>
+		<key>APPEXTENSION-com.apple.finder.CreatePDFQuickAction</key>
+		<true/>
+		<key>APPEXTENSION-com.apple.finder.MarkupQuickAction</key>
+		<true/>
+		<key>APPEXTENSION-com.apple.finder.RotateQuickAction</key>
+		<true/>
+		<key>APPEXTENSION-com.apple.finder.TrimQuickAction</key>
+		<true/>
+		<key>is.workflow.actions.image.convert.finder</key>
+		<true/>
+		<key>is.workflow.actions.image.removebackground</key>
+		<true/>
+	</dict>
+	<key>FinderOrdering</key>
+	<dict>
+		<key>APPEXTENSION-com.apple.finder.CreatePDFQuickAction</key>
+		<integer>3</integer>
+		<key>APPEXTENSION-com.apple.finder.MarkupQuickAction</key>
+		<integer>1</integer>
+		<key>APPEXTENSION-com.apple.finder.RotateQuickAction</key>
+		<integer>0</integer>
+		<key>APPEXTENSION-com.apple.finder.TrimQuickAction</key>
+		<integer>2</integer>
+		<key>is.workflow.actions.image.convert.finder</key>
+		<integer>4</integer>
+		<key>is.workflow.actions.image.removebackground</key>
+		<integer>5</integer>
+	</dict>
+</dict>
+</plist>

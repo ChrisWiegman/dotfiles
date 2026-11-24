@@ -4,5 +4,7 @@
 <dict>
 	<key>AutoHideMenuBarOption</key>
 	<integer>0</integer>
+	<key>RemoteLiveActivitiesEnabled</key>
+	<true/>
 </dict>
 </plist>

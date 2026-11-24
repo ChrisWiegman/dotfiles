@@ -4,11 +4,17 @@
 <dict>
 	<key>AppWindowGroupingBehavior</key>
 	<integer>1</integer>
+	<key>AutoHide</key>
+	<false/>
 	<key>EnableStandardClickToShowDesktop</key>
 	<false/>
 	<key>EnableTiledWindowMargins</key>
 	<false/>
 	<key>HideDesktop</key>
 	<true/>
+	<key>StageManagerHideWidgets</key>
+	<false/>
+	<key>StandardHideWidgets</key>
+	<false/>
 </dict>
 </plist>

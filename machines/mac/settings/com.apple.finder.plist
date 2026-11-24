@@ -6,6 +6,17 @@
 	<string>Nlsv</string>
 	<key>FXRemoveOldTrashItems</key>
 	<true/>
+	<key>FavoriteTagNames</key>
+	<array>
+		<string></string>
+		<string>Red</string>
+		<string>Orange</string>
+		<string>Yellow</string>
+		<string>Green</string>
+		<string>Blue</string>
+		<string>Purple</string>
+		<string>Gray</string>
+	</array>
 	<key>NewWindowTarget</key>
 	<string>PfHm</string>
 	<key>ShowExternalHardDrivesOnDesktop</key>

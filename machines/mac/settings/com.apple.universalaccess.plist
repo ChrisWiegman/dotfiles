@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>closeViewHotkeysEnabled</key>
+	<false/>
+	<key>liveSpeechEnabled</key>
+	<false/>
+	<key>mouseDriver</key>
+	<false/>
+	<key>slowKey</key>
+	<false/>
+	<key>slowKeyDelay</key>
+	<integer>250</integer>
+	<key>stickyKey</key>
+	<false/>
+	<key>useStickyKeysShortcutKeys</key>
+	<false/>
+</dict>
+</plist>
