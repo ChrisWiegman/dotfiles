@@ -18,14 +18,10 @@ with any change to setup behavior.
 - Shared first, machine overrides second: `shared/Brewfile` then
   `machines/<m>/Brewfile`; the shared SSH config `Include`s
   `~/.ssh/config.d/*.conf`, linked from `machines/<m>/configs/.ssh/config.d/`.
-  Mac settings add a middle layer: `shared/settings`, then
-  `profiles/<name>/settings` for each profile in `machines/<m>/Profiles`, then
-  `machines/<m>/settings`. `shared` reaches Joy's machine too.
+  `shared` reaches Joy's machine too.
 - Machine selection at runtime comes from where `~/.zshrc` links to
-  (see `bundle_homebrew` and `settings.py`).
-- This repo is public. `macsettings export` filters personal data out of
-  captured settings, but read every `*/settings/` diff for names, IDs, and
-  paths before committing.
+  (see `bundle_homebrew`).
+- This repo is public. Keep names, IDs, and personal paths out of commits.
 
 ## Signing and keys
 

@@ -8,7 +8,6 @@ Note this is an evolving repo and tends to represent where my machines are on an
 
 - **apps** Configs for the various apps I use
 - **machines** dotfiles and setup scripts that are applicable per machine
-- **profiles** Mac settings for a group of machines (see [Mac settings](#mac-settings))
 - **shared** dotfiles and setup scripts that I can use on any machine
 
 ## Machines
@@ -120,7 +119,7 @@ For the selected machine, `setup.sh`:
 6. Installs everything in `shared/Brewfile` (tools every machine gets), then the machine's own `Brewfile`, via Homebrew. A machine's `Brewfile` also lists its VS Code extensions (`vscode "…"` lines). Add or remove extensions there: one uninstalled only in VS Code is reinstalled the next time `rup` runs.
 7. Enables Touch ID for `sudo` and turns on the firewall and its stealth mode. It warns if FileVault, Gatekeeper, System Integrity Protection, the screen-lock password, or automatic updates are off.
 8. Symlinks the shared and machine-specific config files (ssh, tmux, git, zsh, etc.). SSH uses one shared config; machine-specific settings go in `machines/<machine>/configs/.ssh/config.d/*.conf`. GitHub's SSH host keys are pinned in `shared/configs/.ssh/known_hosts.d/github.com`, so a fresh machine never has to trust the key it sees on first connect; if GitHub rotates its keys, refresh that file from https://api.github.com/meta. On `joy` and `mac` it also writes `~/.config/git/allowed_signers` from the machine's key, so `git log --show-signature` can verify local commits. On `work`, commit signing comes from 1Password, which saves its config to `~/.gitconfig.local`. 1Password itself is installed by Iru (work's device management), not Homebrew, and setup warns if it isn't there yet. Setup can't do that step for you, so until the file exists it's listed under **Needs your attention**.
-9. Runs the machine's own `setup.sh`, if it has one (e.g. VS Code settings and the Terminal theme), then applies the machine's macOS and app settings (see [Mac settings](#mac-settings)).
+9. Runs the machine's own `setup.sh`, if it has one (e.g. VS Code settings and the Terminal theme).
 10. Clones any repos listed in the machine's `Repos` file into `~/Code`, over SSH if a key is set up and otherwise over HTTPS.
 
 Problems that shouldn't stop a rebuild (a Brewfile entry that fails to install,
@@ -130,84 +129,3 @@ those, then re-run setup; it skips anything already done.
 
 The script asks for your administrator password once up front and keeps that
 access alive for the rest of the run, so you can start it and walk away.
-
-## Mac settings
-
-Each machine keeps its System Settings and the settings of Apple's apps (Finder,
-Safari, Mail, Music, Calendar, …) in `machines/<machine>/settings/`, plus
-anything else tracked by hand. There's one plist per preferences domain,
-holding only the keys being tracked. Window positions, timestamps, and account
-IDs stay out. Setup applies them, and the `macsettings` shell command keeps them
-up to date.
-
-Settings come in three layers, which setup applies in this order, so a later
-layer overrides an earlier one:
-
-1. `shared/settings/`: every machine, Joy's included (like not writing
-   `.DS_Store` files to network and USB drives). Manage them with
-   `macsettings --machine shared …`.
-2. `profiles/<name>/settings/`: a group of machines. A machine gets a profile
-   by listing its name in `machines/<machine>/Profiles`; `mac` and `work` both
-   list `chris`, for settings I want on my machines but not Joy's. Manage them
-   with `macsettings --profile chris …`.
-3. `machines/<machine>/settings/`: that machine alone (the default).
-
-`track`, `watch`, `untrack`, and `export` change one layer: the machine's own
-unless you pass `--machine shared` or `--profile <name>`. In their listings,
-`*` marks a key already tracked in that layer and `+` one tracked in a shared
-or profile layer. To move a key into a profile, track it there
-(`macsettings --profile chris track <domain> <key>`), then untrack it from the
-machine (`macsettings untrack <domain> <key>`).
-
-Run `macsettings` from **Terminal**. It needs the same Full Disk Access as setup,
-because macOS hides sandboxed apps' settings (Mail, Safari, Notes, …) from
-everything else.
-
-**Save this Mac's settings.** Run `macsettings export`, review `git diff`, and
-commit `machines/<machine>/settings/`. In one pass it refreshes every tracked
-key from the Mac's current values and captures the settings you can change in
-System Settings or in the Settings window of one of Apple's apps (Finder,
-Safari, Mail, Music, Calendar, Messages, and so on). Which keys those are is a
-list in `shared/scripts/settings.py` (`CAPTURE`). Everything else (View menu
-choices, window layouts, hidden preferences, third-party apps) is tracked only
-if you add it with `macsettings track` or `watch`. Export also leaves out:
-
-- Any value that looks personal, because this repo is public: email
-  addresses, account and device IDs, MAC addresses, tokens, paths in your home
-  folder, and your name or the Mac's name.
-- Keys a shared or profile layer already tracks.
-
-Read the diff before pushing anyway.
-
-A key that's back to its default stops being tracked. If a whole domain reads
-back empty (usually because macOS is hiding it, as it does without Full Disk
-Access), export leaves it alone and says so rather than untracking everything in
-it. Export only captures into the machine's own layer (`--machine shared` and
-`--profile` exports just refresh what's tracked there), but it lists any shared
-or profile key that's different on this Mac, since the next setup run would put
-the tracked value back.
-
-**Leave something out.** `macsettings untrack <domain> [<key>…]` stops tracking
-keys, or a whole domain, and records them in the machine's
-`settings/_ignore.plist` so export doesn't capture them again.
-`macsettings track` brings them back, and `macsettings list` shows what's left
-out.
-
-**Find a specific setting.** Run `macsettings watch`, change the setting in
-System Settings or the app, and press Enter. It lists what changed; pick the
-ones to keep. This is the way to add a setting export doesn't capture (one
-from a View menu, say, or a third-party app), or one for a shared or profile
-layer.
-
-**Other commands:**
-
-- `macsettings list` shows what's tracked, in every layer the machine gets.
-- `macsettings track <domain>` lists a domain's keys to pick from, and
-  `macsettings track <domain> <key>…` tracks specific keys.
-- `macsettings apply` writes the tracked settings to this Mac (setup does this).
-
-The machine comes from whichever one `~/.zshrc` is linked to; add
-`--machine <name>` to use another. To save the settings of a Mac that isn't
-built from this repo yet (an old Mac being replaced), clone the repo there,
-create `machines/<name>/`, and run
-`python3 shared/scripts/settings.py --machine <name> export`.

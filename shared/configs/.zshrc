@@ -131,10 +131,6 @@ fi
 # ---- Aliases ----
 alias szh='echo "Reloading shell..."; source ~/.zshrc'
 
-# Track, export, and apply this machine's macOS and app settings
-# (see `macsettings --help`).
-macsettings() { /usr/bin/python3 -I "$HOME/.dotfiles/shared/scripts/settings.py" "$@"; }
-
 # ---- Pull and delete local branches whose upstream was deleted ----
 # `function` keyword so a previously loaded `gup` alias doesn't expand here on reload.
 function gup {
