@@ -7,8 +7,10 @@ export LANG="${LANG:-en_US.UTF-8}"
 # Keep PATH and fpath free of duplicates. `szh` and `rup` re-source this file,
 # and the machine .zshrc's go.zsh and brew shellenv below prepend again each time.
 # Flag the scalars too: brew shellenv assigns PATH directly, which skips -U on
-# the array alone.
-typeset -U PATH path FPATH fpath
+# the array alone. -g because `rup` sources this from inside a function, where a
+# bare typeset makes new, empty locals: fpath loses zsh's own functions dir and
+# compinit fails with "compdump: function definition file not found".
+typeset -gU PATH path FPATH fpath
 
 # ---- Homebrew first (so PATH/FPATH are set before completions load) ----
 # Cache shellenv output — re-generate only when the brew binary changes. Not in
